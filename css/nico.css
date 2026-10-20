@@ -82,7 +82,7 @@ body:has(.scr.dim:not(.hidden)) .credits-line { visibility: hidden; }
 
 /* Barra superior en una pantalla estrecha (menos de 680 px de ancho, en vertical: desde que «Gira el móvil» no bloquea
    con aspecto 0,8 o más, o una ventana estrecha): compacta, en una fila (antes se partía en dos o se salía por la
-   izquierda). Por debajo de 520 px, la cuenta se queda en su icono. Si aun así no cabe (unos 400 px), se parte en dos
+   izquierda). Por debajo de 560 px (520 antes del botón de sugerencias), la cuenta se queda en su icono. Si aun así no cabe (unos 400 px), se parte en dos
    filas pegadas a la derecha, sin salirse; el logotipo del menú baja lo que haga falta. */
 @media (max-width: 679.98px) {
   #topbar { top: 6px; right: 6px; left: 6px; gap: 4px; justify-content: flex-end; flex-wrap: wrap; }
@@ -92,7 +92,7 @@ body:has(.scr.dim:not(.hidden)) .credits-line { visibility: hidden; }
   #user-pill .sync { margin-left: 4px; }
   #topbar .btn.small { min-width: 32px; padding: 0 6px; }
 }
-@media (max-width: 519.98px) { #user-pill > span { display: none; } }
+@media (max-width: 559.98px) { #user-pill > span { display: none; } }
 @media (max-width: 419.98px) and (min-height: 521px) { #scr-menu .menu-left { padding-top: 92px; } }
 
 /* Premio del gacha: lienzos al tamaño en que se ven (estilo.js), nunca escalados por CSS. */
@@ -344,6 +344,11 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
 .sug-estado.bien { color: #8cf0a8; }
 .sug-botones { justify-content: flex-end; }
 #btn-sugerencias { display: flex; padding: 5px 9px; position: relative; }
+/* En el menú Dex de un móvil la pantalla opaca va al límite del 25 % (ver «PokéSwarm: nombre, icono y portada» en
+   CLAUDE.md: con Dragonite, 24,9 % antes de este botón): ahí el botón va algo translúcido, así no tapa el mundo. */
+@media (max-height: 519.98px) {
+  html.estilo-dex body:has(#scr-menu:not(.hidden)):not(:has(.scr.dim:not(.hidden))) #btn-sugerencias { opacity: .55; }
+}
 #btn-sugerencias.sug-nuevo::after { content: ''; position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; border-radius: 50%;
   background: var(--gold); box-shadow: 0 0 0 2px var(--edge-out, #000); }
 #btn-pause-sugerencias { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }

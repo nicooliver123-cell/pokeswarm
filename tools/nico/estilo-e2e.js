@@ -201,11 +201,18 @@ const SIN_NUBE = () => {
   window.G = window.G || {};
   Object.defineProperty(window.G, 'FIREBASE_CONFIG', { get: () => null, set() {}, configurable: true, enumerable: true });
 };
+/** El aviso de novedad del buzón de sugerencias (js/ui/sugerencias.js) sale una vez por navegador al llegar al menú, a
+ *  una hora que no controla la prueba: se da por visto para medir y fotografiar las pantallas tal y como se quedan
+ *  (como los avisos de logro, no cuenta para el 25 % de pantalla opaca). Su prueba es tools/nico/sugerencias-e2e.js. */
+const AVISO_VISTO = (() => {
+  const m = /sugerenciasAviso:\s*'([^']*)'/.exec(fs.readFileSync(path.join(__dirname, '..', '..', 'js', 'core', 'mods.js'), 'utf8'));
+  return { content: m && m[1] ? `try { localStorage.setItem('ps.aviso.${m[1]}', '1'); } catch (e) {}` : '' };
+})();
 async function nuevo(browser, v, { sw = false, perf = false } = {}) {
   // v.pantalla: [ancho, alto] de la pantalla entera si no es la ventana (el plegable con la barra del navegador).
   const ctx = await browser.newContext({ viewport: { width: v.w, height: v.h }, deviceScaleFactor: v.dpr || 1, hasTouch: !!v.tactil, isMobile: !!v.tactil,
     serviceWorkers: sw ? 'allow' : 'block', locale: 'es-ES', ...(v.pantalla ? { screen: { width: v.pantalla[0], height: v.pantalla[1] } } : {}) });
-  await ctx.addInitScript(SIN_NUBE);
+  await ctx.addInitScript(SIN_NUBE); await ctx.addInitScript(AVISO_VISTO);
   if (v.seguras) await simularSeguras(ctx, v.seguras);
   if (perf) await ctx.addInitScript(PERF_INIT);
   const page = await ctx.newPage();
@@ -2506,7 +2513,7 @@ async function pruebaCompanero(browser) {
   {
     const v = VP.movil;
     const ctx = await browser.newContext({ viewport: { width: v.w, height: v.h }, deviceScaleFactor: v.dpr, hasTouch: true, isMobile: true, serviceWorkers: 'block', locale: 'en-US' });
-    await ctx.addInitScript(SIN_NUBE);
+    await ctx.addInitScript(SIN_NUBE); await ctx.addInitScript(AVISO_VISTO);
     await ctx.addInitScript(VIGIA_TEST);
     const page = await ctx.newPage(), consola = [], fuera = [];
     page.on('request', x => { if (!x.url().startsWith(`http://127.0.0.1:${PORT}/`) && !/^(data|blob):/.test(x.url())) fuera.push(x.url()); });
