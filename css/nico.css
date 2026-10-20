@@ -344,13 +344,30 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
 .sug-estado.bien { color: #8cf0a8; }
 .sug-botones { justify-content: flex-end; }
 #btn-sugerencias { display: flex; padding: 5px 9px; position: relative; }
-/* En el menú Dex de un móvil la pantalla opaca va al límite del 25 % (ver «PokéSwarm: nombre, icono y portada» en
-   CLAUDE.md: con Dragonite, 24,9 % antes de este botón): ahí el botón va algo translúcido, así no tapa el mundo. */
-@media (max-height: 519.98px) {
-  html.estilo-dex body:has(#scr-menu:not(.hidden)):not(:has(.scr.dim:not(.hidden))) #btn-sugerencias { opacity: .55; }
-}
 #btn-sugerencias.sug-nuevo::after { content: ''; position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; border-radius: 50%;
   background: var(--gold); box-shadow: 0 0 0 2px var(--edge-out, #000); }
+/* El buzón (sólo las cuentas de G.MODS.devHuellas): la lista se desplaza dentro de la caja. */
+#scr-buzon { z-index: 62; }
+.buz-caja { width: min(680px, 100%); max-height: 100%; display: flex; flex-direction: column; min-height: 0; }
+.buz-cab { display: flex; gap: 8px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.buz-cab h2 { margin: 0; }
+.buz-filtro { display: flex; gap: 6px; }
+.buz-lista { flex: 1 1 auto; min-height: 80px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 2px; }
+.buz-vacio { color: var(--muted); font-size: 14px; margin: 12px 0; }
+.buz-item { padding: 8px 10px; border-radius: 8px; background: rgba(0,0,0,.25); border-left: 3px solid transparent; }
+.buz-item.nueva { border-left-color: var(--gold); }
+.buz-meta { font-size: 13px; color: var(--muted); }
+.buz-meta b { color: var(--gold); }
+.buz-texto { white-space: pre-wrap; word-break: break-word; margin: 4px 0; font-size: 15px; }
+.buz-contacto { font-size: 13px; margin: 2px 0; word-break: break-all; }
+.buz-acciones { justify-content: flex-end; gap: 6px; margin-top: 4px; }
+#btn-sugerencias .buz-num { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px;
+  background: var(--gold); color: #1b1528; font-size: 11px; font-weight: 800; line-height: 18px; text-align: center; text-shadow: none; }
+@media (max-height: 519.98px) {
+  .buz-caja { padding: 8px 12px; }
+  .buz-caja .sub { display: none; }
+  .buz-cab h2 { font-size: 18px; }
+}
 #btn-pause-sugerencias { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
 .sug-aviso { position: fixed; z-index: 27; width: min(300px, calc(100vw - 16px)); padding: 12px 14px; font-size: 14px; }
 .sug-aviso.hidden { display: none; }
@@ -705,4 +722,11 @@ html.estilo-dex a.plink:hover { color: var(--color-pantalla); }
 }
 @media (prefers-reduced-motion: reduce) {
   html.estilo-dex .btn, html.estilo-dex .menu-item, html.estilo-dex .card { transition: none; }
+}
+
+/* ---------- Sugerencias y fallos (js/ui/sugerencias.js) ---------- */
+/* En el menú Dex de un móvil la pantalla opaca va al límite del 25 % (ver «PokéSwarm: nombre, icono y portada» en
+   CLAUDE.md: con Dragonite, 24,9 % antes de este botón): ahí el botón va algo translúcido, así no tapa el mundo. */
+@media (max-height: 519.98px) {
+  html.estilo-dex body:has(#scr-menu:not(.hidden)):not(:has(.scr.dim:not(.hidden))) #btn-sugerencias { opacity: .55; }
 }

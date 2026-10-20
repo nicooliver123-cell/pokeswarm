@@ -117,6 +117,7 @@ G.SettingsUI = (() => {
     if (G.Encuadre) G.Encuadre.ajustes(box, tab);   // MOD nico: «Píxel nítido», al final de Gráficos > Pantalla (js/ui/encuadre.js)
     if (G.Dividida) G.Dividida.ajustes(box, tab);   // MOD nico: «Pantalla dividida», en Controles (js/ui/pantalla-dividida.js)
     if (G.DevMenu) G.DevMenu.ajustes(box, tab);   // MOD nico: menú de pruebas, sólo en la cuenta de Nico (js/ui/dev-menu.js)
+    if (G.Sugerencias) G.Sugerencias.ajustes(box, tab);   // MOD nico: el buzón de sugerencias, sólo en la cuenta de Nico (js/ui/sugerencias.js)
     wire(box);
   }
 

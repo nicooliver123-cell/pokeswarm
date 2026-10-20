@@ -9,6 +9,7 @@ rules_version = '2';
 //   lb/{tabla}/e/{id}      ranking de tiempo aguantado (marcas validadas)
 //   lbs/{tabla}            resumen con el top 50 de cada tabla
 //   pres/{uid}             en línea (aproximado) · inv/{para_de} invitaciones
+//   sugerencias/{id}       buzón de sugerencias y fallos: cualquiera deja una, sólo el buzón las lee
 // Todo lo demás está cerrado.
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -181,6 +182,33 @@ service cloud.firestore {
     // Para borrar todas tus marcas al borrar la cuenta (consulta de grupo).
     match /{path=**}/e/{id} {
       allow read: if signedIn();
+    }
+
+    // ---------- buzón de sugerencias y fallos (js/ui/sugerencias.js) ----------
+    // Cualquiera, también un invitado sin sesión, puede dejar una (sólo crear, con los campos y tamaños de abajo).
+    // Leerlas, marcarlas como leídas y borrarlas, sólo las cuentas del buzón: la huella SHA-256 de su uid con la sal
+    // de js/ui/dev-menu.js (como G.MODS.devHuellas; el repositorio es público y el uid no se escribe).
+    function buzon() {
+      return signedIn()
+        && hashing.sha256('pokeswarm/dev/1\u0000' + me()).toHexString().lower() in [
+          'b9f8d94bd49b7471e01e9827da437297a0dad61278c0fa80bda2a936b5e1db4c'   // Nico
+        ];
+    }
+
+    match /sugerencias/{id} {
+      allow read, delete: if buzon();
+      allow update: if buzon()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['leida'])
+        && request.resource.data.leida is bool;
+      allow create: if request.resource.data.keys().hasOnly(['tipo', 'mensaje', 'contacto', 'tecnicos', 'uid', 'at', 'leida'])
+        && request.resource.data.tipo in ['fallo', 'sugerencia']
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() >= 10 && request.resource.data.mensaje.size() <= 3000
+        && request.resource.data.contacto is string && request.resource.data.contacto.size() <= 120
+        && request.resource.data.tecnicos is string && request.resource.data.tecnicos.size() <= 2000
+        && request.resource.data.uid == (request.auth == null ? '' : request.auth.uid)
+        && request.resource.data.at == request.time
+        && request.resource.data.leida == false;
     }
 
     match /{document=**} {
