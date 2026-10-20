@@ -6,6 +6,9 @@ Las cuentas de PokéSwarm son nuevas: es otro origen (otra web) y otro backend (
 
 ## Inmediatos (los hace la sesión principal)
 
+- **Activar el buzón de sugerencias y fallos** (lo hace Nico; hecho el 20-10-2026, ver «Sugerencias y fallos» en CLAUDE.md). El botón y el aviso de novedad ya salen, pero hasta tener la clave el formulario dice «El buzón aún no está listo». Pasos: en https://web3forms.com, «Create your Access Key» con el correo donde quieras recibirlos; llega la clave por correo; ponerla en `sugerenciasClave` de `js/core/mods.js` (es pública a propósito), `node tools/build.js --privado`, commit y push; mandar una prueba desde la web publicada y comprobar que llega (mirar también la carpeta de spam la primera vez).
+
+
 1. **Probar el cooperativo real entre dos casas** (lo hacen Nico y su amigo). El Firebase propio `pokeswarm-9e39d` quedó listo el 13-10-2026:
    - Plan Spark, sin Analytics; Firestore `(default)` en eur3 y Realtime Database `pokeswarm-9e39d-default-rtdb` en europe-west1, las dos con las reglas del repo desplegadas (`firebase deploy --only firestore,database --project prod`; alias `prod` en `.firebaserc`, `default` sigue en `demo-ps`).
    - Authentication con correo/contraseña activado por Nico en la consola (Google, si lo activó). Dominios autorizados comprobados: `localhost`, `pokeswarm-9e39d.firebaseapp.com`, `pokeswarm-9e39d.web.app` y `nicooliver123-cell.github.io`.
