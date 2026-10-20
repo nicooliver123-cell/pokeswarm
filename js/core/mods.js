@@ -413,6 +413,19 @@ G.MODS = {
    * false: como upstream (el test, su resultado y «Elegir otro»). test.js no se toca en ningún caso. */
   sinTest: true,
 
+  /* ---- Sugerencias y fallos (petición de Nico del 20-10-2026; js/ui/sugerencias.js, G.Sugerencias) ----
+   * Botón en la barra superior de los menús y en la pausa que abre un formulario (sugerencia o fallo, texto, contacto
+   * opcional y, si el jugador lo deja marcado, datos técnicos). Le llega a Nico por correo a través de Web3Forms (el
+   * plan gratuito: 250 envíos al mes), porque el Firebase va en Spark y no puede mandar correos.
+   * sugerenciasClave: la «access key» de Web3Forms, que es pública a propósito (es un alias del correo de Nico, no
+   *   una contraseña: su correo nunca sale en el repositorio). '' = el formulario dice que el buzón aún no está listo.
+   * sugerenciasAviso: el aviso de novedad que sale una vez por navegador al llegar al menú, junto al botón; cambiar
+   *   el texto vuelve a enseñarlo a todos. '' = sin aviso.
+   * sugerenciasEsperaS: segundos entre dos envíos desde el mismo navegador (que nadie llene el buzón sin querer). */
+  sugerenciasClave: '',
+  sugerenciasAviso: 'sugerencias-1',
+  sugerenciasEsperaS: 30,
+
   /** game.js, checkOrientation(): ¿pide girar una pantalla de w×h px CSS (táctil)? */
   pedirGiro(w, h) {
     if (!(w > 0) || !(h > 0) || !(h > w)) return false;

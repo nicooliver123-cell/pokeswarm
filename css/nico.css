@@ -320,6 +320,57 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
   .guarderia-plaza canvas { width: 54px; height: 45px; }
 }
 
+/* ---------- Sugerencias y fallos (js/ui/sugerencias.js, G.Sugerencias) ----------
+   El formulario va por encima de Ajustes (60) y por debajo del aviso legal (65); el aviso de novedad, junto al botón
+   de la barra superior, por encima de ella (25) y por debajo de los avisos de logro. */
+#scr-sugerencias { z-index: 62; }
+.sug-caja { width: min(520px, 100%); max-height: 100%; overflow-y: auto; }
+.sug-caja h2 { margin-top: 0; }
+.sug-tipos { display: flex; gap: 8px; margin: 0 0 12px; flex-wrap: wrap; }
+.sug-tipos .btn { flex: 1 1 0; min-width: 0; }
+.sug-et { display: block; font-size: 14px; color: var(--muted); margin: 8px 0 4px; }
+#sug-texto { resize: vertical; min-height: 96px; font-size: 16px; line-height: 1.35; font-family: inherit; }
+#sug-contacto { font-size: 16px; }
+.sug-cuenta { font-size: 12px; color: var(--muted); text-align: right; min-height: 14px; }
+.sug-bot { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.sug-chk { display: flex; gap: 8px; align-items: flex-start; font-size: 14px; margin: 10px 0 4px; cursor: pointer; }
+.sug-chk input { margin-top: 3px; flex-shrink: 0; }
+.sug-ver { font-size: 13px; color: var(--muted); }
+.sug-ver summary { cursor: pointer; padding: 4px 0; }
+.sug-ver pre { white-space: pre-wrap; word-break: break-word; font-size: 12px; margin: 4px 0; padding: 6px 8px; background: rgba(0,0,0,.3); border-radius: 6px; max-height: 120px; overflow: auto; }
+.sug-pie { flex-wrap: nowrap; gap: 8px; margin-top: 8px; }
+.sug-estado { flex: 1 1 auto; min-width: 0; min-height: 20px; font-size: 14px; margin: 0; }
+.sug-estado.mal { color: #ffb0b8; }
+.sug-estado.bien { color: #8cf0a8; }
+.sug-botones { justify-content: flex-end; }
+#btn-sugerencias { display: flex; padding: 5px 9px; position: relative; }
+#btn-sugerencias.sug-nuevo::after { content: ''; position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); box-shadow: 0 0 0 2px var(--edge-out, #000); }
+#btn-pause-sugerencias { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.sug-aviso { position: fixed; z-index: 27; width: min(300px, calc(100vw - 16px)); padding: 12px 14px; font-size: 14px; }
+.sug-aviso.hidden { display: none; }
+.sug-aviso p { margin: 4px 0 10px; }
+.sug-aviso .sug-novedad { color: var(--gold); }
+@media (pointer: coarse) { html body .sug-aviso .btn.small, html body .sug-caja .btn { min-height: 44px; } }
+.sug-aviso::before { content: ''; position: absolute; top: -8px; left: var(--sug-flecha, 20px); width: 0; height: 0;
+  border: 8px solid transparent; border-top: 0; border-bottom-color: var(--edge, #fff); }
+@media (max-height: 519.98px) {
+  .sug-caja { padding: 10px 14px; }
+  .sug-caja h2 { font-size: 18px; margin-bottom: 2px; }
+  .sug-caja .sub { display: none; }   /* «le llega a Nico por correo» ya lo dice el aviso de novedad */
+  html body .sug-tipos { margin-bottom: 2px; }
+  html body .sug-tipos .btn { min-height: 36px; }
+  #sug-texto { min-height: 0; height: 56px; padding: 6px 10px; font-size: 15px; }
+  #sug-contacto { padding: 5px 10px; font-size: 15px; }
+  .sug-cuenta { min-height: 0; }
+  .sug-et { margin: 2px 0 1px; font-size: 13px; }
+  .sug-chk { margin: 4px 0 0; font-size: 13px; }
+  .sug-ver { font-size: 12px; }
+  .sug-estado { font-size: 13px; line-height: 1.2; }
+  .sug-pie { margin-top: 4px; }
+  .sug-ver summary { padding: 0; }
+}
+
 /* =====================================================================
  * 2. ESTILO DEX («Dex de Expedición»): sólo con html.estilo-dex
  * ===================================================================== */

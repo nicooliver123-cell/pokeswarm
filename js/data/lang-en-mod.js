@@ -313,5 +313,25 @@ G.I18n.add({
   'Esferas Fantasmales': 'Phantasmal Spheres', 'Presencia Maligna': 'Evil Presence',
   'Los enemigos sienten que una presencia maligna los observa: daña y frena algo a lo que tienes cerca.': 'Foes feel an evil presence watching them: damages and slightly slows anything near you.', 'Infierno Inminente': 'Impending Doom',
   'Segunda Forma': 'Second Form', 'Ojo de Cthulhu': 'Eye of Cthulhu',
-  'Drácula': 'Dracula'
+  'Drácula': 'Dracula',
+  // Sugerencias y fallos (js/ui/sugerencias.js)
+  'Sugerencias y fallos': 'Suggestions and bugs', 'Sugerencia o fallo': 'Suggestion or bug',
+  'Cuéntame qué mejorarías o qué ha fallado: le llega a Nico por correo.': 'Tell me what you\'d improve or what went wrong: it reaches Nico by email.',
+  '¿Qué quieres contar?': 'What do you want to tell?', 'Algo ha fallado': 'Something broke', 'Tengo una idea': 'I have an idea',
+  '¿Qué ha pasado?': 'What happened?', '¿Qué te gustaría cambiar o añadir?': 'What would you like to change or add?',
+  'Qué estabas haciendo, qué esperabas y qué ha pasado. Si se repite, cómo.': 'What you were doing, what you expected and what happened. If it happens again, how.',
+  'Cuanto más concreto, mejor.': 'The more specific, the better.',
+  'Contacto (opcional, por si hay que preguntarte algo)': 'Contact (optional, in case I need to ask you something)',
+  'Tu correo o tu nombre en el juego': 'Your email or your in-game name',
+  'Incluir datos técnicos (versión, navegador, pantalla y tu nombre de jugador)': 'Include technical data (version, browser, screen and your player name)',
+  'Ver qué se envía': 'See what gets sent', 'Sólo el tipo, el texto y el contacto.': 'Only the type, the text and the contact.',
+  'Enviar': 'Send', 'Entendido': 'Got it', 'Escribir': 'Write', 'Novedad': 'New',
+  '¿Tienes una idea o has visto algún fallo? Cuéntamelo desde este botón: me llega por correo.': 'Got an idea or spotted a bug? Tell me with this button: it reaches me by email.',
+  'Cuéntalo con un poco más de detalle (al menos 10 letras).': 'Please add a bit more detail (at least 10 letters).',
+  'Es demasiado largo: como mucho 3.000 letras.': 'It\'s too long: 3,000 letters at most.',
+  'Espera unos segundos antes de enviar otro.': 'Wait a few seconds before sending another one.',
+  'El buzón aún no está listo: de momento no se puede enviar.': 'The mailbox isn\'t ready yet: sending isn\'t possible for now.',
+  'Enviando…': 'Sending…', '¡Enviado! Gracias por contarlo.': 'Sent! Thanks for letting me know.',
+  'Sin conexión: no se ha enviado. Tu texto sigue aquí; prueba otra vez.': 'No connection: it wasn\'t sent. Your text is still here; try again.',
+  'No se ha podido enviar. Tu texto sigue aquí; prueba otra vez en un rato.': 'It couldn\'t be sent. Your text is still here; try again in a while.'
 });
