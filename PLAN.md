@@ -6,7 +6,7 @@ Las cuentas de PokéSwarm son nuevas: es otro origen (otra web) y otro backend (
 
 ## Inmediatos (los hace la sesión principal)
 
-- **Buzón de sugerencias: publicarlo y mirarlo de vez en cuando** (hecho el 20-10-2026, ver «Sugerencias y fallos» en CLAUDE.md). Falta publicarlo, con el visto bueno de Nico: las reglas de Firestore (`firebase deploy --only firestore:rules --project prod`, desde la raíz del repo; sólo añaden `sugerencias/{id}`) y `git push` de `main`. Después: Con tu cuenta, el botón del bocadillo de la barra superior lleva el número de las que no has leído y abre el buzón (también en Ajustes > Cuenta). Opcional: recibirlas además por correo, con una clave de Web3Forms (https://web3forms.com, «Create your Access Key» con tu correo) en `sugerenciasClave` de `js/core/mods.js`.
+- **Buzón de sugerencias: mirarlo de vez en cuando** (lo hace Nico; hecho el 20-10-2026 y publicado el 21-10-2026, reglas de Firestore incluidas; ver «Sugerencias y fallos» en CLAUDE.md). Falta la primera sugerencia de verdad: ninguna se ha mandado aún a la base de producción. Con tu cuenta, el botón del bocadillo de la barra superior lleva el número de las que no has leído y abre el buzón (también en Ajustes > Cuenta). Opcional: recibirlas además por correo, con una clave de Web3Forms (https://web3forms.com, «Create your Access Key» con tu correo) en `sugerenciasClave` de `js/core/mods.js`.
 
 
 1. **Probar el cooperativo real entre dos casas** (lo hacen Nico y su amigo). El Firebase propio `pokeswarm-9e39d` quedó listo el 13-10-2026:
