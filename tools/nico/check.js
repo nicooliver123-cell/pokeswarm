@@ -6751,6 +6751,16 @@ async function regalosCuentaChecks() {
   for (const [name, , detail] of failed) bad(`regalos a una cuenta: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);
 }
 
+// ---------------- 30. colección: el selector Normal/Shiny no se aplasta en un móvil en horizontal ----------------
+function coleccionChecks() {
+  console.log('30. Colección: el selector Normal/Shiny con su alto en un móvil en horizontal (#dex-detail es una columna que se encoge)');
+  const css = rd('css/nico.css').replace(/\/\*[\s\S]*?\*\//g, '');
+  const up = rd('css/style.css');
+  if (/#dex-detail \.seg \{ flex-shrink: 0; \}/.test(css) && /#dex-detail \{ min-height: 0; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; \}/.test(up))
+    ok('colección: #dex-detail .seg no se encoge (en 844x390 medía 2-4 px y Miki no veía el selector; medido con Playwright el 23-10-2026: 33-38 px)');
+  else bad('colección: falta flex-shrink: 0 en #dex-detail .seg (css/nico.css) o upstream cambió #dex-detail en css/style.css: revisar en un móvil en horizontal');
+}
+
 (async () => {
   try { grietaChecks(); } catch (e) { bad('no se pudo probar la grieta garantizada: ' + (e && e.stack || e)); }
   try { gachaChecks(); } catch (e) { bad('no se pudo probar el gacha y los tickets: ' + (e && e.stack || e)); }
@@ -6773,6 +6783,7 @@ async function regalosCuentaChecks() {
   try { relieveChecks(); } catch (e) { bad('no se pudo probar el relieve, las sombras y la luz: ' + (e && e.stack || e)); }
   try { vistasChecks(); } catch (e) { bad('no se pudo probar las apariciones en grupo: ' + (e && e.stack || e)); }
   try { cofresChecks(); } catch (e) { bad('no se pudo probar los cofres pequeños: ' + (e && e.stack || e)); }
+  try { coleccionChecks(); } catch (e) { bad('no se pudo probar la colección: ' + (e && e.stack || e)); }
   try { casinoChecks(); } catch (e) { bad('no se pudo probar el casino: ' + (e && e.stack || e)); }
   console.log(fails ? `\nRESULTADO: ${fails} fallo(s), ${warns} aviso(s)` : `\nRESULTADO: todo bien (${warns} aviso(s))`);
   process.exit(fails ? 1 : 0);

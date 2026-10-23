@@ -414,6 +414,10 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
 /* Con los 10 tickets lila del regalo la píldora de tickets se partía en dos renglones (a 724 de ancho, en Clásico, la
    barra pasaba de 56 a 73 px y tapaba el logotipo): en un renglón. */
 #tickets-pill { white-space: nowrap; }
+/* Colección en un móvil en horizontal (y pantallas de menos de 520 de alto): el detalle es una columna flexible que se
+   encoge para caber y aplastaba el selector Normal/Shiny hasta 2-4 px (invisible; aviso de Nico, 23-10-2026: «Miki no
+   tiene el selector de normal/shiny»). Con su alto fijo; si no cabe todo, el detalle ya se desplaza. */
+#dex-detail .seg { flex-shrink: 0; }
 /* Con el botón del casino el menú tiene diez: entre 781 y 960 px de alto, el tamaño compacto que css/style.css usa por
    debajo de 780 (si no, a 1280x800 «Ajustes» quedaba cortado). */
 @media (min-height: 781px) and (max-height: 960px) {
