@@ -462,10 +462,11 @@ const HOOKS = [
   ['js/game.js', /const R = G\.Camera\.outerRadius\(\);\r?\n[^\n]*\r?\n\s*for \(const e of G\.EnemyMgr\.all\(\)\) \{\r?\n\s*if \(G\.Vistas && G\.Vistas\.bombaEnSuVista\(who, mine\) \? !G\.Vistas\.enSuVista\(who, e\.x, e\.y\) : mine \? !G\.Camera\.sees\(e\.x, e\.y, 0\) : G\.U\.dist2\(e\.x, e\.y, who\.x, who\.y\) > R \* R\) continue;\s*\/\/ MOD nico/,
     'la bomba de un compañero, en SU vista (onCollect; detrás, la condición de upstream tal cual)'],
   ['js/systems/rift.js', /shiny: G\.Sprites\.hasShiny\(mon\.dex\) && Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(1 \/ 512\) : 1 \/ 512\),\s*\/\/ MOD nico/, 'shiny ×1,5: legendario de la grieta'],
-  ['js/systems/gacha.js', /Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(SHINY_RATE, i < regalo\) : SHINY_RATE\)\);\s*\/\/ MOD nico/, 'shiny ×1,5: gacha (y ×3 con el regalo)'],
-  ['js/systems/gacha.js', /save\.tickets\.t10 -= cost\.t10;\r?\n\s*const regalo = G\.MODS && G\.MODS\.gastarRegalo \? G\.MODS\.gastarRegalo\(save, n, cost\) : 0;\s*\/\/ MOD nico/, 'regalo «buen humor»: pull() gasta los tickets del regalo tras cobrar'],
+  ['js/systems/gacha.js', /Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(SHINY_RATE, regalo\[i\]\) : SHINY_RATE\)\);\s*\/\/ MOD nico/, 'shiny ×1,5: gacha (y el de los tickets de regalo)'],
+  ['js/systems/gacha.js', /save\.tickets\.t10 -= cost\.t10;\r?\n\s*const regalo = G\.MODS && G\.MODS\.gastarRegalo \? G\.MODS\.gastarRegalo\(save, n, cost\) : \[\];\s*\/\/ MOD nico/, 'regalo «buen humor»: pull() gasta los tickets del regalo tras cobrar'],
   ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
   ['js/game.js', /G\.Audio\.music\('village'\);\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalo && G\.MODS\.darRegalo\(G\.DB\.save\)\) \{ G\.DB\.commit\(true\); G\.UI\.toast\(G\.T\(G\.MODS\.regaloBuenHumor\.texto\), 12000\); G\.UI\.refreshCoins\(\); \}\s*\/\/ MOD nico/, 'regalo «buen humor»: afterLogin() lo da una vez y avisa'],
+  ['js/game.js', /if \(G\.MODS && G\.MODS\.darRegalosCuenta\) G\.MODS\.darRegalosCuenta\(G\.DB\.save, G\.MODS\.nombresCuenta\(\)\)\.then\([^\n]*\/\/ MOD nico/, 'regalos a una cuenta: afterLogin() los da y avisa'],
   ['js/ui/gacha-ui.js', /<span>1%<\/span><\/div>[\s\S]*?<\/p>`;\r?\n\s*if \(G\.MODS && G\.MODS\.notasGacha\) \$\('gacha-rates'\)\.innerHTML = G\.MODS\.notasGacha\(\$\('gacha-rates'\)\.innerHTML\);\s*\/\/ MOD nico/,
     'shiny ×1,5: el cartel del gacha (el «1%» de upstream sigue ahí y el gancho lo cambia después de pintarlo)'],
   ['dev.html', /src="js\/data\/sprites-meta\.js"><\/script>\r?\n<script defer src="js\/data\/evolutions\.js"><\/script><!-- MOD nico/, 'repetidos: evolutions.js se carga justo después de sprites-meta.js'],
@@ -564,7 +565,7 @@ const HOOKS = [
   ['js/ui/settings-ui.js', /if \(G\.Dividida\) G\.Dividida\.ajustes\(box, tab\);\s*\/\/ MOD nico/, 'pantalla dividida: la sección de Ajustes > Controles'],
   // Sin el test de personalidad (js/ui/elegir-companero.js)
   ['dev.html', /src="js\/ui\/test\.js"><\/script>\r?\n<script defer src="js\/ui\/elegir-companero\.js"><\/script><!-- MOD nico/, 'sin test: elegir-companero.js justo después de test.js'],
-  ['js/game.js', /afterLogin\(\) \{\r?\n    G\.Audio\.music\('village'\);\r?\n(?:    if \(G\.MODS && G\.MODS\.darRegalo[^\n]*\/\/ MOD nico[^\n]*\r?\n)?    if \(!G\.DB\.save\.partner && G\.ElegirCompanero && G\.ElegirCompanero\.activo\(\)\) return G\.ElegirCompanero\.abrir\(\);\s*\/\/ MOD nico[^\n]*\r?\n    if \(!G\.DB\.save\.partner\) G\.TestUI\.start\(\);\r?\n    else this\.goMenu\(\);/,
+  ['js/game.js', /afterLogin\(\) \{\r?\n    G\.Audio\.music\('village'\);\r?\n(?:    if \(G\.MODS && G\.MODS\.darRegalo[^\n]*\/\/ MOD nico[^\n]*\r?\n)*    if \(!G\.DB\.save\.partner && G\.ElegirCompanero && G\.ElegirCompanero\.activo\(\)\) return G\.ElegirCompanero\.abrir\(\);\s*\/\/ MOD nico[^\n]*\r?\n    if \(!G\.DB\.save\.partner\) G\.TestUI\.start\(\);\r?\n    else this\.goMenu\(\);/,
     'sin test: afterLogin() abre «Elige a tu compañero» antes de la línea de upstream que abre el test (intacta)'],
   ['js/ui/estilo.js', /const hudDex = \(\) => actual === 'dex' \|\| !!\(G\.Dividida && G\.Dividida\.activa && G\.Dividida\.activa\(\)\);\r?\n  function hud\(ctx, w, h, pl, st\) \{\r?\n    if \(!hudDex\(\) \|\| !G\.HudDex \|\| !pl\) return false;/, 'pantalla dividida: el HUD Dex también con Clásico mientras va (estilo.js)']
 ];
@@ -1423,7 +1424,7 @@ ${fTicket}      }
       d1 && !d2 && rg.t10 === 10 && rg.coins === 20000 && s.coins === 20000 && s.tickets.t10 === 12 && s.tickets.t1 === 30 && s.regaloShiny === 10 && s.regalos[rg.id] > 0 && /buen humor/.test(rg.texto), { d1, d2, s: s.tickets, r: s.regaloShiny });
     // Qué tiradas piden el shiny del regalo: se apunta el segundo argumento de cada probShiny().
     const pide = [], orig = M.probShiny;
-    M.probShiny = function (p, regalo) { pide.push(!!regalo); return orig.call(this, p, regalo); };
+    M.probShiny = function (p, regalo) { pide.push(regalo === true || regalo > 1 ? regalo : 0); return orig.call(this, p, regalo); };
     const tira = (sv, n, gen, use) => { pide.length = 0; const r = G.Gacha.pull(sv, n, gen, use); return { ok: !!r, con: pide.filter(x => x).length, sin: pide.filter(x => !x).length }; };
     const a = nueva(); a.regaloShiny = 1;
     const x1 = tira(a, 1, 1, 't1'), x10 = tira(a, 10, 1, 't10'), x10b = tira(a, 10, 1, 't10');
@@ -1434,10 +1435,17 @@ ${fTicket}      }
     const mv = M.multiversoTicketLila ? tira(b, 10, G.MULTIVERSO.GEN, 't1') : null;
     t('regalo: en el Multiverso, con 3 tickets del regalo, sólo las 3 primeras tiradas de una ×10 llevan el shiny ×3',
       !mv || (mv.ok && mv.con === 3 && mv.sin === 7 && b.regaloShiny === 0 && b.tickets.t10 === 0), mv);
+    // Lotes de regalosCuenta (×10) por delante de los del «buen humor» (×3), y el regalo de Miki con su huella.
+    const z = nueva(); z.tickets.t10 = 3; z.regaloShiny = 1; z.regaloLotes = [{ n: 1, x: 10 }];
+    const za = tira(z, 10, 1, 't10'), zm = pide.slice(), zb = tira(z, 10, 1, 't10'), zm2 = pide.slice(), zc = tira(z, 10, 1, 't10');
+    t('regalo: con lotes, primero el de más shiny (×10), luego el del «buen humor» (×3) y luego nada',
+      za.ok && zm.length > 0 && zm.every(x => x === 10) && zm2.length > 0 && zm2.every(x => x === 3) && zc.con === 0 && !z.regaloLotes.length && z.regaloShiny === 0, { zm, zm2, zc });
+    t('regalo: el ×10 de un lote: 1,5 % → 15 %', Math.abs(orig.call(M, 0.01, 10) - 0.15) < 1e-12);
     M.probShiny = orig;
     M.regaloBuenHumor = null;
     t('regalo: con regaloBuenHumor = null no se da nada y el shiny es el de siempre', !M.darRegalo(nueva()) && Math.abs(M.probShiny(0.01, true) - 0.015) < 1e-12);
   } catch (e) { t('regalo «buen humor» con el gacha real', false, String(e && e.stack || e)); }
+
 
   // ---- C. Repetido -> su evolución (js/data/evolutions.js y pull() real con las tiradas guionizadas) ----
   try {
@@ -4972,6 +4980,16 @@ function devMenuChecks() {
   if (alMax && m.pupg[10001].atk === 99 && m.pupg[25].hp === 10 && m1.subidas > 0 && m2.subidas === 0 && mv.every(x => m.pupg[x].moves === 1))
     ok(`menú de pruebas: «Todos al máximo» deja los ${dex.length} (Multiverso incluido) con todas las mejoras al máximo, sin bajar ninguna; repetirlo no sube nada`);
   else bad('menú de pruebas, todos al máximo: ' + JSON.stringify({ alMax, m1, m2 }));
+  // «Regalar a tu sala» (23-10-2026): sólo enteros dentro del tope, y el receptor comprueba la huella de quien lo manda.
+  const sv = { coins: 10, tickets: { t1: 1, t10: 0 } };
+  const a1 = G.DevMenu.aplicarRegalo(sv, { coins: 500, t1: '3', t10: 2.9 }), a2 = G.DevMenu.aplicarRegalo(sv, { coins: -5, t1: 1e12, t10: 'x' }), a3 = G.DevMenu.aplicarRegalo(sv, {});
+  const fuente = rd('js/ui/dev-menu.js');
+  if (a1 && a1.coins === 500 && a1.t1 === 3 && a1.t10 === 2 && a2.t1 === G.DevMenu.TOPE_REGALO && a2.coins === 0 && a3 === null &&
+      sv.coins === 510 && sv.tickets.t1 === 4 + G.DevMenu.TOPE_REGALO && sv.tickets.t10 === 2 &&
+      G.DevMenu.textoRegalo({ coins: 200, t1: 5, t10: 1 }) === '200 Pokémonedas, 5 tickets y 1 ticket ×10' &&
+      /lista\.includes\(await huella\(from\)\)/.test(fuente) && /room\.members\.some\(m => m\.uid === from\)/.test(fuente))
+    ok('menú de pruebas: «Regalar a tu sala» suma sólo enteros dentro del tope y el que lo recibe exige que venga de una cuenta de devHuellas de su sala');
+  else bad('menú de pruebas, regalar a la sala: ' + JSON.stringify({ a1, a2, a3, sv }));
 }
 
 // ---------------- 23. mapas propios: biomas, terreno, objetos, arenas, pintor y sprites (G.Mapas) ----------------
@@ -6704,9 +6722,39 @@ function casinoChecks() {
   for (const [name, , detail] of failed) bad(`casino: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);
 }
 
-(() => {
+// ---------------- 10 B3. regalos a una cuenta (G.MODS.regalosCuenta; asíncrono: crypto.subtle) ----------------
+async function regalosCuentaChecks() {
+  console.log('10 B3. Regalos a una cuenta (regalosCuenta): por la huella de su nombre, una vez');
+  const r = [];
+  const t = (name, cond, detail) => r.push([name, !!cond, detail]);
+  try {
+    const c = { console, crypto: require('crypto').webcrypto, TextEncoder, TextDecoder }; c.window = c; c.G = {}; vm.createContext(c);
+    for (const f of ['js/core/util.js', 'js/core/mods.js']) vm.runInContext(rd(f), c, { filename: f });
+    const M = c.G.MODS, rg = M.regalosCuenta.find(r => r.id === 'miki-2026-10');
+    const sha = n => require('crypto').createHash('sha256').update('pokeswarm/regalo/1' + String.fromCharCode(0) + n).digest('hex');
+    const nueva = () => ({ coins: 0, tickets: { t1: 0, t10: 0 } });
+    const espera = p => { let v; p.then(x => { v = x; }); return new Promise(r => setTimeout(() => r(v), 50)); };
+    const sM = nueva(), d1 = await espera(M.darRegalosCuenta(sM, ['mikibv97'])), d2 = await espera(M.darRegalosCuenta(sM, ['mikibv97']));
+    const sO = nueva(), d3 = await espera(M.darRegalosCuenta(sO, ['otro', 'nico']));
+    t('regalosCuenta: Miki (por la huella de «mikibv97», ningún nombre en claro) recibe una vez 100 tickets ×10 con shiny ×10 y su aviso; otra cuenta, nada',
+      rg && rg.huella === sha('mikibv97') && !rd('js/core/mods.js').includes('mikibv97') && d1.length === 1 && d1[0] === 'a mi putita que no le falte nada' &&
+      sM.tickets.t10 === 100 && sM.regaloLotes.length === 1 && sM.regaloLotes[0].n === 100 && sM.regaloLotes[0].x === 10 && sM.regalos['miki-2026-10'] > 0 &&
+      !d2.length && sM.tickets.t10 === 100 && !d3.length && sO.tickets.t10 === 0, { d1, d2, d3, sM: sM.tickets, l: sM.regaloLotes });
+    c.G.DB = { fb: { auth: { currentUser: { email: Buffer.from('MikiBV97').toString('hex') + '@x.test' } } }, save: { name: 'Miki' } };
+    c.G.Social = { me: { name: 'MikiApodo' } };
+    const nombres = M.nombresCuenta();
+    t('nombresCuenta(): el de acceso (del email interno en hexadecimal), el de la partida y el apodo, en minúsculas',
+      nombres.includes('mikibv97') && nombres.includes('miki') && nombres.includes('mikiapodo'), nombres);
+  } catch (e) { t('regalos a una cuenta', false, String(e && e.stack || e)); }
+  const failed = r.filter(x => !x[1]);
+  if (!failed.length) ok(`regalos a una cuenta: ${r.length} casos bien`);
+  for (const [name, , detail] of failed) bad(`regalos a una cuenta: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);
+}
+
+(async () => {
   try { grietaChecks(); } catch (e) { bad('no se pudo probar la grieta garantizada: ' + (e && e.stack || e)); }
   try { gachaChecks(); } catch (e) { bad('no se pudo probar el gacha y los tickets: ' + (e && e.stack || e)); }
+  try { await regalosCuentaChecks(); } catch (e) { bad('no se pudo probar los regalos a una cuenta: ' + (e && e.stack || e)); }
   try { claridadChecks(); } catch (e) { bad('no se pudo probar la claridad en partida: ' + (e && e.stack || e)); }
   try { arreglosChecks(); } catch (e) { bad('no se pudo probar los arreglos de upstream: ' + (e && e.stack || e)); }
   try { pantallasChecks(); } catch (e) { bad('no se pudo probar las pantallas: ' + (e && e.stack || e)); }

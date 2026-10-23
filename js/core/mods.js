@@ -111,6 +111,17 @@ G.MODS = {
   regaloBuenHumor: { id: 'buen-humor-2026-10', t10: 10, coins: 20000, shinyMult: 3,
     texto: 'Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades' },
 
+  /* Regalos a una cuenta concreta (petición de Nico, 23-10-2026): al entrar, una vez, si el nombre de acceso de la
+   * cuenta (el de usuario y contraseña; también vale su nombre en la partida o su apodo) tiene la huella `huella`:
+   * SHA-256 de 'pokeswarm/regalo/1\0' + el nombre en minúsculas (el repositorio es público: ningún nombre en claro).
+   *   node -e "console.log(require('crypto').createHash('sha256').update('pokeswarm/regalo/1\0' + '<nombre>').digest('hex'))"
+   * Da `t10` tickets ×10 (los lila), `coins` Pokémonedas y el aviso `texto`; esos tickets llevan el shiny ×`shinyMult`
+   * (encima de shinyMult), como los del regalo «buen humor» (ver gastarRegalo). `save.regalos[id]` lo apunta. */
+  regalosCuenta: [
+    { id: 'miki-2026-10', huella: '132edb773342e691facbf5871243ad88405d0bfc023800ac51601a43a7689072', t10: 100, coins: 0,
+      shinyMult: 10, texto: 'a mi putita que no le falte nada' }
+  ],
+
   /* El PokéCasino, «Danilo's Gamblers Club» (petición de Nico, 22-10-2026; js/systems/casino.js): ruleta europea
    * con Pokémonedas, sólo a rojo, negro o el 0. Con probabilidad `robo` por tirada, el Team Rocket se lleva
    * `roboParte` de la apuesta, como mucho `roboTope` (no les cabe más en la bolsa). null = sin casino. */
@@ -476,13 +487,51 @@ G.MODS = {
     return ((b % n) + n) % n;
   },
 
-  /** spawner.js, rift.js y gacha.js: la probabilidad de shiny `p` con el ajuste (como mucho 1). Con `regalo`
-   *  (gacha.js, una tirada pagada con un ticket del regalo), además ×regaloBuenHumor.shinyMult. */
+  /** spawner.js, rift.js y gacha.js: la probabilidad de shiny `p` con el ajuste (como mucho 1). Con `regalo` (gacha.js,
+   *  una tirada pagada con un ticket de regalo), además ×regalo: su multiplicador, o `true` = el del regalo «buen humor». */
   probShiny(p, regalo) {
     const k = +this.shinyMult;
     const q = k > 0 && isFinite(k) ? Math.min(1, p * k) : p;
-    const r = regalo && this.regaloBuenHumor ? +this.regaloBuenHumor.shinyMult : 1;
+    const r = regalo === true ? (this.regaloBuenHumor ? +this.regaloBuenHumor.shinyMult : 1) : +regalo || 1;
     return r > 0 && isFinite(r) ? Math.min(1, q * r) : q;
+  },
+
+  /** Los nombres de la cuenta abierta, en minúsculas: el de acceso (de usuario y contraseña, que db.js guarda codificado
+   *  en el email interno), el de la partida y el apodo. Para regalosCuenta. */
+  nombresCuenta() {
+    const out = new Set();
+    try {
+      const em = G.DB && G.DB.fb && G.DB.fb.auth && G.DB.fb.auth.currentUser && G.DB.fb.auth.currentUser.email;
+      const hex = em && /^((?:[0-9a-f]{2})+)@/.exec(em);   // el nombre de usuario, en hexadecimal (nameToEmail de db.js)
+      if (hex && typeof TextDecoder !== 'undefined') out.add(new TextDecoder().decode(new Uint8Array(hex[1].match(/../g).map(h => parseInt(h, 16)))).toLowerCase());
+    } catch (e) { /* sin cuenta de nombre */ }
+    const s = G.DB && G.DB.save;
+    if (s && s.name) out.add(String(s.name).toLowerCase());
+    const me = G.Social && G.Social.me;
+    if (me && me.name) out.add(String(me.name).toLowerCase());
+    return [...out];
+  },
+
+  /** game.js, afterLogin(): los regalosCuenta de esta cuenta que aún no tiene. Los da (tickets ×10, Pokémonedas y su
+   *  lote de shiny) y los apunta. → Promise<[textos]> (vacío si no hay ninguno). */
+  async darRegalosCuenta(save, nombres) {
+    const lista = this.regalosCuenta || [];
+    if (!save || !lista.length || !nombres || !nombres.length || typeof crypto === 'undefined' || !crypto.subtle) return [];
+    const huella = async n => [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('pokeswarm/regalo/1\0' + n)))]
+      .map(b => b.toString(16).padStart(2, '0')).join('');
+    const mias = new Set(await Promise.all(nombres.map(huella)));
+    const textos = [];
+    save.regalos = save.regalos || {};
+    for (const r of lista) {
+      if (!r || !r.id || save.regalos[r.id] || !mias.has(r.huella)) continue;
+      save.tickets = Object.assign({ t1: 0, t10: 0 }, save.tickets);
+      if (r.t10 > 0) save.tickets.t10 += r.t10;
+      if (r.coins > 0) save.coins = (save.coins || 0) + r.coins;
+      if (r.t10 > 0 && r.shinyMult > 1) (save.regaloLotes = save.regaloLotes || []).push({ n: r.t10, x: r.shinyMult });
+      save.regalos[r.id] = Date.now();
+      textos.push(r.texto);
+    }
+    return textos;
   },
 
   /** game.js, afterLogin(): si la partida aún no tiene el regalo, se lo da (tickets ×10 y su cuenta de
@@ -514,15 +563,33 @@ G.MODS = {
     return best;
   },
 
-  /** gacha.js, pull(), tras cobrar `cost`: cuántas de las `n` tiradas van con tickets del regalo. Gasta
-   *  primero los del regalo (como mucho los ×10 de este cobro y los que queden, sin pasar de los que
-   *  tienes). Cada ticket ×10 vale n / cost.t10 tiradas: 10 en una ×10 normal, 1 en el Multiverso. */
+  /** gacha.js, pull(), tras cobrar `cost`: el multiplicador de shiny de cada una de las `n` tiradas (1 = sin regalo).
+   *  Gasta primero los tickets ×10 de regalo de más shiny: los lotes de regalosCuenta (`save.regaloLotes`, {n, x}) y
+   *  los del «buen humor» (`save.regaloShiny`, ×regaloBuenHumor.shinyMult). Como mucho los ×10 de este cobro y nunca
+   *  más de los que te quedan. Cada ticket ×10 vale n / cost.t10 tiradas: 10 en una ×10 normal, 1 en el Multiverso. */
   gastarRegalo(save, n, cost) {
-    if (!save || !cost || !(cost.t10 > 0) || !(save.regaloShiny > 0) || !this.regaloBuenHumor) return 0;
-    const usa = Math.min(cost.t10, save.regaloShiny);
-    save.regaloShiny -= usa;
-    if (save.tickets && save.regaloShiny > save.tickets.t10) save.regaloShiny = Math.max(0, save.tickets.t10);
-    return Math.round(usa * n / cost.t10);
+    const out = new Array(n).fill(1);
+    if (!save || !cost || !(cost.t10 > 0)) return out;
+    const lotes = (save.regaloLotes || []).filter(l => l && l.n > 0);
+    if (save.regaloShiny > 0 && this.regaloBuenHumor) lotes.push({ n: save.regaloShiny, x: +this.regaloBuenHumor.shinyMult || 1, bh: true });
+    lotes.sort((a, b) => b.x - a.x);
+    const porTicket = n / cost.t10;
+    let quedan = cost.t10, i = 0;
+    for (const l of lotes) {
+      if (!quedan) break;
+      const usa = Math.min(quedan, l.n);
+      l.n -= usa; quedan -= usa;
+      if (l.bh) save.regaloShiny -= usa;
+      for (let k = 0; k < Math.round(usa * porTicket) && i < n; k++) out[i++] = l.x;
+    }
+    if (save.regaloLotes) save.regaloLotes = save.regaloLotes.filter(l => l.n > 0);
+    // Nunca más tickets de regalo que tickets ×10.
+    const t10 = save.tickets ? Math.max(0, save.tickets.t10) : 0;
+    let total = (save.regaloShiny > 0 ? save.regaloShiny : 0) + (save.regaloLotes || []).reduce((a, l) => a + l.n, 0);
+    while (total > t10 && save.regaloShiny > 0) { save.regaloShiny--; total--; }
+    for (const l of save.regaloLotes || []) while (total > t10 && l.n > 0) { l.n--; total--; }
+    if (save.regaloLotes) save.regaloLotes = save.regaloLotes.filter(l => l.n > 0);
+    return out;
   },
 
   /** gacha.js, pull(): `dex` ha salido repetido (`shiny`: ya tenías ese shiny). Si le queda una
