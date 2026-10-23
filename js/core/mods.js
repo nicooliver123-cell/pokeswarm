@@ -103,6 +103,25 @@ G.MODS = {
    * la grieta los sortea el anfitrión; el gacha, cada uno el suyo. 1 = como el original. */
   shinyMult: 1.5,
 
+  /* Regalo «buen humor» (petición de Nico, 22-10-2026): cada cuenta (también las que ya existían) recibe
+   * UNA vez, al entrar, `t10` tickets ×10 (los lila), `coins` Pokémonedas y el aviso `texto`. Sólo esos tickets llevan el shiny
+   * ×`shinyMult`, encima del ×shinyMult de arriba (1,5 % → 4,5 % en el gacha): `save.regaloShiny` cuenta
+   * los que quedan y se gastan los primeros al tirar con tickets ×10 (darRegalo, gastarRegalo y probShiny,
+   * abajo). `id` marca en la partida (`save.regalos[id]`) que ya lo recibió; otro regalo, otro id. null = sin regalo. */
+  regaloBuenHumor: { id: 'buen-humor-2026-10', t10: 10, coins: 20000, shinyMult: 3,
+    texto: 'Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades' },
+
+  /* El PokéCasino, «Danilo's Gamblers Club» (petición de Nico, 22-10-2026; js/systems/casino.js): ruleta europea
+   * con Pokémonedas, sólo a rojo, negro o el 0. Con probabilidad `robo` por tirada, el Team Rocket se lleva
+   * `roboParte` de la apuesta, como mucho `roboTope` (no les cabe más en la bolsa). null = sin casino. */
+  casino: { robo: 0.01, roboParte: 0.5, roboTope: 2000 },
+
+  /* Cofres pequeños (petición de Nico, 22-10-2026: «que los Pokémon ataquen a los cofres pequeños»). En upstream tu
+   * Pokémon sólo apunta a un cofre si no hay ningún enemigo a 520 px, así que con la horda encima nunca los abría.
+   * Ahora, si hay un cofre pequeño (no el del candado) a menos de `cofreBlanco` px, es su blanco por delante de los
+   * enemigos lejanos; lo que te toca y el jefe a tiro siguen primero. 0 = como upstream. */
+  cofreBlanco: 150,
+
   /* Pokémon REPETIDO en el gacha (decisión de Nico):
    *   - Repetido normal: desbloquea su siguiente fase inmediata que no tengas (con varias ramas,
    *     una de las que te faltan al azar: Eevee da sus 8 evoluciones, una por repetido).
@@ -457,10 +476,53 @@ G.MODS = {
     return ((b % n) + n) % n;
   },
 
-  /** spawner.js, rift.js y gacha.js: la probabilidad de shiny `p` con el ajuste (como mucho 1). */
-  probShiny(p) {
+  /** spawner.js, rift.js y gacha.js: la probabilidad de shiny `p` con el ajuste (como mucho 1). Con `regalo`
+   *  (gacha.js, una tirada pagada con un ticket del regalo), además ×regaloBuenHumor.shinyMult. */
+  probShiny(p, regalo) {
     const k = +this.shinyMult;
-    return k > 0 && isFinite(k) ? Math.min(1, p * k) : p;
+    const q = k > 0 && isFinite(k) ? Math.min(1, p * k) : p;
+    const r = regalo && this.regaloBuenHumor ? +this.regaloBuenHumor.shinyMult : 1;
+    return r > 0 && isFinite(r) ? Math.min(1, q * r) : q;
+  },
+
+  /** game.js, afterLogin(): si la partida aún no tiene el regalo, se lo da (tickets ×10 y su cuenta de
+   *  shiny) y lo apunta. → true si lo ha dado (entonces se guarda y se avisa), false si ya lo tenía. */
+  darRegalo(save) {
+    const r = this.regaloBuenHumor;
+    if (!r || !r.id || !save || !(r.t10 > 0)) return false;
+    save.regalos = save.regalos || {};
+    if (save.regalos[r.id]) return false;
+    save.tickets = Object.assign({ t1: 0, t10: 0 }, save.tickets);
+    save.tickets.t10 += r.t10;
+    if (r.coins > 0) save.coins = (save.coins || 0) + r.coins;
+    save.regaloShiny = (save.regaloShiny > 0 ? save.regaloShiny : 0) + r.t10;
+    save.regalos[r.id] = Date.now();
+    return true;
+  },
+
+  /** player.js, apuntado: el cofre pequeño (type 'chest', sin romper) más cercano a `pl` a menos de cofreBlanco px,
+   *  o null. Va después de lo que te toca y del jefe, y antes del enemigo más cercano. */
+  cofreCercano(pl) {
+    const r = +this.cofreBlanco;
+    if (!(r > 0) || !pl || !G.World || !G.World.propsInCircle) return null;
+    let best = null, bd = Infinity;
+    for (const p of G.World.propsInCircle(pl.x, pl.y, r)) {
+      if (p.type !== 'chest' || !(p.hp > 0)) continue;
+      const d = (p.x - pl.x) ** 2 + (p.y - pl.y) ** 2;
+      if (d < bd) { bd = d; best = p; }
+    }
+    return best;
+  },
+
+  /** gacha.js, pull(), tras cobrar `cost`: cuántas de las `n` tiradas van con tickets del regalo. Gasta
+   *  primero los del regalo (como mucho los ×10 de este cobro y los que queden, sin pasar de los que
+   *  tienes). Cada ticket ×10 vale n / cost.t10 tiradas: 10 en una ×10 normal, 1 en el Multiverso. */
+  gastarRegalo(save, n, cost) {
+    if (!save || !cost || !(cost.t10 > 0) || !(save.regaloShiny > 0) || !this.regaloBuenHumor) return 0;
+    const usa = Math.min(cost.t10, save.regaloShiny);
+    save.regaloShiny -= usa;
+    if (save.tickets && save.regaloShiny > save.tickets.t10) save.regaloShiny = Math.max(0, save.tickets.t10);
+    return Math.round(usa * n / cost.t10);
   },
 
   /** gacha.js, pull(): `dex` ha salido repetido (`shiny`: ya tenías ese shiny). Si le queda una

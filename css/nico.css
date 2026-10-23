@@ -32,12 +32,12 @@ body:has(.scr.dim:not(.hidden)) #scr-menu { visibility: hidden; }
    encoge: si aun así no cabe, se desplaza la pantalla entera. Abajo queda sitio para los créditos (dos renglones). */
 @media (max-width: 760px) and (min-height: 521px) {
   #scr-menu { justify-content: flex-start; }
-  #scr-menu .menu-left { flex: 0 0 auto; padding: 60px 12px 2px; margin-top: auto; }   /* centrado si sobra alto */
+  #scr-menu .menu-left { flex: 0 0 auto; padding: 76px 12px 2px; margin-top: auto; }   /* centrado si sobra alto; 76: bajo la barra (#topbar acaba en 73) también sin alto de sobra */
   #scr-menu .menu-left .logo { margin-bottom: 4px; }
   #scr-menu .menu-left .logo .t1 { font-size: 34px; }
   #scr-menu .partner-card { margin-top: 2px; }
   #scr-menu .partner-card .nm { font-size: 20px; }
-  #scr-menu #menu-partner { height: min(17vh, 140px); width: auto; }
+  #scr-menu #menu-partner { height: min(13vh, 110px); width: auto; }   /* 13vh desde el PokéCasino (10 opciones): a 724x784 sobraban 15 px y el logotipo subía bajo la barra */
   #scr-menu .menu-right { flex: 0 0 auto; overflow: visible; padding: 4px 12px 6px; gap: 6px; margin-bottom: auto; }
   #scr-menu .menu-right > :first-child { margin-top: 0; }
   #scr-menu .menu-right .box { padding: 8px 14px; }
@@ -393,6 +393,47 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
   .sug-ver summary { padding: 0; }
 }
 
+/* El PokéCasino, «Danilo's Gamblers Club» (js/systems/casino.js; #scr-casino, desde el menú principal): el cartel
+   en dorado y una sola escena (#cas-escena, 16:9) con la mesa, la ruleta, Meowth y el Team Rocket; casino.js la pinta
+   a los píxeles reales del dispositivo. #cas-meowth es el lienzo donde G.UI anima a Meowth: invisible, la escena lo copia. */
+@media (min-height: 521px) { #scr-casino { padding-top: 66px; } }
+#scr-casino .box { max-width: min(1000px, 94vw); }
+.cas-cartel { color: #ffd23f; letter-spacing: .04em; text-shadow: 0 2px 0 #7a1430, 0 0 12px rgba(255, 210, 63, .45); }
+.cas-mesa { position: relative; margin: 6px auto 4px; width: min(100%, 940px, calc(52vh * 16 / 9)); }
+#cas-escena { display: block; width: 100%; aspect-ratio: 16 / 9; height: auto; border-radius: 12px;
+  box-shadow: 0 0 0 2px #c9a227, 0 0 0 4px #4a2208, 0 10px 28px rgba(0, 0, 0, .55); background: #1d0b22; }
+#cas-meowth { position: absolute; left: 0; top: 0; width: 96px; height: 96px; opacity: 0; pointer-events: none; }
+.cas-dice { min-height: 2.6em; margin: 6px 0; font-weight: 600; }
+.cas-apuestas, .cas-fichas { gap: 8px; align-items: center; margin-top: 6px; }
+.cas-apuestas .btn { min-width: 84px; min-height: 44px; color: #fff; border: 2px solid transparent; }
+.cas-apuestas .cas-rojo { background: #c8102e; }
+.cas-apuestas .cas-negro { background: #161616; }
+.cas-apuestas .cas-cero { background: #1f9a4a; }
+.cas-apuestas .btn.on { border-color: #ffd23f; box-shadow: 0 0 0 2px #ffd23f; }
+.cas-fichas .btn { min-height: 44px; }
+/* Con los 10 tickets lila del regalo la píldora de tickets se partía en dos renglones (a 724 de ancho, en Clásico, la
+   barra pasaba de 56 a 73 px y tapaba el logotipo): en un renglón. */
+#tickets-pill { white-space: nowrap; }
+/* Con el botón del casino el menú tiene diez: entre 781 y 960 px de alto, el tamaño compacto que css/style.css usa por
+   debajo de 780 (si no, a 1280x800 «Ajustes» quedaba cortado). */
+@media (min-height: 781px) and (max-height: 960px) {
+  .menu-item { font-size: 17px; padding: 5px 10px; }
+  .menu-item.play { font-size: 24px; }
+  .menu-item small { font-size: 11px; }
+}
+/* Pantallas bajas (móvil en horizontal): la escena a la izquierda y las apuestas a su derecha, sin desplazar. */
+@media (max-height: 520px) {
+  #scr-casino .box { max-width: none; }
+  #scr-casino .box > .row.between { margin-bottom: 2px; }
+  #scr-casino .box { display: grid; grid-template-columns: auto 1fr; column-gap: 12px; align-items: start; }
+  #scr-casino .box > .row.between { grid-column: 1 / -1; }
+  .cas-mesa { grid-row: span 4; margin: 0; width: min(54vw, calc((100dvh - 118px) * 16 / 9)); }
+  .cas-dice { min-height: 0; margin: 0 0 4px; font-size: 13px; }
+  #scr-casino .sub:not(.cas-fichas .sub) { display: none; }
+  .cas-apuestas, .cas-fichas { margin-top: 4px; gap: 6px; }
+  .cas-apuestas .btn { min-width: 64px; }
+  #cas-cant { width: 96px !important; }
+}
 /* =====================================================================
  * 2. ESTILO DEX («Dex de Expedición»): sólo con html.estilo-dex
  * ===================================================================== */
@@ -730,3 +771,13 @@ html.estilo-dex a.plink:hover { color: var(--color-pantalla); }
 @media (max-height: 519.98px) {
   html.estilo-dex body:has(#scr-menu:not(.hidden)):not(:has(.scr.dim:not(.hidden))) #btn-sugerencias { opacity: .55; }
 }
+
+
+/* PokéCasino con Dex: las tres apuestas conservan su color de la mesa (rojo, negro y el 0 verde). */
+/* El PokéCasino en Dex (decisión de Nico, 22-10-2026): un décimo botón en la fila del menú pasaba del 25 % de pantalla
+   opaca en el plegable y los móviles bajos (25,4-26,8 %), así que en Dex se entra desde el Gacha (#gacha-casino); en
+   Clásico, desde el menú. */
+html.estilo-dex #scr-menu .menu-item[data-go="casino"] { display: none; }
+html.estilo-dex .cas-apuestas .cas-rojo { background: #c8102e; color: #fff; }
+html.estilo-dex .cas-apuestas .cas-negro { background: #161616; color: #fff; }
+html.estilo-dex .cas-apuestas .cas-cero { background: #1f9a4a; color: #fff; }

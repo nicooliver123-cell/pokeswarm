@@ -93,7 +93,6 @@ G.SettingsUI = (() => {
            </div>`;
     } else if (tab === 'acc') {
       renderAccount(box);
-      if (G.ImportarUI) box.insertAdjacentHTML('beforeend', G.ImportarUI.html());   // MOD nico: traer una partida guardada (js/ui/importar-ui.js)
     } else {
       box.innerHTML = `<div class="about-logo" translate="no">PokéSwarm</div><p class="sub center">Versión ${esc(VERSION)}</p>`   // MOD nico: el nombre
         + `<p class="sub">Juego de fans <b>gratuito y sin ánimo de lucro</b>: sin anuncios ni compras. Pokémon y sus personajes son propiedad de Nintendo, Creatures, GAME FREAK y The Pokémon Company; este proyecto no está afiliado a ellos.</p>`   // MOD nico: con The Pokémon Company
@@ -148,7 +147,6 @@ G.SettingsUI = (() => {
       b.onclick = () => { const v = b.dataset.v; G.Settings.set(b.dataset.k, isNaN(+v) ? v : +v); render(); };
     });
     const full = $('set-full'); if (full) full.onclick = toggleFull;
-    if (G.ImportarUI) G.ImportarUI.wire(box);   // MOD nico: traer la partida del juego oficial
     box.querySelectorAll('[data-lang]').forEach(b => { b.onclick = () => { if (b.dataset.lang !== G.I18n.lang) G.I18n.set(b.dataset.lang); }; });
     const lo = $('set-login'); if (lo) lo.onclick = () => { close(); leave(); };
     const out = $('set-logout'); if (out) out.onclick = () => { close(); leave(); };

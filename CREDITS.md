@@ -137,14 +137,17 @@ uso **no comercial** y con atribución a sus artistas.
 Personajes de otras franquicias que salen, como guiño, en el banner «Multiverso» del gacha:
 **Agumon** (*Digimon*), el **Doom Slayer** y el **Cacodemonio** (*DOOM*), **Kirby** (*Kirby*), **Link**
 (*The Legend of Zelda*), **Samus** (*Metroid*), **Pac-Man** y **Blinky** (*Pac-Man*), **Drácula**
-(*Castlevania*) y el **Ojo de Cthulhu** (*Terraria*).
+(*Castlevania*), el **Ojo de Cthulhu** (*Terraria*), el **Jefe Maestro** (*Halo*) y **Kratos** (*God of War*).
 
 Sus sprites se generaron para este proyecto con [PixelLab](https://www.pixellab.ai), una herramienta
 de pixel art por IA (las 8 rotaciones de cada uno y sus pasos al andar), y están en
 `tools/nico/multiverso/fuentes/`; las hojas del
-juego (`assets/pokemon/10001` a `10010`), con las animaciones que faltan y el variocolor, las monta
+juego (`assets/pokemon/10001` a `10012`), con las animaciones que faltan y el variocolor, las monta
 `tools/nico/multiverso/montar.py`. Pac-Man y Blinky no salen de PixelLab: los dibuja por código
-`tools/nico/multiverso/dibujar.py`. No usan sprites de SpriteCollab.
+`tools/nico/multiverso/dibujar.py`. Los pasos al andar del Jefe Maestro no son de PixelLab: los saca de
+sus rotaciones `tools/nico/multiverso/pasos.py`. Kratos no sale de PixelLab: una imagen de FLUX.1 [schnell]
+(Black Forest Labs, por Cloudflare Workers AI) pasada a 3D en local con TRELLIS.2 (Microsoft, MIT), renderizada en
+Blender y bajada a pixel art por `rotar3d.py` y `pixelar.py`. No usan sprites de SpriteCollab.
 
 ## Datos
 
@@ -158,7 +161,7 @@ redistribuir con el juego, pero no venderse solas.
 
 | Fuente | Autores | Uso | Licencia |
 |---|---|---|---|
-| Pixelify Sans | Copyright 2021 The Pixelify Sans Project Authors | Estilo «Clásico» y su logotipo | `assets/fonts/OFL.txt` |
+| Pixelify Sans | Copyright 2021 The Pixelify Sans Project Authors | Estilo «Clásico» y su logotipo. Versión modificada (22-10-2026): el «2» redibujado para que no se confunda con el «8» (`assets/fonts/PixelifySans-ps2.ttf`, `tools/nico/fuente-dos.py`) | `assets/fonts/OFL.txt` |
 | M PLUS Rounded 1c | Copyright 2016 The Rounded M+ Project Authors | Estilo «Dex»: HUD, menús, números y el nombre del juego | `assets/fonts/OFL-MPLUSRounded1c.txt` |
 
 De M PLUS Rounded 1c se usa el subconjunto latino en woff2 (versión 1.059, 230 glifos), pesos
@@ -179,5 +182,6 @@ Digimon, Agumon y los demás personajes de Digimon son propiedad de Bandai Namco
 DOOM, el Doom Slayer y el Cacodemonio son marcas y propiedad de id Software (ZeniMax Media, Microsoft).
 Kirby es de Nintendo y HAL Laboratory; The Legend of Zelda, Link, Metroid y Samus Aran, de Nintendo;
 Pac-Man y Blinky, de Bandai Namco Entertainment; Castlevania y Drácula, de Konami; Terraria y el Ojo de
-Cthulhu, de Re-Logic.
+Cthulhu, de Re-Logic; Halo y el Jefe Maestro, de Microsoft (Halo Studios); God of War y Kratos, de Sony Interactive
+Entertainment (Santa Monica Studio).
 PokéSwarm tampoco está afiliado a ellos ni lo aprueban.

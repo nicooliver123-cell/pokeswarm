@@ -824,6 +824,7 @@ G.Flow = {
   toLogin() { G.Audio.music('village'); G.LoginUI.open(); },
   afterLogin() {
     G.Audio.music('village');
+    if (G.MODS && G.MODS.darRegalo && G.MODS.darRegalo(G.DB.save)) { G.DB.commit(true); G.UI.toast(G.T(G.MODS.regaloBuenHumor.texto), 12000); G.UI.refreshCoins(); }   // MOD nico: regalo «buen humor», una vez por cuenta
     if (!G.DB.save.partner && G.ElegirCompanero && G.ElegirCompanero.activo()) return G.ElegirCompanero.abrir();   // MOD nico: sin el test de personalidad (G.MODS.sinTest, js/ui/elegir-companero.js)
     if (!G.DB.save.partner) G.TestUI.start();
     else this.goMenu();

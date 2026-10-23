@@ -21,14 +21,6 @@
  *   6. Invitado del cooperativo: la ventana que evita el rebote de vida (js/core/mods.js).
  *   7. Busca en TODO js/ (menos js/app.min.js) asignaciones de vida que no estén en la
  *      lista de conocidas: una nueva es FALLO hasta revisarla (posible curación de upstream).
- *   8. Traer la partida del juego oficial: el exportador (sin red, una línea que es
- *      tools/nico/exportar-oficial.js, la versión comentada, sin comentarios ni sangría; no
- *      modifica nada, respaldo a localStorage, se niega en la consola de esta versión, avisos
- *      en español o inglés según el navegador y fecha local en el nombre del archivo) y el
- *      importador de js/core/importar.js (saneado, fusión, monedas sin duplicar, rechazo de la
- *      partida de esta versión, pity, compañero y perfil sólo la primera vez, aplicar() en modo
- *      local e invitado con el db.js real, la vista previa de js/ui/importar-ui.js con datos
- *      hostiles y que todos sus textos tienen inglés).
  *   9. Grieta garantizada: la lógica de js/core/mods.js (hora, una por partida, reintentos, jefe,
  *      quién manda) y js/systems/rift.js real con el juego simulado, en solitario y en grupo
  *      (anfitrión e invitado): el legendario de esa grieta con el 60 % y las naturales intactas. Y la
@@ -272,7 +264,7 @@ if (!hits) ok(`${SERVED.length} ficheros servidos sin referencias a la infraestr
     const privados = ['CLAUDE.md', 'PLAN.md', 'README.md', 'tools/nico/check.js', 'tools/nico/base.js', 'tools/nico/sitio.js',
       'firestore.rules', 'database.rules.json', '.firebaserc', '.github/workflows/publicar.yml'].filter(f => enSitio.has(f));
     const faltanBase = ['index.html', 'dev.html', '404.html', 'sw.js', 'manifest.webmanifest', 'favicon.ico', 'js/app.min.js',
-      'LICENSE', 'CREDITS.md', 'contacto/index.html', 'tools/nico/exportar-oficial.js'].filter(f => !enSitio.has(f));
+      'LICENSE', 'CREDITS.md', 'contacto/index.html'].filter(f => !enSitio.has(f));
     // Atributos href/src, url() de los estilos y cadenas del código que son la ruta de un fichero.
     const RE_REF = /(?:\b(?:href|src)\s*=\s*\\?["']|url\(\s*["']?|["'`])((?:\.\.?\/)?(?:[\w@%+-][\w.@%+-]*\/)*[\w@%+-][\w.@%+-]*\.(?:html|js|css|png|webp|jpe?g|gif|ico|svg|json|webmanifest|woff2?|ttf|otf|md|txt|mp3|ogg|wav))(?=[?#"'`)\s\\])/g;
     const fuera = new Set();
@@ -399,8 +391,8 @@ const minS = min.toString('utf8');
 if (['curacionEnemiga', 'anchoMaxJugador', 'grietaGarantizadaAntesDe', 'ticketsMult', 'shinyMult', 'repetidoDaEvolucion'].every(k => minS.includes(k))) ok('el paquete incluye js/core/mods.js');
 else bad('el paquete no incluye js/core/mods.js (o una versión vieja)');
 if (minS.includes('G.EVO={1:[2],')) ok('el paquete incluye js/data/evolutions.js'); else bad('el paquete no incluye js/data/evolutions.js');
-if (minS.includes('pokesurvivor-partida') && minS.includes('imp-box')) ok('el paquete incluye el importador (js/core/importar.js y js/ui/importar-ui.js)');
-else bad('el paquete no incluye js/core/importar.js o js/ui/importar-ui.js');
+if (!minS.includes('G.Importar') && !minS.includes('imp-box')) ok('el paquete ya no incluye el importador de partidas (se quitó el 22-10-2026)');
+else bad('el paquete aún incluye el importador de partidas (js/core/importar.js o js/ui/importar-ui.js)');
 if (minS.includes('G.MARCA=') && minS.includes('G.Estilo=') && minS.includes('G.HudDex=') && minS.includes('estiloPorDefecto') && minS.includes('pedirGiro')) ok('el paquete incluye la identidad visual (js/ui/marca.js, js/ui/estilo.js y el HUD Dex de js/ui/hud-dex.js) y lo de los plegables');
 else bad('el paquete no incluye js/ui/marca.js, js/ui/estilo.js, js/ui/hud-dex.js o los ajustes de estilo y plegables de js/core/mods.js');
 if (/<link rel="stylesheet" href="css\/tokens-dex\.css">/.test(idx) && /<link rel="stylesheet" href="css\/nico\.css">/.test(idx)) ok('index.html carga css/tokens-dex.css y css/nico.css');
@@ -430,13 +422,8 @@ const HOOKS = [
   ['js/net/coop.js', /e\.hp = G\.MODS \? G\.MODS\.vidaDelAnfitrion\(e, a\[3\]\) :/, 'invitado: ventana sin subidas tras un golpe predicho'],
   ['js/net/coop.js', /e\.behavior, Math\.ceil\(e\.hp\)\]\);/, "'ne' lleva la vida real (vuelta de la grieta)"],
   ['js/net/coop.js', /beh: ev\[9\], vida: ev\[10\] \}\);/, "el invitado lee la vida real de 'ne'"],
-  ['dev.html', /src="js\/core\/db\.js"><\/script>\r?\n<script defer src="js\/core\/importar\.js">/, 'importar.js se carga justo después de db.js'],
-  ['dev.html', /src="js\/ui\/settings-ui\.js"><\/script>\r?\n<script defer src="js\/ui\/importar-ui\.js">/, 'importar-ui.js se carga justo después de settings-ui.js'],
-  ['js/core/db.js', /newSave, migrate, applyInPlace,\s*\/\/ MOD nico/, 'db.js expone newSave, migrate y applyInPlace al importador'],
-  ['js/ui/settings-ui.js', /renderAccount\(box\);\r?\n\s*if \(G\.ImportarUI\) box\.insertAdjacentHTML\('beforeend', G\.ImportarUI\.html\(\)\);\s*\/\/ MOD nico/, 'Ajustes > Cuenta pinta la sección de importar detrás de lo de upstream (gancho aditivo)'],
   ['js/ui/settings-ui.js', /Crear cuenta o entrar<\/button>`;\r?\n\s*return;/, 'Ajustes > Cuenta (invitado): la línea de upstream, intacta'],
   ['js/ui/settings-ui.js', /id="set-msg"><\/p>`;\r?\n\s*\}/, 'Ajustes > Cuenta (con cuenta): la línea de upstream, intacta'],
-  ['js/ui/settings-ui.js', /if \(G\.ImportarUI\) G\.ImportarUI\.wire\(box\);/, 'Ajustes conecta los botones de importar'],
   ['js/systems/rift.js', /function update\(dt, pl, time\) \{\r?\n\s*if \(G\.MODS && G\.MODS\.grietaGarantizada && G\.MODS\.grietaGarantizada\(pl, time, !!\(rift \|\| arena\), authority\(\)\)\) \{ open\(\); if \(rift\) \{ checkT = CHECK; G\.MODS\.grietaAbierta\(pl, rift, time\); \} \}\s*\/\/ MOD nico/,
     'grieta garantizada: gancho al principio de update()'],
   ['js/systems/rift.js', /\};\r?\n\s*if \(G\.MODS && G\.MODS\.arenaGarantizada\) cfg\.forzada = G\.MODS\.arenaGarantizada\(G\.Game\.player, rift, G\.Game\.st\.time\);\s*\/\/ MOD nico[^\n]*\r?\n\s*if \(G\.Coop\.isHost\) G\.Coop\.broadcast\(\['arena', cfg\]\);/,
@@ -475,7 +462,10 @@ const HOOKS = [
   ['js/game.js', /const R = G\.Camera\.outerRadius\(\);\r?\n[^\n]*\r?\n\s*for \(const e of G\.EnemyMgr\.all\(\)\) \{\r?\n\s*if \(G\.Vistas && G\.Vistas\.bombaEnSuVista\(who, mine\) \? !G\.Vistas\.enSuVista\(who, e\.x, e\.y\) : mine \? !G\.Camera\.sees\(e\.x, e\.y, 0\) : G\.U\.dist2\(e\.x, e\.y, who\.x, who\.y\) > R \* R\) continue;\s*\/\/ MOD nico/,
     'la bomba de un compañero, en SU vista (onCollect; detrás, la condición de upstream tal cual)'],
   ['js/systems/rift.js', /shiny: G\.Sprites\.hasShiny\(mon\.dex\) && Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(1 \/ 512\) : 1 \/ 512\),\s*\/\/ MOD nico/, 'shiny ×1,5: legendario de la grieta'],
-  ['js/systems/gacha.js', /Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(SHINY_RATE\) : SHINY_RATE\)\);\s*\/\/ MOD nico/, 'shiny ×1,5: gacha'],
+  ['js/systems/gacha.js', /Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(SHINY_RATE, i < regalo\) : SHINY_RATE\)\);\s*\/\/ MOD nico/, 'shiny ×1,5: gacha (y ×3 con el regalo)'],
+  ['js/systems/gacha.js', /save\.tickets\.t10 -= cost\.t10;\r?\n\s*const regalo = G\.MODS && G\.MODS\.gastarRegalo \? G\.MODS\.gastarRegalo\(save, n, cost\) : 0;\s*\/\/ MOD nico/, 'regalo «buen humor»: pull() gasta los tickets del regalo tras cobrar'],
+  ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
+  ['js/game.js', /G\.Audio\.music\('village'\);\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalo && G\.MODS\.darRegalo\(G\.DB\.save\)\) \{ G\.DB\.commit\(true\); G\.UI\.toast\(G\.T\(G\.MODS\.regaloBuenHumor\.texto\), 12000\); G\.UI\.refreshCoins\(\); \}\s*\/\/ MOD nico/, 'regalo «buen humor»: afterLogin() lo da una vez y avisa'],
   ['js/ui/gacha-ui.js', /<span>1%<\/span><\/div>[\s\S]*?<\/p>`;\r?\n\s*if \(G\.MODS && G\.MODS\.notasGacha\) \$\('gacha-rates'\)\.innerHTML = G\.MODS\.notasGacha\(\$\('gacha-rates'\)\.innerHTML\);\s*\/\/ MOD nico/,
     'shiny ×1,5: el cartel del gacha (el «1%» de upstream sigue ahí y el gancho lo cambia después de pintarlo)'],
   ['dev.html', /src="js\/data\/sprites-meta\.js"><\/script>\r?\n<script defer src="js\/data\/evolutions\.js"><\/script><!-- MOD nico/, 'repetidos: evolutions.js se carga justo después de sprites-meta.js'],
@@ -574,7 +564,7 @@ const HOOKS = [
   ['js/ui/settings-ui.js', /if \(G\.Dividida\) G\.Dividida\.ajustes\(box, tab\);\s*\/\/ MOD nico/, 'pantalla dividida: la sección de Ajustes > Controles'],
   // Sin el test de personalidad (js/ui/elegir-companero.js)
   ['dev.html', /src="js\/ui\/test\.js"><\/script>\r?\n<script defer src="js\/ui\/elegir-companero\.js"><\/script><!-- MOD nico/, 'sin test: elegir-companero.js justo después de test.js'],
-  ['js/game.js', /afterLogin\(\) \{\r?\n    G\.Audio\.music\('village'\);\r?\n    if \(!G\.DB\.save\.partner && G\.ElegirCompanero && G\.ElegirCompanero\.activo\(\)\) return G\.ElegirCompanero\.abrir\(\);\s*\/\/ MOD nico[^\n]*\r?\n    if \(!G\.DB\.save\.partner\) G\.TestUI\.start\(\);\r?\n    else this\.goMenu\(\);/,
+  ['js/game.js', /afterLogin\(\) \{\r?\n    G\.Audio\.music\('village'\);\r?\n(?:    if \(G\.MODS && G\.MODS\.darRegalo[^\n]*\/\/ MOD nico[^\n]*\r?\n)?    if \(!G\.DB\.save\.partner && G\.ElegirCompanero && G\.ElegirCompanero\.activo\(\)\) return G\.ElegirCompanero\.abrir\(\);\s*\/\/ MOD nico[^\n]*\r?\n    if \(!G\.DB\.save\.partner\) G\.TestUI\.start\(\);\r?\n    else this\.goMenu\(\);/,
     'sin test: afterLogin() abre «Elige a tu compañero» antes de la línea de upstream que abre el test (intacta)'],
   ['js/ui/estilo.js', /const hudDex = \(\) => actual === 'dex' \|\| !!\(G\.Dividida && G\.Dividida\.activa && G\.Dividida\.activa\(\)\);\r?\n  function hud\(ctx, w, h, pl, st\) \{\r?\n    if \(!hudDex\(\) \|\| !G\.HudDex \|\| !pl\) return false;/, 'pantalla dividida: el HUD Dex también con Clásico mientras va (estilo.js)']
 ];
@@ -732,450 +722,6 @@ const stale = KNOWN.filter(([k]) => !found.has(k));
 if (stale.length) warn(`${stale.length} línea(s) de la lista ya no están (actualizar KNOWN): ${stale.map(([k]) => k).join(' · ')}`);
 if (!unknown) ok(`${SCAN.length} ficheros de js/: sólo las ${KNOWN.length} asignaciones de vida revisadas`);
 else console.log('        Revisa si alguna puede subir la vida de un enemigo; si no, añádela a KNOWN en tools/nico/check.js con su motivo.');
-
-// ---------------- 8. traer la partida del juego oficial ----------------
-// El juego real (db.js, Pokédex, logros, mejoras...) en node:vm; nunca se habla con el juego oficial:
-// la partida "oficial" de estas pruebas es sintética, con el formato de newSave().
-const IMPORT_FILES = ['js/core/util.js', 'js/data/pokedex.js', 'js/data/sprites-meta.js', 'js/data/moves.js', 'js/data/types.js',
-  'js/data/upgrades.js', 'js/data/items.js', 'js/data/achievements.js', 'js/systems/gacha.js', 'js/core/db.js', 'js/core/importar.js'];
-function loadImporter(extra = {}) {
-  const ctx = Object.assign({ console }, extra);
-  vm.createContext(ctx);
-  ctx.window = ctx;
-  for (const f of IMPORT_FILES) vm.runInContext(rd(f), ctx, { filename: f });
-  return ctx;
-}
-/** Ejecuta el fragmento exportador como en la consola del juego oficial, con un navegador simulado. */
-function runExporter(frag, { G: g, storage = {}, host = 'juego-oficial.test', nav, Fecha } = {}) {
-  const out = { alerts: [], downloads: [], logs: [], escrituras: 0 };
-  const blobs = [], keys = Object.keys(storage);
-  const ctx = {
-    alert: m => out.alerts.push(String(m)),
-    console: { log: m => out.logs.push(String(m)) },
-    location: { host },
-    Blob: class { constructor(parts, opts) { this.parts = parts; this.type = opts && opts.type; } },
-    URL: { createObjectURL: b => { blobs.push(b); return 'blob:' + blobs.length; }, revokeObjectURL: () => {} },
-    setTimeout: fn => fn(),
-    document: {
-      createElement: tag => { const a = { tag, href: '', download: '', click() { out.downloads.push({ nombre: a.download, blob: blobs[blobs.length - 1] }); }, remove() {} }; return a; },
-      body: { appendChild() {} }
-    },
-    localStorage: { get length() { return keys.length; }, key: i => keys[i], getItem: k => (k in storage ? storage[k] : null),
-      setItem() { out.escrituras++; }, removeItem() { out.escrituras++; }, clear() { out.escrituras++; } }
-  };
-  if (g !== undefined) ctx.G = g;
-  if (nav !== undefined) ctx.navigator = nav;      // sin él, el código no sabe el idioma: español
-  if (Fecha) ctx.Date = Fecha;                     // reloj simulado (fecha local distinta de la UTC)
-  ctx.window = ctx;
-  vm.createContext(ctx);
-  vm.runInContext(frag, ctx, { filename: 'exportador' });
-  return out;
-}
-
-async function importChecks() {
-  console.log('8. Traer la partida del juego oficial (exportador y js/core/importar.js)');
-  const r = [];   // [descripción, ok, detalle]
-  const t = (name, cond, detail) => r.push([name, !!cond, detail]);
-  const C = loadImporter(), GG = C.G, I = GG.Importar, DB = GG.DB;
-  const J = v => JSON.stringify(v);
-
-  // ---- el exportador ----
-  const frag = I.EXPORTADOR;
-  const compila = c => { try { new vm.Script(c); return true; } catch (e) { return false; } };
-  // tools/nico/exportar-oficial.js es la versión comentada: sus líneas de código, sin sangría y unidas con
-  // un espacio, son exactamente la línea de Ajustes. Los comentarios van en líneas propias (//).
-  const legible = rd('tools/nico/exportar-oficial.js'), lineas = legible.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-  const codigo = lineas.filter(l => !l.startsWith('//'));
-  const i0 = lineas.indexOf(codigo[0]), i1 = lineas.lastIndexOf(codigo[codigo.length - 1]);
-  const comentadas = lineas.slice(i0, i1).filter(l => l.startsWith('//')).length;
-  t('tools/nico/exportar-oficial.js es G.Importar.EXPORTADOR (la línea que se copia en Ajustes) comentado: sin comentarios ni sangría, idéntico',
-    codigo.join(' ') === frag && codigo.length >= 20 && comentadas >= 10 && compila(legible), { lineasDeCodigo: codigo.length, comentariosDentro: comentadas });
-  t('el exportador es una sola línea de JavaScript válido', !/[\r\n]/.test(frag) && compila(frag));
-  // De navigator sólo puede leer el idioma (navigator.language); nada de sendBeacon ni otras vías.
-  const NET = [/\b(fetch|XMLHttpRequest|sendBeacon|WebSocket|EventSource|RTCPeerConnection|postMessage|importScripts|eval|Function)\b/,
-    /\bnavigator\s*(\.\s*(?!language\b)\w|\[)/, /\bimport\s*\(/, /:\/\//, /\bhttps?\b/i, /\bwss?\b/i, /www\./i, /\.(com|net|org|io|app|dev|es|co)\b/i,
-    /\.src\b/, /new\s+Image\b/, /\bopen\s*\(/];
-  const netHit = NET.filter(re => re.test(frag));
-  t('el exportador no usa fetch, XMLHttpRequest, sendBeacon, WebSocket ni otra vía de red, ni lleva URLs (de navigator, sólo el idioma)', !netHit.length, netHit.map(String));
-  const WRITE = [/setItem|removeItem|\.clear\s*\(/, /\b(commit|flush|logout|deleteAccount|register|login|applyInPlace|grant)\b/, /\.save\s*=[^=]/];
-  const wHit = WRITE.filter(re => re.test(frag));
-  t('el exportador no escribe en localStorage ni llama a nada que guarde o cambie la partida', !wHit.length, wHit.map(String));
-
-  // Partida "oficial" realista (sintética): 1 de cada 3 Pokémon, shinies, mejoras, logros...
-  const T0 = Date.UTC(2026, 3, 1, 10), AHORA = Date.UTC(2026, 9, 12, 12);
-  const dexes = Object.keys(GG.DEX_BY).map(Number);
-  const of = DB.newSave('AshOficial');
-  of.created = T0; of.updated = T0 + 5e9; of.coins = 48210;
-  dexes.filter((d, i) => i % 3 === 0).forEach((d, i) => { of.owned[d] = { at: T0 + i * 1000, from: i % 5 ? 'gacha' : 'wild' }; });
-  const lista = Object.keys(of.owned).map(Number);
-  lista.slice(0, 12).forEach(d => { of.shiny[d] = { at: T0 + 99, from: 'wild' }; });
-  const P = lista[3];
-  of.partner = P; of.partnerShiny = true; of.starter = 4;
-  of.personality = { trait: 'brave', scores: { brave: 3 } };
-  of.pupg = { [P]: { hp: 6, atk: 4 }, 1: { hp: 2 } };
-  of.tickets = { t1: 23, t10: 4 }; of.pity = { 1: 41, 4: 12 };
-  of.legends = { 150: T0 + 1, 151: T0 + 2, 249: T0 + 3 }; of.arenas = { fire: T0, water: T0 };
-  of.itemsFound = { leftovers: T0, quickclaw: T0 }; of.evoMoves = { tackle: T0, ember: T0 };
-  of.ach = { own1: T0, own10: T0, own50: T0, own100: T0, own250: T0, shiny1: T0, shiny5: T0, boss1: T0 };
-  of.missions = { day: '2026-10-12', daily: [{ id: 'x', prog: 3 }] };
-  of.profile = { favs: [{ dex: P, shiny: true }, { dex: lista[5], shiny: false }], title: 'Coleccionista' };
-  Object.assign(of.stats, { runs: 210, bestTime: 1342.5, bestLevel: 41, totalKills: 152000, pulls: 380, coinsEarned: 260000,
-    shinies: 12, bossesTotal: 77, riftWins: 19, evolutions: 30, missionsDone: 120 });
-  of.pupgDone = true;
-  const ofJSON = J(of);
-
-  // Exportador con la partida viva (G.DB.save es un getter, como en el juego).
-  const dbVivo = { guest: false }; Object.defineProperty(dbVivo, 'save', { get: () => of, enumerable: true });
-  const hoy = new Date(), dd = n => String(n).padStart(2, '0');
-  const e1 = runExporter(frag, { G: { DB: dbVivo } });
-  const hoyLocal = `${hoy.getFullYear()}-${dd(hoy.getMonth() + 1)}-${dd(hoy.getDate())}`;
-  const d1 = e1.downloads[0], env1 = d1 && JSON.parse(d1.blob.parts.join(''));
-  t('exportador: descarga pokeswarm-partida-<nombre>-<fecha local>.json con el envoltorio y una copia exacta de G.DB.save',
-    e1.downloads.length === 1 && d1.nombre === `pokeswarm-partida-AshOficial-${hoyLocal}.json` && d1.blob.type === 'application/json' &&
-    env1.tipo === 'pokesurvivor-partida' && env1.version === 1 && env1.origen === 'juego-oficial.test' && typeof env1.exportado === 'number' &&
-    J(env1.save) === ofJSON && !e1.alerts.length && /^Partida exportada: \d+ Pokémon en /.test(e1.logs[0] || ''), d1 && d1.nombre);
-  t('exportador: no modifica la partida ni localStorage', J(of) === ofJSON && e1.escrituras === 0);
-  // La fecha del nombre es la del reloj del PC, no la UTC: a las 01:30 del 13-10 en España (23:30 UTC del 12).
-  class Madrugada { getFullYear() { return 2026; } getMonth() { return 9; } getDate() { return 13; }
-    toISOString() { return '2026-10-12T23:30:00.000Z'; } static now() { return Date.UTC(2026, 9, 12, 23, 30); } }
-  const eF = runExporter(frag, { G: { DB: dbVivo }, Fecha: Madrugada }), dF = eF.downloads[0];
-  t('exportador: la fecha del nombre del archivo es la local (no la UTC de toISOString)',
-    dF && dF.nombre === 'pokeswarm-partida-AshOficial-2026-10-13.json' && JSON.parse(dF.blob.parts.join('')).exportado === Madrugada.now(), dF && dF.nombre);
-  // La versión comentada hace exactamente lo mismo si se pega tal cual.
-  const eL = runExporter(legible, { G: { DB: dbVivo } }), dL = eL.downloads[0];
-  t('exportador: la versión comentada, pegada tal cual, descarga lo mismo', dL && dL.nombre === d1.nombre && JSON.parse(dL.blob.parts.join('')).save.name === 'AshOficial' && !eL.alerts.length);
-  const e2 = runExporter(frag, { G: { DB: { guest: true, save: DB.newSave('Invitado') } } });
-  t('exportador: como invitado avisa en español y no descarga nada', e2.downloads.length === 0 && e2.alerts.length === 1 && /invitado/i.test(e2.alerts[0]));
-  const sinSesion = { guest: false }; Object.defineProperty(sinSesion, 'save', { get: () => null });
-  const e3 = runExporter(frag, { G: { DB: sinSesion }, storage: { 'ps.cloud.x': ofJSON } });
-  t('exportador: sin sesión iniciada avisa y no descarga (no tira de copias viejas)', e3.downloads.length === 0 && e3.alerts.length === 1 && /inicia sesi/i.test(e3.alerts[0]));
-  // Idioma de los avisos: el del navegador (español si empieza por "es"; si no, inglés).
-  const nav = language => ({ language });
-  const en2 = runExporter(frag, { G: { DB: { guest: true, save: DB.newSave('Guest') } }, nav: nav('en-US') });
-  const en3 = runExporter(frag, { G: { DB: sinSesion }, nav: nav('fr-FR') });
-  const en7 = runExporter(frag, { G: { Importar: { TIPO: 'pokesurvivor-partida' } }, nav: nav('en-GB') });
-  const en1 = runExporter(frag, { G: { DB: dbVivo }, nav: nav('en-US') });
-  const es2 = runExporter(frag, { G: { DB: { guest: true, save: DB.newSave('Invitado') } }, nav: nav('es-MX') });
-  const es7 = runExporter(frag, { G: { Importar: { TIPO: 'pokesurvivor-partida' } }, nav: nav('ES') });
-  t('exportador: con el navegador en otro idioma, los avisos y el mensaje final salen en inglés; en español (es, es-MX...), en español',
-    /playing as a guest/.test(en2.alerts[0] || '') && /save was not found/.test(en3.alerts[0] || '') && /website where your save is, not here/.test(en7.alerts[0] || '') &&
-    /^Save exported: \d+ Pokémon in /.test(en1.logs[0] || '') && en1.downloads.length === 1 && en1.downloads[0].nombre === d1.nombre &&
-    /jugando como invitado/.test(es2.alerts[0] || '') && /web donde tienes tu partida, no aquí/.test(es7.alerts[0] || '') &&
-    [en2, en3, en7, es2, es7].every(x => x.downloads.length === 0 && x.alerts.length === 1),
-    { en: [en2.alerts[0], en3.alerts[0], en7.alerts[0], en1.logs[0]], es: [es2.alerts[0], es7.alerts[0]] });
-  const viejo = Object.assign(DB.newSave('Viejo'), { updated: 100 }), nuevo = Object.assign(JSON.parse(ofJSON), { updated: 200 });
-  const almacen = { 'ps.cloud.uidViejo': J(viejo), 'ps.save.ash': J(nuevo), 'ps.lang': 'es', 'ps.cloud.roto': '{no es json', 'otra.cosa': J(Object.assign(DB.newSave('Otro'), { updated: 999 })) };
-  const e4 = runExporter(frag, { storage: almacen });
-  const e5 = runExporter(frag, { G: { Otra: 1 }, storage: almacen });
-  const env4 = e4.downloads[0] && JSON.parse(e4.downloads[0].blob.parts.join(''));
-  t('exportador: si el juego cambia y no hay G.DB.save, usa la copia ps.cloud.* / ps.save.* más reciente (ignora otras claves y copias rotas)',
-    e4.downloads.length === 1 && env4.save.name === 'AshOficial' && env4.save.updated === 200 && e5.downloads.length === 1 && !e4.alerts.length);
-  const e6 = runExporter(frag, { storage: { 'ps.lang': 'es' } });
-  t('exportador: sin partida en ningún sitio avisa y no descarga', e6.downloads.length === 0 && e6.alerts.length === 1);
-  // Pegado en la consola de ESTA versión (con su G real, que tiene G.Importar y una partida abierta): avisa y no descarga.
-  const vivoFork = { guest: false }; Object.defineProperty(vivoFork, 'save', { get: () => of, enumerable: true });
-  const e7 = runExporter(frag, { G: Object.assign(Object.create(GG), { DB: vivoFork }), storage: { 'ps.save.nicofork': ofJSON } });
-  t('exportador: pegado en la consola de esta versión avisa de que va en la web donde tienes tu partida y no descarga nada',
-    e7.downloads.length === 0 && e7.alerts.length === 1 && /web donde tienes tu partida, no aquí/.test(e7.alerts[0]) && e7.escrituras === 0, e7.alerts);
-
-  // ---- el importador: partida oficial realista contra una cuenta nueva del fork ----
-  const texto = d1 ? d1.blob.parts.join('') : J({ tipo: I.TIPO, version: 1, save: of });
-  const a = I.analizar(texto, AHORA);
-  t('analizar: acepta lo que descarga el exportador', a.ok && a.resumen.pokemon === lista.length && a.resumen.shinies === 12 && a.resumen.monedas === 48210 &&
-    a.resumen.descartados === 0 && a.resumen.ajustados === 0 && a.avisos.length === 0, a.ok ? a.resumen : a.error);
-  const fk = DB.migrate(DB.newSave('NicoFork'));
-  fk.created = Date.UTC(2026, 9, 10); fk.updated = fk.created + 1000;
-  fk.owned = { 7: { at: fk.created, from: 'starter' }, 1: { at: fk.created + 5, from: 'gacha' } };
-  fk.starter = 7; fk.partner = 7; fk.personality = { trait: 'calm', scores: { calm: 4 } };
-  fk.coins = 650; fk.tickets = { t1: 2, t10: 0 }; fk.pupg = { 1: { hp: 5 } }; fk.pity = { 1: 10, 2: 5 }; fk.ach = { own1: fk.created };
-  fk.stats.bestLevel = 50; fk.stats.runs = 3;
-  fk.missions = { day: '2026-10-12', daily: [{ id: 'kill', prog: 10 }] };
-  const fkJSON = J(fk), aJSON = a.ok ? J(a.save) : '';
-  const n1 = a.ok ? I.fusionar(fk, a.save, AHORA) : null;
-  if (n1) {
-    const union = new Set([...Object.keys(of.owned), ...Object.keys(fk.owned)]);
-    t('fusionar: no modifica la partida del fork ni la oficial', J(fk) === fkJSON && J(a.save) === aJSON);
-    t('fusionar: colección y shinies = unión (con la fecha más antigua)', Object.keys(n1.owned).length === union.size && n1.owned[7] && n1.owned[1].at === of.owned[1].at &&
-      Object.keys(n1.shiny).length === 12, { owned: Object.keys(n1.owned).length, esperado: union.size });
-    t('fusionar: monedas y tickets se suman', n1.coins === 650 + 48210 && n1.tickets.t1 === 25 && n1.tickets.t10 === 4, { coins: n1.coins, tickets: n1.tickets });
-    t('fusionar: queda apuntado lo acreditado por esa partida oficial (su created)',
-      J(n1[I.REGISTRO]) === J({ [T0]: { coins: 48210, t1: 23, t10: 4, at: AHORA } }), n1[I.REGISTRO]);
-    t('fusionar: mejoras por Pokémon, estadísticas y pity = el máximo', n1.pupg[1].hp === 5 && n1.pupg[P].hp === 6 && n1.pupg[P].atk === 4 &&
-      n1.stats.runs === 210 && n1.stats.bestLevel === 50 && n1.stats.bestTime === 1342.5 && J(n1.pity) === J({ 1: 41, 2: 5, 4: 12 }), { pity: n1.pity });
-    t('fusionar: legendarios, arenas, objetos, movimientos y logros = unión', Object.keys(n1.legends).length === 3 && Object.keys(n1.arenas).length === 2 &&
-      Object.keys(n1.itemsFound).length === 2 && Object.keys(n1.evoMoves).length === 2 && Object.keys(n1.ach).length === 8 && n1.ach.own1 === fk.created);
-    t('fusionar: compañero = el oficial (y shiny, porque tiene el shiny)', n1.partner === P && n1.partnerShiny === true);
-    t('fusionar: perfil vacío en el fork -> favoritos y título del oficial', J(n1.profile) === J({ favs: [{ dex: P, shiny: true }, { dex: lista[5], shiny: false }], title: 'Coleccionista' }), n1.profile);
-    t('fusionar: nombre, misiones, personalidad, inicial y creación = los del fork; updated = ahora', n1.name === 'NicoFork' && J(n1.missions) === J(fk.missions) &&
-      J(n1.personality) === J(fk.personality) && n1.starter === 7 && n1.created === fk.created && n1.updated === AHORA);
-    const c1 = I.comparar(fk, n1, a.save);
-    t('comparar: la vista previa cuenta lo nuevo', c1.pokemon === union.size - 2 && c1.monedas === 48210 && c1.t1 === 23 && c1.logros === 7 && c1.companero && !c1.yaImportada && c1.algo, c1);
-    // Perfil ya puesto en el fork: se respeta.
-    const fk2 = Object.assign(JSON.parse(fkJSON), { profile: { favs: [{ dex: 7, shiny: false }], title: 'Valiente' } });
-    const nP = I.fusionar(fk2, a.save, AHORA);
-    t('fusionar: si el fork ya tiene favoritos y título, se quedan', J(nP.profile) === J(fk2.profile));
-
-    // Reimportar la misma: no duplica.
-    const n2 = I.fusionar(n1, a.save, AHORA + 1), c2 = I.comparar(n1, n2, a.save);
-    t('reimportar la misma partida no duplica monedas, tickets ni nada', n2.coins === n1.coins && J(n2.tickets) === J(n1.tickets) &&
-      Object.keys(n2.owned).length === Object.keys(n1.owned).length && c2.yaImportada && !c2.algo, c2);
-    // Reimportar con más monedas: sólo la diferencia. Con menos (gastadas): nada, y luego sólo lo que pase del máximo acreditado.
-    const conMas = v => { const o = JSON.parse(ofJSON); o.coins = v.coins; o.tickets = v.tickets; return I.analizar(J({ tipo: I.TIPO, version: 1, save: o }), AHORA).save; };
-    const n3 = I.fusionar(n2, conMas({ coins: 50000, tickets: { t1: 30, t10: 4 } }), AHORA + 2);
-    t('reimportar con más monedas acredita sólo la diferencia', n3.coins === n2.coins + 1790 && n3.tickets.t1 === n2.tickets.t1 + 7 && n3.tickets.t10 === n2.tickets.t10 &&
-      n3[I.REGISTRO][T0].coins === 50000, { antes: n2.coins, despues: n3.coins });
-    const n4 = I.fusionar(n3, conMas({ coins: 1000, tickets: { t1: 0, t10: 0 } }), AHORA + 3);
-    const n5 = I.fusionar(n4, conMas({ coins: 50500, tickets: { t1: 30, t10: 5 } }), AHORA + 4);
-    t('reimportar tras gastar en el oficial no resta ni duplica; luego sólo suma lo que pase de lo ya acreditado',
-      n4.coins === n3.coins && n4[I.REGISTRO][T0].coins === 50000 && n5.coins === n3.coins + 500 && n5.tickets.t10 === n3.tickets.t10 + 1);
-
-    // Primera importación: todo lo que cuenta para Confirmar tiene su fila (pity, favoritos y título incluidos).
-    t('primera importación: la vista previa cuenta los banners con más pity, los favoritos y el título',
-      c1.pity === 2 && J(c1.favs) === J(n1.profile.favs) && c1.titulo === 'Coleccionista' && c1.perfil, { pity: c1.pity, favs: c1.favs, titulo: c1.titulo });
-    // Después de traerla, el jugador saca un ★5 aquí (pity 0), elige otro compañero y vacía el perfil. Reimportar
-    // el mismo archivo no le devuelve el pity ni le cambia nada de eso, y Confirmar queda sin nada que hacer.
-    const aqui = JSON.parse(J(n2));
-    aqui.pity[1] = 0; aqui.partner = 7; aqui.partnerShiny = false; aqui.profile = { favs: [], title: '' };
-    const aquiJSON = J(aqui);
-    const n6 = I.fusionar(aqui, a.save, AHORA + 5), c6 = I.comparar(aqui, n6, a.save);
-    const ciclosPity = [n6.pity[1]];
-    let vuelta = n6;
-    for (let i = 0; i < 2; i++) { vuelta = I.fusionar(vuelta, a.save, AHORA + 6 + i); ciclosPity.push(vuelta.pity[1]); }
-    t('reimportar no devuelve el pity gastado aquí (3 vueltas) ni cambia el compañero o el perfil elegidos aquí; nada que confirmar',
-      ciclosPity.every(p => p === 0) && n6.partner === 7 && n6.partnerShiny === false && J(n6.profile) === J(aqui.profile) &&
-      n6.coins === aqui.coins && J(n6.tickets) === J(aqui.tickets) && c6.yaImportada && !c6.algo && !c6.pity && !c6.companero && !c6.perfil && J(aqui) === aquiJSON,
-      { pity: ciclosPity, partner: n6.partner, profile: n6.profile, c6 });
-    // Reimportar con más monedas en el oficial: sólo se suman monedas; pity, compañero y perfil se quedan.
-    const n7 = I.fusionar(aqui, conMas({ coins: 48210 + 2000, tickets: { t1: 25, t10: 4 } }), AHORA + 9), c7 = I.comparar(aqui, n7, a.save);
-    t('reimportar con más monedas: sólo suma monedas y tickets nuevos; pity, compañero y perfil se quedan como aquí',
-      n7.coins === aqui.coins + 2000 && n7.tickets.t1 === aqui.tickets.t1 + 2 && n7.tickets.t10 === aqui.tickets.t10 && n7.pity[1] === 0 &&
-      n7.partner === 7 && J(n7.profile) === J(aqui.profile) && c7.monedas === 2000 && c7.t1 === 2 && c7.algo && !c7.pity && !c7.companero && !c7.perfil,
-      { coins: [aqui.coins, n7.coins], c7 });
-    // Si aquí no hay un compañero válido (ninguno), se pone el oficial aunque no sea la primera vez.
-    const sinCompa = Object.assign(JSON.parse(aquiJSON), { partner: null });
-    const n8 = I.fusionar(sinCompa, a.save, AHORA + 10), c8 = I.comparar(sinCompa, n8, a.save);
-    t('reimportar sin compañero válido aquí: pone el oficial y lo enseña en la vista previa', n8.partner === P && n8.partnerShiny === true && c8.companero && c8.algo);
-  } else t('analizar la partida realista', false, a.error);
-
-  // ---- una partida de ESTA versión no se trae (autoimportación) ----
-  // Sus monedas ya incluyen lo acreditado; si se aceptara, cada vuelta lo volvería a sumar.
-  const propia = (x, origen = 'otra-web.test') => I.analizar(J({ tipo: I.TIPO, version: 1, origen, exportado: AHORA, save: x }), AHORA);
-  const vueltasPropia = [];
-  let miPartida = JSON.parse(fkJSON);   // una partida del fork que nunca ha traído nada (sin registro)
-  for (let i = 0; i < 3; i++) {
-    const x = propia(miPartida), pv = x.ok ? I.previsualizar(miPartida, x.save, AHORA + i) : {};
-    let lanza = false;
-    try { if (x.ok) miPartida = I.fusionar(miPartida, x.save, AHORA + i); } catch (e) { lanza = e.message === I.TEXTOS.propia; }
-    vueltasPropia.push({ analiza: x.ok, error: pv.error, lanza, coins: miPartida.coins });
-  }
-  t('autoimportación: la partida de esta misma cuenta (mismo created) se rechaza en la vista previa y en fusionar; 3 vueltas sin sumar nada',
-    vueltasPropia.every(v => v.analiza && v.error === I.TEXTOS.propia && v.lanza && v.coins === fk.coins), vueltasPropia);
-  const conReg = propia(Object.assign(JSON.parse(ofJSON), { importOficial: { 1: { coins: 1e6 } } }));
-  t('una partida con el registro importOficial (sólo lo escribe esta versión) se rechaza al elegirla', !conReg.ok && conReg.error === I.TEXTOS.propia, conReg.error);
-  C.location = { host: 'fork.test' };
-  const mismaWeb = propia(of, 'fork.test'), otraWeb = propia(of, 'juego-oficial.test');
-  delete C.location;
-  t('un archivo exportado desde esta misma web se rechaza; desde otra, no', !mismaWeb.ok && mismaWeb.error === I.TEXTOS.propia && otraWeb.ok);
-  // Dos cuentas de esta versión: A (sin traer nada) -> B suma lo de A una sola vez; B ya lleva el registro y no vuelve a A.
-  const cuentaA = JSON.parse(fkJSON), cuentaB = Object.assign(JSON.parse(fkJSON), { created: fk.created + 777, name: 'Amigo', coins: 500 });
-  let B = cuentaB;
-  for (let i = 0; i < 3; i++) B = I.fusionar(B, propia(cuentaA).save, AHORA + i);
-  const deB = propia(B);
-  t('dos cuentas de esta versión: de A a B se suma una sola vez (3 vueltas) y de B a A se rechaza (lleva el registro)',
-    B.coins === 500 + fk.coins && !deB.ok && deB.error === I.TEXTOS.propia, { B: B.coins, deB: deB.error });
-
-  // ---- errores y saneado ----
-  const env = save => J({ tipo: I.TIPO, version: 1, origen: 'pruebas', exportado: T0, save });
-  const err = (txt, e) => { const x = I.analizar(txt, AHORA); return !x.ok && x.error === e; };
-  t('JSON roto, vacío o demasiado grande: error claro', err('{"tipo": "pokesurvivor-partida", "save": {', I.TEXTOS.json) && err('', I.TEXTOS.vacio) &&
-    err('   ', I.TEXTOS.vacio) && err(' '.repeat(I.MAX_BYTES) + '{}', I.TEXTOS.grande));
-  t('envoltorio de otro tipo, versión futura o algo que no es una partida: error',
-    err(J({ tipo: 'otra-cosa', version: 1, save: of }), I.TEXTOS.tipo) && err(J({ tipo: I.TIPO, version: 2, save: of }), I.TEXTOS.version) &&
-    err(J({ tipo: I.TIPO, version: 1, save: 'hola' }), I.TEXTOS.tipo) && err('[1,2,3]', I.TEXTOS.tipo) && err('42', I.TEXTOS.tipo) &&
-    err(J({ hola: 1 }), I.TEXTOS.tipo) && err(env(Object.assign(JSON.parse(ofJSON), { created: -5 })), I.TEXTOS.creada));
-  const suelta = I.analizar(ofJSON, AHORA), doc = I.analizar(J({ save: of, v: 3 }), AHORA);
-  t('acepta también una partida suelta y el documento saves/{uid} de Firestore', suelta.ok && doc.ok && suelta.resumen.pokemon === lista.length && doc.resumen.pokemon === lista.length);
-
-  // Claves desconocidas (también __proto__), dex inválidos y números negativos o enormes.
-  const raro = JSON.parse(ofJSON);
-  Object.assign(raro, { hack: { x: 1 }, coins: -50 });   // importOficial se rechaza aparte (es de esta versión)
-  raro.stats.inventado = 5; raro.stats.runs = -1; raro.stats.totalKills = 1e20; raro.stats.bestTime = 'mucho';
-  raro.pupg[P] = { hp: 99, superpoder: 9 }; raro.ach.inventado = T0; raro.arenas.cosmico = T0; raro.itemsFound.gorra = T0;
-  raro.evoMoves['no-existe'] = T0; raro.tickets = { t1: -3, t10: 1e12, t100: 5 }; raro.pity = { 1: 500, 99: 4 };
-  raro.legends = { 0: T0, 150: T0, 9999: T0 }; raro.profile = { favs: [{ dex: 9999 }, { dex: P, shiny: true }], title: 'Inventado' };
-  for (const k of ['0', '9999', 'abc', '-5', '1.5']) raro.owned[k] = { at: T0, from: 'gacha' };
-  raro.owned[lista[1]] = { at: -7, from: '<script>' };
-  let txt = env(raro).replace('"save":{', '"save":{"__proto__":{"polluted":true},').replace('"owned":{', '"owned":{"__proto__":{"at":1,"from":"x"},');
-  const b = I.analizar(txt, AHORA), s = b.save || {};
-  const proto = Object.getPrototypeOf(s) === vm.runInContext("Object.prototype", C) && ({}).polluted === undefined && vm.runInContext("({}).polluted", C) === undefined && !('polluted' in s);
-  t('claves desconocidas descartadas (también __proto__, sin contaminar prototipos) y contadas', b.ok && proto && !('hack' in s) && !(I.REGISTRO in s) &&
-    !('inventado' in s.stats) && !('superpoder' in s.pupg[P]) && !('inventado' in s.ach) && !('cosmico' in s.arenas) && !('gorra' in s.itemsFound) &&
-    !('no-existe' in s.evoMoves) && !('t100' in s.tickets) && !('99' in s.pity) && s.profile.title === '' && b.resumen.descartados >= 12,
-    b.ok ? { descartados: b.resumen.descartados, claves: b.resumen.clavesDescartadas } : b.error);
-  t('dex inválidos fuera (owned, legendarios, favoritos); una fecha o un origen raro se corrigen', b.ok && ['0', '9999', 'abc', '-5', '1.5'].every(k => !(k in s.owned)) &&
-    Object.keys(s.owned).length === lista.length && J(Object.keys(s.legends)) === J(['150']) && J(s.profile.favs) === J([{ dex: P, shiny: true }]) &&
-    s.owned[lista[1]].at === AHORA && s.owned[lista[1]].from === 'oficial');
-  t('números negativos o enormes: a 0 o al tope, avisando', b.ok && s.coins === 0 && s.tickets.t1 === 0 && s.tickets.t10 === 1e6 && s.pupg[P].hp === 10 &&
-    s.stats.runs === 0 && s.stats.totalKills === 1e9 && s.stats.bestTime === 0 && s.pity[1] === 70 && b.resumen.ajustados >= 7 && b.avisos.length === 2,
-    b.ok ? { coins: s.coins, tickets: s.tickets, hp: s.pupg[P].hp, pity: s.pity, ajustados: b.resumen.ajustados, avisos: b.avisos } : null);
-  const inf = I.analizar(env(JSON.parse(ofJSON)).replace('"coins":48210', '"coins":1e999'), AHORA);
-  const str = I.analizar(env(Object.assign(JSON.parse(ofJSON), { coins: '500' })), AHORA);
-  t('monedas 1e999 (Infinity) al tope; monedas en texto se descartan', inf.ok && inf.save.coins === 1e9 && str.ok && str.save.coins === 0 && str.resumen.descartados === 1);
-
-  // ---- el compañero ----
-  const conCompa = (partner, partnerShiny, shinyOf) => {
-    const o = JSON.parse(ofJSON); o.partner = partner; o.partnerShiny = partnerShiny;
-    if (!shinyOf) delete o.shiny[partner];
-    const x = I.analizar(env(o), AHORA); return x.ok ? I.fusionar(fk, x.save, AHORA) : null;
-  };
-  const sinTener = dexes.find(d => !of.owned[d] && d !== 7);
-  const c1 = conCompa(P, true, true), c2 = conCompa(P, true, false), c3 = conCompa(sinTener, false, true), c4 = conCompa(null, false, true);
-  t('compañero: el oficial si lo tiene; shiny sólo si tiene el shiny; si no lo tiene o no hay, se queda el del fork',
-    c1.partner === P && c1.partnerShiny === true && c2.partner === P && c2.partnerShiny === false &&
-    c3.partner === 7 && c3.partnerShiny === false && c4.partner === 7, { c1: [c1.partner, c1.partnerShiny], c2: [c2.partner, c2.partnerShiny], c3: c3.partner, c4: c4.partner });
-
-  // ---- aplicar() con el db.js real: modo local (localStorage) e invitado ----
-  try {
-    const store = {};
-    const ls = { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } };
-    const L = loadImporter({ localStorage: ls, location: { protocol: 'file:', hostname: '', search: '' }, crypto: require('crypto').webcrypto, TextEncoder });
-    const LG = L.G;
-    await LG.DB.ready();
-    const reg = await LG.DB.register('NicoFork', 'prueba-local-' + crypto.randomBytes(4).toString('hex'));   // sólo en memoria
-    LG.DB.grant(2, 'starter'); LG.DB.save.partner = 2; LG.DB.commit();   // el 2 no está en la oficial
-    const ref = LG.DB.save, refOwned = ref.owned, base = ref.coins;
-    // Autoimportación con el db.js real, antes de traer nada (la partida aún no lleva registro): la de esta
-    // misma cuenta, sacada con un fragmento sin la comprobación o elegida tal cual de localStorage, no se
-    // aplica. 3 vueltas: las monedas no cambian y no se guarda nada.
-    const vivoL = { guest: false }; Object.defineProperty(vivoL, 'save', { get: () => LG.DB.save, enumerable: true });
-    const exportarAqui = () => runExporter(frag, { G: { DB: vivoL } }).downloads[0].blob.parts.join('');
-    const guardadoAntes = store['ps.save.nicofork'], vueltasL = [];
-    for (let i = 0; i < 3; i++) {
-      const y = LG.Importar.analizar(i === 2 ? store['ps.save.nicofork'] : exportarAqui(), AHORA);
-      const ap = y.ok ? LG.Importar.aplicar(y.save) : { ok: false, error: y.error };
-      vueltasL.push({ analiza: y.ok, ok: ap.ok, error: ap.error, coins: LG.DB.save.coins });
-    }
-    t('aplicar (local): la partida de esta misma cuenta no se trae (mismo created); 3 vueltas sin sumar monedas ni guardar nada',
-      !!guardadoAntes && vueltasL.every(v => v.analiza && !v.ok && v.error === LG.Importar.TEXTOS.propia && v.coins === base) &&
-      store['ps.save.nicofork'] === guardadoAntes, vueltasL);
-    const x = LG.Importar.analizar(texto, AHORA);
-    const res = LG.Importar.aplicar(x.save);
-    await res.subida;
-    const guardada = JSON.parse(store['ps.save.nicofork'] || 'null');
-    t('aplicar (local): guarda en este navegador la partida fusionada, en el mismo objeto', reg.ok && res.ok && res.guardada && !res.nube && !res.invitado &&
-      LG.DB.save === ref && ref.owned === refOwned && guardada && guardada.coins === base + 48210 && Object.keys(guardada.owned).length === lista.length + 1 &&
-      guardada.partner === P && guardada[LG.Importar.REGISTRO][T0].coins === 48210, { ok: res.ok, guardada: res.guardada, coins: guardada && guardada.coins });
-    const res2 = LG.Importar.aplicar(x.save);
-    const guardada2 = JSON.parse(store['ps.save.nicofork']);
-    t('aplicar (local) dos veces no duplica', res2.ok && guardada2.coins === guardada.coins && guardada2.tickets.t1 === guardada.tickets.t1);
-    // Ya con el registro: exportarla desde aquí y elegirla da error al leer el archivo (3 vueltas, nada cambia).
-    const vueltasR = [];
-    for (let i = 0; i < 3; i++) { const y = LG.Importar.analizar(exportarAqui(), AHORA); vueltasR.push({ ok: y.ok, error: y.error, coins: LG.DB.save.coins }); }
-    t('autoimportación después de traer la oficial: el archivo se rechaza al elegirlo (lleva el registro) y las monedas no cambian',
-      vueltasR.every(v => !v.ok && v.error === LG.Importar.TEXTOS.propia && v.coins === guardada.coins) && JSON.parse(store['ps.save.nicofork']).coins === guardada.coins, vueltasR);
-    LG.Game = { state: 'playing' };
-    const res3 = LG.Importar.aplicar(x.save);
-    t('aplicar: en mitad de una run no hace nada y lo dice', !res3.ok && res3.error === LG.Importar.TEXTOS.enRun);
-    LG.Game = { state: 'ui' };
-    LG.DB.playAsGuest();
-    const antes = J(store);
-    const res4 = LG.Importar.aplicar(x.save);
-    t('aplicar (invitado): se aplica en memoria, no se guarda y lo indica', res4.ok && res4.invitado && !res4.guardada && LG.DB.save.coins === LG.DB.START_COINS + 48210 &&
-      J(store) === antes && JSON.parse(store['ps.save.nicofork']).coins === guardada.coins);
-  } catch (e) { t('aplicar con el db.js real', false, String(e && e.stack || e)); }
-
-  // ---- la sección de Ajustes (js/ui/importar-ui.js) con el db.js real y un DOM mínimo ----
-  // Los textos del archivo (nombre, origen, fecha, título, favoritos, orígenes) no pueden meter HTML;
-  // la partida de esta cuenta da el error sin vista previa ni Confirmar; lo que cuenta tiene su fila.
-  try {
-    const store = {};
-    const ls = { getItem: k => (k in store ? store[k] : null), setItem: (k, v) => { store[k] = String(v); }, removeItem: k => { delete store[k]; } };
-    const U = loadImporter({ localStorage: ls, location: { protocol: 'file:', hostname: '', search: '' }, crypto: require('crypto').webcrypto, TextEncoder });
-    const UG = U.G;
-    await UG.DB.ready();
-    await UG.DB.register('NicoUI', 'prueba-ui-' + crypto.randomBytes(4).toString('hex'));   // sólo en memoria
-    UG.DB.commit();
-    const els = {};
-    const el = id => els[id] || (els[id] = { id, innerHTML: '', textContent: '', disabled: false, value: '', files: null, isConnected: true,
-      click() {}, select() {}, focus() {} });
-    // querySelector: lo que se acerca a la vista tras repintar (el resultado, centrado; la vista previa, lo justo).
-    const vistos = [];
-    const qs = sel => {
-      const h = el('imp-box').innerHTML;
-      if (sel === '#imp-box > .imp-msg' && /class="imp-msg/.test(h)) return { scrollIntoView: o => vistos.push('msg-' + o.block) };
-      if (sel === '#imp-box .imp-prev' && /class="imp-prev/.test(h)) return { scrollIntoView: o => vistos.push('prev-' + o.block) };
-      return null;
-    };
-    U.document = { getElementById: el, createElement: () => ({}), head: { appendChild() {} }, querySelector: qs };
-    vm.runInContext(rd('js/ui/importar-ui.js'), U, { filename: 'js/ui/importar-ui.js' });
-    const UI = UG.ImportarUI;
-    el('imp-box').innerHTML = UI.html(); UI.wire();
-    const hInicial = el('imp-box').innerHTML;
-    // El cuadro del código lleva translate="no" y el DOM no traduce ni sus atributos: su aria-label pasa por G.T.
-    UG.T = s => 'EN:' + s;
-    const hTraducida = UI.html();
-    delete UG.T;
-    t('Ajustes: el aria-label del cuadro del código (translate="no") se traduce al pintarlo',
-      /<textarea[^>]*translate="no"[^>]*aria-label="EN:Código para la consola de esa web"/.test(hTraducida));
-    const elegir = async txt => { el('imp-file').files = [{ size: Buffer.byteLength(txt), text: async () => txt }]; await el('imp-file').onchange(); return el('imp-box').innerHTML; };
-    const hPropia = await elegir(store['ps.save.nicoui']);   // su propia partida, tal cual de localStorage
-    t('Ajustes: elegir la partida de esta misma cuenta da el error, sin vista previa ni Confirmar',
-      hPropia.includes(I.TEXTOS.propia) && !/Vista previa|id="imp-ok"/.test(hPropia), hPropia.slice(-300));
-    const hostil = JSON.parse(ofJSON);
-    hostil.name = '<img src=x onerror=alert(1)>';
-    hostil.profile = { favs: [{ dex: P, shiny: true }, { dex: '<svg onload=alert(2)>' }], title: '<b>x</b>' };
-    hostil.owned[lista[2]] = { at: T0, from: '"><svg onload=alert(3)>' };
-    const hHostil = await elegir(J({ tipo: I.TIPO, version: 1, origen: '<script>alert(4)</script>', exportado: '<i>hoy</i>', save: hostil }));
-    const PELIGRO = /<img|<svg|<script|<iframe|onerror\s*=|onload\s*=|<b>x<\/b>|<i>hoy|javascript:/i;
-    t('Ajustes: la vista previa con nombre, origen, fecha, título, favoritos y orígenes hostiles no pinta HTML del archivo',
-      /Vista previa/.test(hHostil) && /id="imp-ok"/.test(hHostil) && !PELIGRO.test(hHostil), (hHostil.match(PELIGRO) || ['vista previa sin pintar'])[0]);
-    t('Ajustes: la vista previa enseña el pity y los favoritos que se traen (y no un título descartado)',
-      /Banners con más tiradas sin legendaria/.test(hHostil) && /Favoritos del perfil/.test(hHostil) && !/Título del perfil/.test(hHostil) && /Compañero/.test(hHostil));
-    await el('imp-ok').onclick();
-    const hOk = el('imp-box').innerHTML, guardadaUI = JSON.parse(store['ps.save.nicoui']);
-    t('Ajustes: Confirmar trae la partida y la guarda en este navegador', /¡Hecho!/.test(hOk) && /Guardada en este navegador/.test(hOk) &&
-      guardadaUI.coins === UG.DB.START_COINS + 48210 && guardadaUI.name === 'NicoUI', { coins: guardadaUI.coins });
-    // Los avisos flotantes (logros, «Partida traída») salen arriba o abajo de la pantalla: el resultado va arriba de
-    // la sección, antes de los pasos, y se centra en la pantalla (en el navegador lo mide el E2E a 844x390).
-    t('Ajustes: el resultado de Confirmar va arriba de la sección (antes de los pasos) y se centra en la pantalla; la vista previa sólo se acerca',
-      hOk.indexOf('class="imp-msg') > 0 && hOk.indexOf('class="imp-msg') < hOk.indexOf('class="imp-pasos"') && vistos[vistos.length - 1] === 'msg-center' &&
-      vistos.includes('prev-nearest') && hPropia.indexOf('class="imp-msg') < hPropia.indexOf('class="imp-pasos"'), vistos);
-    const hPropia2 = await elegir(store['ps.save.nicoui']);
-    t('Ajustes: después, su propia partida (ya con el registro) también da el error y no suma nada',
-      hPropia2.includes(I.TEXTOS.propia) && !/id="imp-ok"/.test(hPropia2) && JSON.parse(store['ps.save.nicoui']).coins === guardadaUI.coins);
-
-    // Inglés: cada texto que enseña la sección (en los estados de arriba: inicial, error, vista previa y
-    // resultado), sus errores, sus avisos flotantes y el alert del código pegado en esta versión tiene su
-    // entrada en js/data/lang-en*.js (frase exacta o patrón con {x}). Lo marcado translate="no" no cuenta.
-    const claves = new Set(), patrones = [];
-    const reEsc = x => x.replace(/[.*+?^${}()|[\]\\]/g, m => '\\' + m);
-    const ctxI = { G: { I18n: { add: d => Object.keys(d).forEach(k => {
-      const n = k.replace(/\s+/g, ' ').trim();
-      if (n.includes('{x}')) patrones.push(new RegExp('^' + n.split('{x}').map(reEsc).join('.+?') + '$', 'u'));
-      else claves.add(n);
-    }) } } };
-    vm.createContext(ctxI);
-    for (const f of ['js/data/lang-en.js', 'js/data/lang-en-mod.js']) vm.runInContext(rd(f), ctxI, { filename: f });
-    const ENT = { '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&#39;': "'" };
-    const textos = h => {
-      // Fuera el código del textarea (no se traduce), pero no la etiqueta: su aria-label sí cuenta.
-      const limpio = h.replace(/(<textarea[^>]*>)[\s\S]*?(<\/textarea>)/g, (m, a, b) => a + b).replace(/<span translate="no">[\s\S]*?<\/span>/g, '');
-      const out = [...limpio.matchAll(/(?:aria-label|title|placeholder)="([^"]*)"/g)].map(m => m[1]);
-      out.push(...limpio.split(/<[^>]*>/));
-      return out.map(x => x.replace(/&(amp|lt|gt|quot|#39);/g, m => ENT[m]).replace(/\s+/g, ' ').trim()).filter(x => /\p{L}/u.test(x));
-    };
-    const toasts = [...rd('js/ui/importar-ui.js').matchAll(/toast\('([^']+)'\)/g)].map(m => m[1]);
-    const enFork = runExporter(frag, { G: Object.assign(Object.create(GG), { DB: { guest: false } }) }).alerts;
-    const todos = new Set([...[hInicial, hPropia, hHostil, hOk].flatMap(textos), ...Object.values(I.TEXTOS), ...toasts, ...enFork]);
-    const sinIngles = [...todos].filter(x => !claves.has(x) && !patrones.some(p => p.test(x)));
-    t(`Ajustes: los ${todos.size} textos de la sección, sus errores y el aviso del código pegado aquí tienen inglés`,
-      todos.size >= 40 && toasts.length > 0 && enFork.length === 1 && !sinIngles.length, sinIngles);
-  } catch (e) { t('Ajustes (js/ui/importar-ui.js) con un DOM mínimo', false, String(e && e.stack || e)); }
-
-  const failed = r.filter(x => !x[1]);
-  if (!failed.length) ok(`exportador e importador: ${r.length} casos bien`);
-  for (const [name, , detail] of failed) bad(`importar: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);
-}
 
 // ---------------- 9. grieta garantizada ----------------
 // A: la lógica de js/core/mods.js, fotograma a fotograma. B: js/systems/rift.js real con el juego simulado
@@ -1782,19 +1328,6 @@ ${fTicket}      }
     t('avisos de logro: <html> lleva mod-avisos-tras-gacha con el ajuste (y no con avisosTrasGacha = false)', A.clase() && B.clase() && !O.clase(), { A: A.clase(), B: B.clase(), O: O.clase() });
   } catch (e) { t('avisos de logro y el gacha', false, String(e && e.stack || e)); }
 
-  // Traer la partida oficial no es ganar: suma lo que tenía allí una vez, sin multiplicar, y la segunda vez nada.
-  try {
-    const c = loadImporter();
-    vm.runInContext(rd('js/core/mods.js'), c, { filename: 'js/core/mods.js' });
-    const G = c.G, AHORA = Date.UTC(2026, 9, 12);
-    const mia = G.DB.newSave('Nico'); mia.created = Date.UTC(2026, 8, 1); mia.tickets = { t1: 5, t10: 0 };
-    const of = G.DB.newSave('Oficial'); of.created = Date.UTC(2026, 3, 1); of.tickets = { t1: 9, t10: 2 };
-    const x = G.Importar.analizar(JSON.stringify({ tipo: G.Importar.TIPO, version: 1, origen: 'pruebas', exportado: AHORA, save: of }), AHORA);
-    const r1 = G.Importar.fusionar(mia, x.save, AHORA), r2 = G.Importar.fusionar(r1, x.save, AHORA);
-    t('traer la partida oficial (con ticketsMult = 2): +9 y +2 ×10 una vez, sin multiplicar; la segunda vez, nada',
-      x.ok && G.MODS.ticketsMult === 2 && r1.tickets.t1 === 14 && r1.tickets.t10 === 2 && r2.tickets.t1 === 14 && r2.tickets.t10 === 2, { r1: r1.tickets, r2: r2.tickets });
-  } catch (e) { t('importador con mods.js', false, String(e && e.stack || e)); }
-
   // ---- B. Shiny ×shinyMult ----
   /** Azar reproducible (mulberry32). */
   const semilla = s => () => { s = s + 0x6D2B79F5 | 0; let x = Math.imul(s ^ s >>> 15, 1 | s); x = x + Math.imul(x ^ x >>> 7, 61 | x) ^ x; return ((x ^ x >>> 14) >>> 0) / 4294967296; };
@@ -1877,6 +1410,34 @@ ${fTicket}      }
     t('cartel del gacha (refresh() real): «1.5%» de shiny con 1,5 y «1%» con 1, como el proyecto base', /\[shiny\] Shiny<\/span><span>1\.5%<\/span>/.test(c15) && !c15.includes('<span>1%</span>') &&
       /\[shiny\] Shiny<\/span><span>1%<\/span>/.test(c1), c15.slice(c15.indexOf('[shiny]'), c15.indexOf('[shiny]') + 60));
   } catch (e) { t('shiny con el código real', false, String(e && e.stack || e)); }
+
+  // ---- B2. Regalo «buen humor» (22-10-2026): 10 tickets ×10 una vez, y shiny ×3 sólo en las tiradas que pagan ----
+  try {
+    const { G } = gacha(['js/data/multiverso.js']);
+    const M = G.MODS, rg = M.regaloBuenHumor;
+    t('regalo: probShiny con el regalo es ×3 sobre el ×1,5 (1 % → 4,5 %) y sin él, igual que antes',
+      Math.abs(M.probShiny(0.01, true) - 0.045) < 1e-12 && Math.abs(M.probShiny(0.01) - 0.015) < 1e-12 && M.probShiny(0.5, true) === 1, [M.probShiny(0.01, true), M.probShiny(0.01)]);
+    const nueva = () => ({ owned: {}, shiny: {}, pity: {}, stats: {}, coins: 0, tickets: { t1: 30, t10: 2 } });
+    const s = nueva(), d1 = M.darRegalo(s), d2 = M.darRegalo(s);
+    t('regalo: da 10 tickets ×10, 20.000 Pokémonedas y su cuenta de shiny una vez, y lo apunta; la segunda vez, nada',
+      d1 && !d2 && rg.t10 === 10 && rg.coins === 20000 && s.coins === 20000 && s.tickets.t10 === 12 && s.tickets.t1 === 30 && s.regaloShiny === 10 && s.regalos[rg.id] > 0 && /buen humor/.test(rg.texto), { d1, d2, s: s.tickets, r: s.regaloShiny });
+    // Qué tiradas piden el shiny del regalo: se apunta el segundo argumento de cada probShiny().
+    const pide = [], orig = M.probShiny;
+    M.probShiny = function (p, regalo) { pide.push(!!regalo); return orig.call(this, p, regalo); };
+    const tira = (sv, n, gen, use) => { pide.length = 0; const r = G.Gacha.pull(sv, n, gen, use); return { ok: !!r, con: pide.filter(x => x).length, sin: pide.filter(x => !x).length }; };
+    const a = nueva(); a.regaloShiny = 1;
+    const x1 = tira(a, 1, 1, 't1'), x10 = tira(a, 10, 1, 't10'), x10b = tira(a, 10, 1, 't10');
+    t('regalo: con tickets normales no se gasta; la ×10 con un ticket ×10 del regalo va entera con shiny ×3 y la siguiente, ya sin regalo, normal',
+      x1.ok && x1.con === 0 && x10.ok && x10.con > 0 && x10.sin === 0 && x10b.ok && x10b.con === 0 && x10b.sin > 0 && a.regaloShiny === 0 && a.tickets.t10 === 0, { x1, x10, x10b, r: a.regaloShiny });
+    // Multiverso (cada tirada, un ticket ×10): con 3 del regalo, sólo las 3 primeras de una ×10.
+    const b = nueva(); b.tickets.t10 = 10; b.regaloShiny = 3;
+    const mv = M.multiversoTicketLila ? tira(b, 10, G.MULTIVERSO.GEN, 't1') : null;
+    t('regalo: en el Multiverso, con 3 tickets del regalo, sólo las 3 primeras tiradas de una ×10 llevan el shiny ×3',
+      !mv || (mv.ok && mv.con === 3 && mv.sin === 7 && b.regaloShiny === 0 && b.tickets.t10 === 0), mv);
+    M.probShiny = orig;
+    M.regaloBuenHumor = null;
+    t('regalo: con regaloBuenHumor = null no se da nada y el shiny es el de siempre', !M.darRegalo(nueva()) && Math.abs(M.probShiny(0.01, true) - 0.015) < 1e-12);
+  } catch (e) { t('regalo «buen humor» con el gacha real', false, String(e && e.stack || e)); }
 
   // ---- C. Repetido -> su evolución (js/data/evolutions.js y pull() real con las tiradas guionizadas) ----
   try {
@@ -2741,7 +2302,9 @@ function identidadChecks() {
       caras.length === 2 && rangos.every(r => r && !cubre(r, 0x2026) && usados.every(cp => cubre(r, cp))), rangos);
     const ofl = ex('assets/fonts/OFL-MPLUSRounded1c.txt') ? rd('assets/fonts/OFL-MPLUSRounded1c.txt') : '';
     t('assets/fonts/OFL-MPLUSRounded1c.txt: «SIL Open Font License, Version 1.1» y «Rounded M+ Project Authors»; se conserva OFL.txt (Pixelify Sans)',
-      /SIL Open Font License, Version 1\.1/.test(ofl) && /Copyright 2016 The Rounded M\+ Project Authors/.test(ofl) && ex('assets/fonts/OFL.txt') && /Pixelify Sans/.test(rd('assets/fonts/OFL.txt')) && ex('assets/fonts/PixelifySans.ttf'));
+      /SIL Open Font License, Version 1\.1/.test(ofl) && /Copyright 2016 The Rounded M\+ Project Authors/.test(ofl) && ex('assets/fonts/OFL.txt') && /Pixelify Sans/.test(rd('assets/fonts/OFL.txt')) && ex('assets/fonts/PixelifySans-ps2.ttf'));
+    t('Pixelify con el «2» redibujado (tools/nico/fuente-dos.py): el fichero nuevo, sin el viejo, y ninguna página ni estilo cita el viejo (el service worker lo serviría para siempre)',
+      !ex('assets/fonts/PixelifySans.ttf') && ['css/style.css', 'css/pages.css', 'dev.html', 'index.html'].every(f => !rd(f).includes('PixelifySans.ttf') && rd(f).includes('PixelifySans-ps2.ttf')) && /el «2» redibujado/.test(rd('CREDITS.md')));
     const cr = rd('CREDITS.md');
     t('CREDITS.md cita las dos fuentes con su licencia (M PLUS Rounded 1c y Pixelify Sans, OFL)',
       /M PLUS Rounded 1c/.test(cr) && /Rounded M\+ Project Authors/.test(cr) && /OFL-MPLUSRounded1c\.txt/.test(cr) && /Pixelify Sans/.test(cr) && /Open Font License/.test(cr));
@@ -3123,7 +2686,7 @@ function identidadChecks() {
     const ficheros = ['dev.html', 'css/style.css', 'css/tokens-dex.css', 'css/nico.css', 'js/ui/marca.js', 'js/ui/estilo.js', 'js/ui/settings-ui.js', 'js/ui/run-ui.js',
       'js/ui/menu.js', 'js/ui/gacha-ui.js', 'js/game.js', 'js/core/mods.js', 'js/data/lang-en-mod.js', 'js/entities/claridad.js', 'CREDITS.md', 'assets/fonts/OFL-MPLUSRounded1c.txt',
       'tools/nico/check.js', 'js/ui/hud.js', 'js/ui/hud-dex.js', 'js/systems/events.js', 'tools/nico/coop-e2e.js', 'css/portada.css', 'js/ui/portada.js',
-      'tools/nico/iconos.py', 'js/main.js', 'js/core/importar.js', 'js/ui/importar-ui.js', 'js/ui/ui.js', '404.html', 'contacto/index.html', 'manifest.webmanifest',
+      'tools/nico/iconos.py', 'js/main.js', 'js/ui/ui.js', '404.html', 'contacto/index.html', 'manifest.webmanifest',
       'js/world/entorno.js', 'js/world/horno.js', 'js/world/tiles.js', 'js/world/world.js', 'js/systems/weather.js'].concat(ex('tools/nico/estilo-e2e.js') ? ['tools/nico/estilo-e2e.js'] : [], NUEVOS_MAPAS.filter(ex));
     const mezcla = ficheros.filter(f => { const s = rd(f), crlf = (s.match(/\r\n/g) || []).length, lf = (s.match(/\n/g) || []).length; return crlf && crlf !== lf; });
     const nuevosCRLF = ['css/tokens-dex.css', 'css/nico.css', 'js/ui/marca.js', 'js/ui/estilo.js', 'js/ui/hud-dex.js', 'assets/fonts/OFL-MPLUSRounded1c.txt',
@@ -5074,12 +4637,17 @@ function companeroChecks() {
       vm.createContext(c);
       for (const f of ['js/core/util.js', 'js/core/mods.js']) vm.runInContext(rd(f), c, { filename: f });
       Object.assign(c.G.MODS, mods);
-      Object.assign(c.G, { Audio: { music: x => llamadas.push('música ' + x) }, DB: { save: { partner } }, TestUI: { start: () => llamadas.push('test') } });
+      Object.assign(c.G, { Audio: { music: x => llamadas.push('música ' + x) }, DB: { save: { partner }, commit: () => llamadas.push('guarda') }, TestUI: { start: () => llamadas.push('test') },
+        UI: { toast: (x, ms) => llamadas.push(`aviso ${ms}: ${x}`), refreshCoins() {} }, T: x => x });
+      if (!mods.conRegalo) c.G.MODS.regaloBuenHumor = null;   // el regalo, aparte (abajo)
       if (!sinFichero) c.G.ElegirCompanero = { activo: () => !!(c.G.MODS && c.G.MODS.sinTest), abrir: () => llamadas.push('elegir') };
       vm.runInContext('var Flujo = {\n' + m[0] + '  goMenu() { G.__menu = true; }\n};\nFlujo.afterLogin();', c, { filename: 'js/game.js (afterLogin)' });
       if (c.G.__menu) llamadas.push('menú');
       return llamadas.join(', ');
     };
+    const conRegalo = caso({ partner: 4, mods: { conRegalo: true } });
+    t('afterLogin() real con el regalo «buen humor»: guarda y avisa con su texto 12 s, y luego el menú como siempre',
+      conRegalo === 'música village, guarda, aviso 12000: Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades, menú', conRegalo);
     const casos = { nueva: caso(), conTest: caso({ mods: { sinTest: false } }), conCompanero: caso({ partner: 4 }), sinFichero: caso({ sinFichero: true }), sinAjuste: caso({ mods: { sinTest: undefined } }) };
     t('afterLogin() real: sin compañero, «Elige a tu compañero» (nunca el test); con sinTest = false, el test; con compañero, el menú; si falta elegir-companero.js tras un merge, o el ajuste, el test de upstream',
       casos.nueva === 'música village, elegir' && casos.conTest === 'música village, test' && casos.conCompanero === 'música village, menú' &&
@@ -5177,9 +4745,6 @@ function companeroChecks() {
     const sinComentarios = css.replace(/\/\*[\s\S]*?\*\//g, '');
     t('css/nico.css tiene las variables y clases que usa elegir-companero.js (columnas, altos de línea, modos de los tipos), también en pantallas bajas',
       !faltan.length && /@media \(max-height: 519\.98px\) \{[^@]*#scr-starters\.sin-test #starter-grid \{ --ec-nombre: 14px/.test(sinComentarios), faltan);
-    const nota = rd('js/ui/importar-ui.js');
-    t('Ajustes > Cuenta: con sinTest, la nota de traer partida no nombra la personalidad (sin él, la de antes)',
-      nota.includes("G.MODS && G.MODS.sinTest ? 'Tu apodo, tus misiones de hoy y tu inicial no cambian.' : 'Tu apodo, tus misiones de hoy, tu personalidad y tu inicial no cambian.'"));
     const min = rd('js/app.min.js');
     t('el paquete js/app.min.js lleva G.ElegirCompanero y el ajuste sinTest', /ElegirCompanero/.test(min) && /sinTest/.test(min));
     t('finales de línea: elegir-companero.js, nuevo, en LF', !/\r/.test(js));
@@ -5399,6 +4964,14 @@ function devMenuChecks() {
   if (mv.length < 10 || !mv.every(x => s.owned[x] && s.shiny[x])) fallos.push('Multiverso incompleto');
   if (!fallos.length) ok(`menú de pruebas: «Desbloquear todos» da los ${dex.length} (${mv.length} del Multiverso) y ${conShiny.length} shiny (los que tienen sprite shiny), sin pisar lo que ya había; repetirlo no suma nada`);
   else bad('menú de pruebas, desbloquear todos: ' + fallos.join('; '));
+  // «Todos al máximo» (22-10-2026): todos y cada mejora a su máximo, sin bajar nada; repetirlo no sube nada.
+  vm.runInContext(rd('js/data/upgrades.js'), d, { filename: 'js/data/upgrades.js' });
+  const m = { owned: {}, shiny: {}, pupg: { 25: { hp: 3 }, 10001: { atk: 99 } } };
+  const m1 = G.DevMenu.maximizarTodo(m), m2 = G.DevMenu.maximizarTodo(m);
+  const alMax = dex.every(x => m.owned[x] && G.Upgrades.LIST.every(u => m.pupg[x][u.id] >= u.max));
+  if (alMax && m.pupg[10001].atk === 99 && m.pupg[25].hp === 10 && m1.subidas > 0 && m2.subidas === 0 && mv.every(x => m.pupg[x].moves === 1))
+    ok(`menú de pruebas: «Todos al máximo» deja los ${dex.length} (Multiverso incluido) con todas las mejoras al máximo, sin bajar ninguna; repetirlo no sube nada`);
+  else bad('menú de pruebas, todos al máximo: ' + JSON.stringify({ alMax, m1, m2 }));
 }
 
 // ---------------- 23. mapas propios: biomas, terreno, objetos, arenas, pintor y sprites (G.Mapas) ----------------
@@ -6247,7 +5820,7 @@ function multiversoChecks() {
     });
     const FLOTAN = [10003, 10008, 10010];   // el Cacodemonio, Blinky y el Ojo de Cthulhu (Drácula se desliza por el suelo)
     t('geometría propia (META de multiverso.js, la escribe montar.py): las 7 animaciones en 8 direcciones con su ancla dentro, variocolor, el radio y el tamaño de un Pokémon normal (Idle de 32 de ancho, como Charmander), y sólo flotan el Cacodemonio, Blinky y el Ojo de Cthulhu',
-      lista.length === 10 && geo.every(g => g.idle && g.filas && g.sh && g.radio && g.escala && g.flota === FLOTAN.includes(g.dex)) && lista.every(p => Object.keys(G.SPRITE_META[p.dex].a).length === 7), geo);
+      lista.length === 12 && geo.every(g => g.idle && g.filas && g.sh && g.radio && g.escala && g.flota === FLOTAN.includes(g.dex)) && lista.every(p => Object.keys(G.SPRITE_META[p.dex].a).length === 7), geo);
     // La lista que validó Nico el 14-10-2026: [id, nombre, forma, tipo, evolución, lo que pide] (sin evolución, un potenciador).
     const LISTA = {
       10001: [['llama-bebe', 'Llama Bebé', 'projectile', 'fire', 'Mega Llama', 'atk'], ['garra-afilada', 'Garra Afilada', 'melee', 'dragon', 'Brazo Tridente', 'atk'],
@@ -6290,7 +5863,16 @@ function multiversoChecks() {
       10010: [['siervo-de-cthulhu', 'Siervo de Cthulhu', 'projectile', 'psychic', 'Ojos Fantasmales', 'cd'], ['embestida-nocturna', 'Embestida Nocturna', 'dash', 'dark', 'Escudo de Cthulhu', 'def'],
         ['dentellada', 'Dentellada', 'melee', 'dark', 'Espasmatizador', 'atk'], ['embestidas-en-cadena', 'Embestidas en Cadena', 'chain', 'dark', 'El Ojo de Cthulhu', 'spd'],
         ['iris-roto', 'Iris Roto', 'nova', 'psychic', 'Esferas Fantasmales', 'rgn'], ['presencia-maligna', 'Presencia Maligna', 'aura', 'psychic', 'Infierno Inminente', 'xp'],
-        ['segunda-forma', 'Segunda Forma', 'buff', 'dark']]
+        ['segunda-forma', 'Segunda Forma', 'buff', 'dark']],
+      // Tercer lote (23-10-2026; tools/nico/multiverso/FICHAS.md)
+      10011: [['rifle-de-asalto', 'Rifle de Asalto', 'projectile', 'normal', 'Rifle de Batalla', 'cd'], ['aguijoneador', 'Aguijoneador', 'projectile', 'rock', 'Supercombinación', 'mag'],
+        ['granada-de-plasma', 'Granada de Plasma', 'meteor', 'fire', 'Cañón de Combustible', 'atk'], ['culatazo', 'Culatazo', 'melee', 'fighting', 'Martillo Gravitatorio', 'hp'],
+        ['espada-de-energia', 'Espada de Energía', 'dash', 'fire', 'Espada Duelista', 'spd'], ['rifle-de-precision', 'Rifle de Precisión', 'beam', 'steel', 'Láser Spartan', 'atk'],
+        ['warthog', 'Warthog', 'turret', 'ground', 'Scorpion', 'def'], ['sobreescudo', 'Sobreescudo', 'buff', 'electric']],
+      10012: [['espadas-del-caos', 'Espadas del Caos', 'melee', 'fire', 'Ciclón del Caos', 'cd'], ['arpon-de-orion', 'Arpón de Orión', 'boomerang', 'fighting', 'Espadas de Atenea', 'atk'],
+        ['furia-de-zeus', 'Furia de Zeus', 'projectile', 'electric', 'Ira de Cronos', 'mag'], ['ira-de-poseidon', 'Ira de Poseidón', 'meteor', 'water', 'Diluvio de Poseidón', 'spd'],
+        ['mirada-de-medusa', 'Mirada de Medusa', 'beam', 'rock', 'Cabeza de Euríale', 'def'], ['ejercito-de-hades', 'Ejército de Hades', 'orbit', 'ghost', 'Ejército de Esparta', 'hp'],
+        ['terremoto-de-atlas', 'Terremoto de Atlas', 'nova', 'ground', 'Tierra Destructiva', 'xp'], ['ira-de-esparta', 'Ira de Esparta', 'buff', 'fighting']]
     };
     const malLista = [];
     for (const [dex, at] of Object.entries(LISTA)) {
@@ -6303,14 +5885,14 @@ function multiversoChecks() {
       }
     }
     t('cada personaje aprende sólo su lista (poolFor() real, el inicial el primero): 7 de Agumon, 8 del Doom Slayer y 7 del Cacodemonio (validadas por Nico) y las del segundo lote (8 cada uno, 7 el Ojo de Cthulhu), cada uno con su nombre, su forma, su tipo, la escalera de mejoras de su forma y su evolución (Llama Bebé -> Mega Llama, Rifle de Plasma -> BFG 9000, Súper Escopeta -> Súper Escopeta Maestra...); los potenciadores, sin evolución',
-      !malLista.length && Object.keys(LISTA).length === 10 && MV.ATAQUES.length === 77, malLista);
+      !malLista.length && Object.keys(LISTA).length === 12 && MV.ATAQUES.length === 93, malLista);
     const nuevos = G.Moves.ALL.filter(x => !sin.Moves.BY_ID[x.id]).map(x => x.id);
     const enPool = Object.entries(G.Moves.POOL).filter(([, ids]) => nuevos.some(id => ids.includes(id))).map(([k]) => k);
     const otros = G.DEX.filter(p => !p.mv && G.Moves.poolFor(p).some(id => nuevos.includes(id))).map(p => p.dex);
     const ajenos = lista.flatMap(p => G.Moves.poolFor(p).filter(id => sin.Moves.BY_ID[id]).map(id => p.dex + ':' + id));
     const deDos = nuevos.filter(id => lista.filter(p => p.pool.includes(id)).length !== 1);
     t(`los ${nuevos.length} ataques del Multiverso no entran en ningún pool de tipo ni los aprende ningún Pokémon (${G.DEX.length - lista.length} mirados), ninguno de los del Multiverso aprende un ataque Pokémon y cada uno de los suyos es de un solo personaje`,
-      nuevos.length === 77 && !enPool.length && !otros.length && !ajenos.length && !deDos.length, { enPool, otros: otros.slice(0, 5), ajenos, deDos });
+      nuevos.length === 93 && !enPool.length && !otros.length && !ajenos.length && !deDos.length, { enPool, otros: otros.slice(0, 5), ajenos, deDos });
     // Control: sin el gancho de poolFor() (moves.js), Agumon aprendería los de Fuego, Dragón y Normal.
     const sinPool = montar({ cambia: { 'js/data/moves.js': s => s.replace(/^\s*if \(mon\.pool\)[^\n]*MOD nico[^\n]*\n/m, '') } }).G;
     const ctrl = sinPool.Moves.poolFor(sinPool.DEX_BY[10001]);
@@ -6342,7 +5924,7 @@ function multiversoChecks() {
       return !(m.lvl === m.def.maxLvl && info && info.ready && info.name === e[0] && G.Moves.evolve(m) && m.name === e[0] && m.evolved);
     });
     t('suben de nivel con su escalera (instance() real: nivel 3 distinto del 1, sin la escalera dentro) y los 67 que evolucionan llegan al máximo y evolucionan (evoInfo() y evolve() reales)',
-      inst.lvl === 3 && !('ups' in inst) && JSON.stringify(inst) !== JSON.stringify(base) && nuevos.filter(id => G.Moves.EVO[id]).length === 67 && !evos.length, evos);
+      inst.lvl === 3 && !('ups' in inst) && JSON.stringify(inst) !== JSON.stringify(base) && nuevos.filter(id => G.Moves.EVO[id]).length === 81 && !evos.length, evos);
   } catch (e) { t('datos del Multiverso', false, String(e && e.stack || e)); }
   // ---- A2. Sus ataques en partida: las cartas de subida de nivel, la mejora «Repertorio» y cómo se ven ----
   try {
@@ -6517,7 +6099,7 @@ function multiversoChecks() {
     t('el cartel del Multiverso dice que cada tirada cuesta un ticket ×10', rates.includes('· Cada tirada cuesta un ticket ×10, el lila (la ×10, diez).<br>'), rates);
     t('pestaña del gacha: «Otros mundos» en vez de «Gen 10» desde que se abre el gacha (en Kanto)', enKanto === 'Otros mundos', enKanto);
     t('cartel del Multiverso: título, sus sagas sin repetir, sin el pity de la legendaria y los tres primeros de destacados',
-      els['banner-title'].textContent === 'Multiverso' && els['banner-desc'].textContent === 'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria.' &&
+      els['banner-title'].textContent === 'Multiverso' && els['banner-desc'].textContent === 'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War.' &&
       els['gacha-pity'].textContent === '' && [10001, 10002, 10003].every(d => els['gacha-feat'].children.some(x => x.dex === d)), { titulo: els['banner-title'].textContent, desc: els['banner-desc'].textContent });
     const pct = +(100 / G.MULTIVERSO.lista().length).toFixed(2) + '%';
     // Con multiversoRepetidoPorCoste apagado (o sin el ticket lila), el cartel vuelve a decir 30.
@@ -6549,7 +6131,7 @@ function multiversoChecks() {
     for (const f of ['js/core/i18n.js', 'js/data/lang-en.js', 'js/data/lang-en-mod.js']) vm.runInContext(rd(f), c, { filename: f });
     const EN = c.G.I18n.t;
     const casos = { 'Multiverso': 'Multiverse', 'Otros mundos': 'Other worlds', 'Llama Bebé': 'Pepper Breath', 'Mega Llama': 'Nova Blast',
-      'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria.': 'Characters from other worlds who slip into the swarm: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria.',
+      'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War.': 'Characters from other worlds who slip into the swarm: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War.',
       'Ojo de Cthulhu': 'Eye of Cthulhu', 'Drácula': 'Dracula', 'Espada Maestra': 'Master Sword', 'Píldora de Poder': 'Power Pellet', 'Fuego Infernal': 'Hellfire',
       'Cacodemonio': 'Cacodemon', 'Súper Escopeta': 'Super Shotgun', 'Rayo Bola': 'Ball Lightning', 'Tormenta Infernal': 'Hellstorm',
       'Escopeta de dos cañones: una ráfaga corta de perdigones que empuja.': 'Double-barrelled shotgun: a short burst of pellets that knocks back.',
@@ -6565,7 +6147,7 @@ function multiversoChecks() {
     // Cada ataque del Multiverso: su nombre, su descripción, su evolución y la carta dorada de evolucionar («X → Y»).
     const textos = MV ? MV.ATAQUES.flatMap(a => [a.name, a.desc].concat(a.evo ? [a.evo[0], a.name + ' → ' + a.evo[0]] : [])) : [];
     // Los que se llaman igual en inglés (nombres propios de su saga): se miran sólo por si traen algo en español.
-    const IGUALES = new Set(['BFG 9000', 'Epona', 'Waka Waka', 'Super Pac-Man', 'Waka Waka → Super Pac-Man', 'Pyro', 'Pac-Mania', 'Game Over', 'Cruise Elroy']);
+    const IGUALES = new Set(['BFG 9000', 'Epona', 'Waka Waka', 'Super Pac-Man', 'Waka Waka → Super Pac-Man', 'Pyro', 'Pac-Mania', 'Game Over', 'Cruise Elroy', 'Warthog', 'Scorpion', 'Warthog → Scorpion']);
     const sinIngles = textos.filter(x => (!IGUALES.has(x) && EN(x) === x) || /[áéíóúñ¿¡]/i.test(EN(x)));
     const cartas = { 'Rifle de Plasma → BFG 9000': 'Plasma Rifle → BFG 9000', 'Granada → Granada de Racimo': 'Frag Grenade → Cluster Grenade',
       'Súper Escopeta → Súper Escopeta Maestra': 'Super Shotgun → Super Shotgun Mastery', 'Torbellino → Gran Tornado': 'Whirlwind → Great Tornado' };
@@ -7059,7 +6641,70 @@ function vistasChecks() {
   for (const [name, , detail] of failed) bad(`apariciones en grupo: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);
 }
 
-importChecks().catch(e => bad('no se pudo probar el importador: ' + (e && e.stack || e))).then(() => {
+// ---------------- 29. cofres pequeños como blanco (G.MODS.cofreCercano) ----------------
+function cofresChecks() {
+  console.log('29. Cofres pequeños: tu Pokémon los ataca también con enemigos cerca (G.MODS.cofreCercano)');
+  const c = { console }; c.window = c; c.G = {}; vm.createContext(c);
+  for (const f of ['js/core/util.js', 'js/core/mods.js']) vm.runInContext(rd(f), c, { filename: f });
+  const M = c.G.MODS, props = [
+    { type: 'chest', x: 100, y: 0, hp: 22 }, { type: 'chest', x: 60, y: 0, hp: 0 }, { type: 'bigchest', x: 20, y: 0, hp: Infinity },
+    { type: 'rock', x: 10, y: 0, hp: 10 }, { type: 'chest', x: 0, y: 140, hp: 5 }];
+  c.G.World = { propsInCircle: (x, y, r) => props.filter(p => (p.x - x) ** 2 + (p.y - y) ** 2 <= r * r) };
+  const pl = { x: 0, y: 0 }, r = [];
+  r.push(['el cofre pequeño vivo más cercano (ni el roto, ni el del candado, ni la roca)', M.cofreBlanco === 150 && M.cofreCercano(pl) === props[0]]);
+  props[0].hp = 0;
+  r.push(['roto el primero, el siguiente a tiro', M.cofreCercano(pl) === props[4]]);
+  r.push(['fuera de cofreBlanco, ninguno', M.cofreCercano({ x: 1000, y: 1000 }) === null]);
+  M.cofreBlanco = 0;
+  r.push(['con cofreBlanco = 0, como upstream', M.cofreCercano(pl) === null]);
+  const failed = r.filter(x => !x[1]);
+  if (!failed.length) ok(`cofres pequeños: ${r.length} casos bien`);
+  for (const [name] of failed) bad('cofres pequeños: ' + name);
+}
+
+// ---------------- 28. el PokéCasino (js/systems/casino.js) ----------------
+function casinoChecks() {
+  console.log('28. PokéCasino «Danilo\'s Gamblers Club» (js/systems/casino.js): ruleta, pagos y el robo del Team Rocket');
+  const c = { console }; c.window = c; c.G = {}; vm.createContext(c);
+  for (const f of ['js/core/util.js', 'js/core/mods.js', 'js/systems/casino.js']) vm.runInContext(rd(f), c, { filename: f });
+  const G = c.G, C = G.Casino, r = [];
+  const t = (name, cond, detail) => r.push([name, !!cond, detail]);
+  /** Azar de mentira: primero el número (n), luego la tirada del robo. */
+  const azar = (n, robo = 0.5) => { const q = [(n + 0.5) / 37, robo]; return () => q.shift(); };
+  const num = [...Array(37).keys()];
+  t('la rueda europea: 37 casillas sin repetir, 18 rojos, 18 negros y el 0',
+    C.RUEDA.length === 37 && new Set(C.RUEDA).size === 37 && num.filter(n => C.color(n) === 'rojo').length === 18 && num.filter(n => C.color(n) === 'negro').length === 18 && C.color(0) === 'cero');
+  t('girar() da de 0 a 36 también en los extremos del azar', C.girar(() => 0) === 0 && C.girar(() => 0.999999) === 36);
+  const s = () => ({ coins: 5000 });
+  const a = s(), ra = C.apostar(a, 'rojo', 1000, azar(1)), b = s(), rb = C.apostar(b, 'negro', 1000, azar(1)), z = s(), rz = C.apostar(z, 'cero', 100, azar(0)), zr = s(), rzr = C.apostar(zr, 'rojo', 100, azar(0));
+  t('pagos: rojo y negro 1 a 1, el 0 35 a 1, y con el 0 pierden rojo y negro',
+    ra.gana && a.coins === 6000 && !rb.gana && b.coins === 4000 && rz.gana && z.coins === 5000 - 100 + 3600 && !rzr.gana && zr.coins === 4900, [a.coins, b.coins, z.coins, zr.coins]);
+  t('estadísticas en save.casino', a.casino.tiradas === 1 && a.casino.apostado === 1000 && a.casino.ganado === 2000 && a.casino.robado === 0, a.casino);
+  const e = [C.apostar(s(), 'verde', 100).error, C.apostar(s(), 'rojo', 5).error, C.apostar(s(), 'rojo', 6000).error, C.apostar(s(), 'rojo', 10.5).error];
+  t('sólo rojo, negro o el 0, con la mínima y sin pasar de lo que tienes (y sin tocar la partida)', e.every(Boolean), e);
+  const p1 = s(), r1 = C.apostar(p1, 'rojo', 1000, azar(2, 0.005)), p2 = { coins: 20000 }, r2 = C.apostar(p2, 'rojo', 10000, azar(1, 0.001)), p3 = s(), r3 = C.apostar(p3, 'rojo', 1000, azar(2, 0.01));
+  t('robo del Team Rocket: con el 1 %, la mitad de la apuesta y como mucho 2000; con 0,01 o más, nada',
+    r1.robo === 500 && p1.coins === 5000 - 1000 - 500 && r2.robo === 2000 && p2.coins === 20000 + 10000 - 2000 && r3.robo === 0 && p1.casino.robado === 500, [r1, r2, r3]);
+  const p4 = { coins: 1000 }, r4 = C.apostar(p4, 'negro', 1000, azar(1, 0));
+  t('el robo nunca deja las Pokémonedas en negativo', r4.robo === 0 && p4.coins === 0, r4);
+  G.MODS.casino = null;
+  t('sin G.MODS.casino, ni casino (activo() false) ni robo', !C.activo() && C.apostar(s(), 'rojo', 100, azar(2, 0)).robo === 0);
+  const html = rd('dev.html');
+  t('la pantalla: el cartel «Danilo\'s Gamblers Club», el botón «PokéCasino» del menú y las tres apuestas',
+    /<h2 class="cas-cartel"[^>]*>Danilo's Gamblers Club<\/h2>/.test(html) && /data-go="casino">PokéCasino</.test(html) && ['rojo', 'negro', 'cero'].every(x => html.includes(`data-apuesta="${x}"`)));
+  t('con Dex se entra desde el Gacha (#gacha-casino) y el botón del menú se esconde; con Clásico, desde el menú',
+    /id="gacha-casino"/.test(html) && /html\.estilo-dex #scr-menu \.menu-item\[data-go="casino"\] \{ display: none; \}/.test(rd('css/nico.css')) && /\$\('gacha-casino'\)/.test(rd('js/systems/casino.js')));
+  t('Meowth (#52) de crupier y los dos del Team Rocket en píxeles con su paleta', /G\.UI\.sprite\(m, 52,/.test(rd('js/systems/casino.js')) &&
+    ['jessie', 'james'].every(k => C.ROCKET[k].rows.every(f => [...f].every(ch => ch === '.' || ch === 'k' || C.ROCKET[k].pal[ch]))));
+  const en = rd('js/data/lang-en-mod.js'), faltan = ['PokéCasino', 'Ruleta de Pokémonedas', 'Rojo', 'Negro', 'El 0', 'Girar', 'La casa gana, nya… ¿Otra?', '¡Prepárate para los problemas! El Team Rocket te ha robado', C.FRASE_ROBO].filter(x => !en.includes(`'${x}'`));
+  t('al robarte, el Team Rocket dice la frase de Nico', C.FRASE_ROBO.includes('Mejor me quedo este oro, al menos yo lo usaré para robar Pokémons y no lo tiraré aquí...') && /tr\(FRASE_ROBO\)/.test(rd('js/systems/casino.js')));
+  t('los textos del casino tienen inglés', !faltan.length, faltan);
+  const failed = r.filter(x => !x[1]);
+  if (!failed.length) ok(`casino: ${r.length} casos bien`);
+  for (const [name, , detail] of failed) bad(`casino: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);
+}
+
+(() => {
   try { grietaChecks(); } catch (e) { bad('no se pudo probar la grieta garantizada: ' + (e && e.stack || e)); }
   try { gachaChecks(); } catch (e) { bad('no se pudo probar el gacha y los tickets: ' + (e && e.stack || e)); }
   try { claridadChecks(); } catch (e) { bad('no se pudo probar la claridad en partida: ' + (e && e.stack || e)); }
@@ -7079,6 +6724,8 @@ importChecks().catch(e => bad('no se pudo probar el importador: ' + (e && e.stac
   try { multiversoChecks(); } catch (e) { bad('no se pudo probar el Multiverso: ' + (e && e.stack || e)); }
   try { relieveChecks(); } catch (e) { bad('no se pudo probar el relieve, las sombras y la luz: ' + (e && e.stack || e)); }
   try { vistasChecks(); } catch (e) { bad('no se pudo probar las apariciones en grupo: ' + (e && e.stack || e)); }
+  try { cofresChecks(); } catch (e) { bad('no se pudo probar los cofres pequeños: ' + (e && e.stack || e)); }
+  try { casinoChecks(); } catch (e) { bad('no se pudo probar el casino: ' + (e && e.stack || e)); }
   console.log(fails ? `\nRESULTADO: ${fails} fallo(s), ${warns} aviso(s)` : `\nRESULTADO: todo bien (${warns} aviso(s))`);
   process.exit(fails ? 1 : 0);
-});
+})();

@@ -82,7 +82,14 @@ G.MULTIVERSO = (() => {
       pool: ['fuego-infernal', 'alas-demoniacas', 'enjambre-murcielagos', 'rayo-fatal', 'ola-oscuridad', 'robo-almas', 'guadana-muerte', 'metamorfosis-oscura'] },
     { dex: 10010, name: 'Ojo de Cthulhu', types: ['psychic', 'ghost'], hp: 106, spd: 117, atk: 1.07, rarity: 2, bst: 415,
       starter: false, gen: GEN, mv: true, start: 'siervo-de-cthulhu', serie: 'Terraria',
-      pool: ['siervo-de-cthulhu', 'embestida-nocturna', 'dentellada', 'embestidas-en-cadena', 'iris-roto', 'presencia-maligna', 'segunda-forma'] }
+      pool: ['siervo-de-cthulhu', 'embestida-nocturna', 'dentellada', 'embestidas-en-cadena', 'iris-roto', 'presencia-maligna', 'segunda-forma'] },
+    // Tercer lote (23-10-2026; fichas en tools/nico/multiverso/FICHAS.md)
+    { dex: 10011, name: 'Jefe Maestro', types: ['rock', 'fighting'], hp: 122, spd: 106, atk: 1.11, rarity: 2, bst: 425,
+      starter: false, gen: GEN, mv: true, start: 'rifle-de-asalto', serie: 'Halo',
+      pool: ['rifle-de-asalto', 'aguijoneador', 'granada-de-plasma', 'culatazo', 'espada-de-energia', 'rifle-de-precision', 'warthog', 'sobreescudo'] },
+    { dex: 10012, name: 'Kratos', types: ['fighting', 'fire'], hp: 120, spd: 102, atk: 1.16, rarity: 2, bst: 430,
+      starter: false, gen: GEN, mv: true, start: 'espadas-del-caos', serie: 'God of War',
+      pool: ['espadas-del-caos', 'arpon-de-orion', 'furia-de-zeus', 'ira-de-poseidon', 'mirada-de-medusa', 'ejercito-de-hades', 'terremoto-de-atlas', 'ira-de-esparta'] }
   ];
 
   // En el comentario de cada uno, su daño nominal y el de ataques Pokémon de su forma.
@@ -403,7 +410,71 @@ G.MULTIVERSO = (() => {
       evo: ['Infierno Inminente', 'xp'] },
     { id: 'segunda-forma', name: 'Segunda Forma', type: 'dark', kind: 'buff',           // los números de Danza Dragón
       desc: 'No hace daño: acumula ATAQUE mientras esté activo.',
-      cd: 0.7, stat: 'atk', amount: 0.11, dur: 7, stacks: 5, vis: { buff: 'jaws' } }
+      cd: 0.7, stat: 'atk', amount: 0.11, dur: 7, stacks: 5, vis: { buff: 'jaws' } },
+    // ---- Jefe Maestro (Halo) ----
+    { id: 'rifle-de-asalto', name: 'Rifle de Asalto', type: 'normal', kind: 'projectile',  // 30,0 (Pistola Agua 31,8)
+      desc: 'Fuego automático y rapidísimo al enemigo más cercano, algo disperso.',
+      cd: 0.3, dmg: 9, speed: 440, count: 1, spread: 0.16, pierce: 0, life: 1, size: 4, vis: { proj: 'needle', pal: 'electric' },
+      evo: ['Rifle de Batalla', 'cd'] },
+    { id: 'aguijoneador', name: 'Aguijoneador', type: 'rock', kind: 'projectile',          // 26,7 (Esfera Aural 27,4)
+      desc: 'Dispara dos agujas de cristal rosa que persiguen solas al enemigo.',
+      cd: 0.75, dmg: 10, speed: 300, count: 2, spread: 0.25, pierce: 0, life: 1.8, size: 5, homing: 2.5, vis: { proj: 'shard', pal: 'psychic', trail: 'spark' },
+      evo: ['Supercombinación', 'mag'] },
+    { id: 'granada-de-plasma', name: 'Granada de Plasma', type: 'fire', kind: 'meteor',    // 49,2 (Puño Meteoro 48,6)
+      desc: 'Lanza una granada de plasma que se pega al enemigo y estalla con fuerza. Quema.',
+      cd: 1.3, dmg: 64, count: 1, radius: 46, burn: 1, vis: { proj: 'ball', pal: 'aura', trail: 'spark' },
+      evo: ['Cañón de Combustible', 'atk'] },
+    { id: 'culatazo', name: 'Culatazo', type: 'fighting', kind: 'melee',                   // 41,7 (Golpe Kárate 44,0)
+      desc: 'Un golpe seco con la culata del rifle, lento y brutal, en arco estrecho. Empuja mucho.',
+      cd: 0.6, dmg: 25, radius: 58, arc: 1.6, knock: 120, vis: { melee: 'impact' },
+      evo: ['Martillo Gravitatorio', 'hp'] },
+    { id: 'espada-de-energia', name: 'Espada de Energía', type: 'fire', kind: 'dash',      // 26,3 (Ataque Rápido 26,7)
+      desc: 'Se lanza en estocada hacia el enemigo con la espada de plasma y corta todo lo del camino.',
+      cd: 0.8, dmg: 21, radius: 115, width: 28, knock: 30, vis: { proj: 'streak', melee: 'claw', pal: 'aura' },
+      evo: ['Espada Duelista', 'spd'] },
+    { id: 'rifle-de-precision', name: 'Rifle de Precisión', type: 'steel', kind: 'beam',   // 23,3 (Furia Dragón 24,0)
+      desc: 'Un disparo lento y certero que cruza todo el campo en línea recta y atraviesa a todos.',
+      cd: 1.5, dmg: 35, radius: 250, width: 20, vis: { beam: 'streak', pal: 'normal' },
+      evo: ['Láser Spartan', 'atk'] },
+    { id: 'warthog', name: 'Warthog', type: 'ground', kind: 'turret',                      // 3,5 (Sustituto 3,5)
+      desc: 'Aparca un Warthog con un marine en la ametralladora, que dispara solo una ráfaga rápida.',
+      cd: 4, dmg: 14, rate: 0.35, dur: 5, count: 1, range: 290, speed: 420, size: 5, vis: { proj: 'needle', pal: 'electric' },
+      evo: ['Scorpion', 'def'] },
+    { id: 'sobreescudo', name: 'Sobreescudo', type: 'electric', kind: 'buff',              // los números de Fortaleza
+      desc: 'No hace daño: acumula DEFENSA mientras esté activo.',
+      cd: 0.85, stat: 'def', amount: 0.07, dur: 7, stacks: 5, vis: { buff: 'ring', pal: 'aura' } },
+    // ---- Kratos (God of War) ----
+    { id: 'espadas-del-caos', name: 'Espadas del Caos', type: 'fire', kind: 'melee',     // 30,0 (Látigo Cepa 30,6)
+      desc: 'Dos espadas al rojo atadas a cadenas: barren un arco amplio y lejano. Quema.',
+      cd: 0.6, dmg: 18, radius: 85, arc: 2.4, knock: 30, burn: 1, vis: { melee: 'claw', pal: 'fire' },
+      evo: ['Ciclón del Caos', 'cd'] },
+    { id: 'arpon-de-orion', name: 'Arpón de Orión', type: 'fighting', kind: 'boomerang', // 20,0 (Hoja Afilada 22,2)
+      desc: 'Lanza una espada encadenada contra el enemigo y la recoge, golpeando a la ida y a la vuelta.',
+      cd: 0.85, dmg: 17, speed: 340, count: 1, radius: 225, size: 8, vis: { proj: 'crescent', pal: 'fire', trail: 'ember' },
+      evo: ['Espadas de Atenea', 'atk'] },
+    { id: 'furia-de-zeus', name: 'Furia de Zeus', type: 'electric', kind: 'projectile',  // 31,3 (Impactrueno 32,5)
+      desc: 'Arroja un rayo de Zeus, rápido y lejano, que atraviesa a uno.',
+      cd: 0.48, dmg: 15, speed: 460, count: 1, spread: 0.08, pierce: 1, life: 1.2, size: 6, vis: { proj: 'bolt', trail: 'spark' },
+      evo: ['Ira de Cronos', 'mag'] },
+    { id: 'ira-de-poseidon', name: 'Ira de Poseidón', type: 'water', kind: 'meteor',     // 50,0 (Puño Meteoro 48,6; Granizo 60)
+      desc: 'Rayos azules del dios del mar caen sobre los enemigos cercanos y los frenan.',
+      cd: 1.2, dmg: 15, count: 4, radius: 42, slow: 0.3, vis: { proj: 'bolt', pal: 'water', trail: 'spark' },
+      evo: ['Diluvio de Poseidón', 'spd'] },
+    { id: 'mirada-de-medusa', name: 'Mirada de Medusa', type: 'rock', kind: 'beam',      // 17,5 (Rayo Hielo 18,2)
+      desc: 'La cabeza de la Gorgona lanza una mirada en línea recta que petrifica: frena muchísimo.',
+      cd: 1.2, dmg: 21, radius: 215, width: 28, slow: 0.75, vis: { beam: 'ring', pal: 'grass' },
+      evo: ['Cabeza de Euríale', 'def'] },
+    { id: 'ejercito-de-hades', name: 'Ejército de Hades', type: 'ghost', kind: 'orbit',  // 150,0 (Tornado 150,0)
+      desc: 'Las almas del Inframundo giran a tu alrededor y golpean lo que tocan.',
+      cd: 0.28, dmg: 14, count: 3, radius: 70, speed: 2.5, size: 8, vis: { proj: 'shadow', trail: 'wisp' },
+      evo: ['Ejército de Esparta', 'hp'] },
+    { id: 'terremoto-de-atlas', name: 'Terremoto de Atlas', type: 'ground', kind: 'nova', // 80,0 (Disparo Lodo 70,0; Burbuja 72,0)
+      desc: 'Golpea el suelo y salen rocas en todas direcciones que empujan.',
+      cd: 1.2, dmg: 12, speed: 210, count: 8, pierce: 0, life: 1.1, size: 9, knock: 70, vis: { proj: 'rock', trail: 'dirt', pal: 'ground' },
+      evo: ['Tierra Destructiva', 'xp'] },
+    { id: 'ira-de-esparta', name: 'Ira de Esparta', type: 'fighting', kind: 'buff',      // los números de Danza Espada
+      desc: 'No hace daño: acumula ATAQUE mientras esté activo.',
+      cd: 0.85, stat: 'atk', amount: 0.13, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'fire' } }
   ];
 
   // Geometría de las hojas (G.SPRITE_META): la escribe tools/nico/multiverso/montar.py.
@@ -419,6 +490,8 @@ G.MULTIVERSO = (() => {
     10008: {"s":1,"a":{"Idle":{"w":32,"h":40,"n":4,"r":8,"d":[10,10,10,10],"ax":15.5,"ay":34.5},"Walk":{"w":32,"h":40,"n":4,"r":8,"d":[6,6,6,6],"ax":15.5,"ay":34.5},"Attack":{"w":40,"h":40,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":34.5},"Shoot":{"w":40,"h":40,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":34.5},"Charge":{"w":32,"h":40,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":34.5},"Hurt":{"w":40,"h":40,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":34.5},"Faint":{"w":40,"h":40,"n":4,"r":8,"d":[6,6,10,14],"ax":19.5,"ay":34.5}},"sh":1,"hv":1},
     10009: {"s":1,"a":{"Idle":{"w":32,"h":36,"n":2,"r":8,"d":[36,20],"ax":15.5,"ay":30.5},"Walk":{"w":32,"h":36,"n":4,"r":8,"d":[6,8,6,8],"ax":15.5,"ay":30.5},"Attack":{"w":40,"h":36,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":30.5},"Shoot":{"w":40,"h":36,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":30.5},"Charge":{"w":32,"h":36,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":30.5},"Hurt":{"w":40,"h":36,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":30.5},"Faint":{"w":40,"h":36,"n":4,"r":8,"d":[8,12,4,10],"ax":19.5,"ay":30.5}},"sh":1},
     10010: {"s":1,"a":{"Idle":{"w":32,"h":39,"n":4,"r":8,"d":[10,10,10,10],"ax":15.5,"ay":33.5},"Walk":{"w":32,"h":39,"n":4,"r":8,"d":[6,6,6,6],"ax":15.5,"ay":33.5},"Attack":{"w":40,"h":39,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":33.5},"Shoot":{"w":40,"h":39,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":33.5},"Charge":{"w":32,"h":39,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":33.5},"Hurt":{"w":40,"h":39,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":33.5},"Faint":{"w":40,"h":39,"n":4,"r":8,"d":[8,6,6,10],"ax":19.5,"ay":33.5}},"sh":1,"hv":1},
+    10011: {"s":1,"a":{"Idle":{"w":32,"h":37,"n":2,"r":8,"d":[36,20],"ax":15.5,"ay":31.5},"Walk":{"w":48,"h":45,"n":4,"r":8,"d":[6,8,6,8],"ax":23.5,"ay":39.5},"Attack":{"w":40,"h":37,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":31.5},"Shoot":{"w":40,"h":37,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":31.5},"Charge":{"w":32,"h":37,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":31.5},"Hurt":{"w":40,"h":37,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":31.5},"Faint":{"w":40,"h":37,"n":4,"r":8,"d":[8,12,4,10],"ax":19.5,"ay":31.5}},"sh":1},
+    10012: {"s":1,"a":{"Idle":{"w":32,"h":37,"n":2,"r":8,"d":[36,20],"ax":15.5,"ay":31.5},"Walk":{"w":48,"h":45,"n":4,"r":8,"d":[6,8,6,8],"ax":23.5,"ay":39.5},"Attack":{"w":40,"h":37,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":31.5},"Shoot":{"w":40,"h":37,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":31.5},"Charge":{"w":32,"h":37,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":31.5},"Hurt":{"w":40,"h":37,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":31.5},"Faint":{"w":40,"h":37,"n":4,"r":8,"d":[8,12,4,10],"ax":19.5,"ay":31.5}},"sh":1},
   };
   // </meta montar.py>
 

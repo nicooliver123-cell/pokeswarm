@@ -83,6 +83,7 @@ G.Gacha = (() => {
     if (!cost) return null;
     save.tickets.t1 -= cost.t1;
     save.tickets.t10 -= cost.t10;
+    const regalo = G.MODS && G.MODS.gastarRegalo ? G.MODS.gastarRegalo(save, n, cost) : 0;   // MOD nico: las primeras `regalo` tiradas, con shiny ×3 (G.MODS.regaloBuenHumor)
     save.pity = save.pity || {};
     save.shiny = save.shiny || {};
     save.pity[gen] = save.pity[gen] || 0;
@@ -98,7 +99,7 @@ G.Gacha = (() => {
       const { rarity, list } = poolNear(want, gen);
       if (rarity === 5) save.pity[gen] = 0;
       const mon = G.U.pick(list);
-      const shiny = G.Sprites.hasShiny(mon.dex) && (forceShiny > 0 ? (forceShiny--, true) : Math.random() < (G.MODS && G.MODS.probShiny ? G.MODS.probShiny(SHINY_RATE) : SHINY_RATE));   // MOD nico: shiny ×shinyMult
+      const shiny = G.Sprites.hasShiny(mon.dex) && (forceShiny > 0 ? (forceShiny--, true) : Math.random() < (G.MODS && G.MODS.probShiny ? G.MODS.probShiny(SHINY_RATE, i < regalo) : SHINY_RATE));   // MOD nico: shiny ×shinyMult (y ×3 con el regalo)
 
       let isNew = false, refund = 0;
       if (shiny) {

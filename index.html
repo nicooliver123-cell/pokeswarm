@@ -24,7 +24,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PokéSwarm"><!-- MOD nico -->
 <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<link rel="preload" href="assets/fonts/PixelifySans.ttf" as="font" type="font/ttf" crossorigin>
+<link rel="preload" href="assets/fonts/PixelifySans-ps2.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/tokens-dex.css"><!-- MOD nico: estilo Dex, sus variables y su letra (M PLUS Rounded 1c, OFL) -->
 <link rel="stylesheet" href="css/nico.css"><!-- MOD nico: menús (arreglos de los dos estilos y piel Dex) -->
@@ -146,6 +146,7 @@
         <button class="menu-item" data-go="upgrades">Mejoras<small>Haz más fuerte cada run</small></button>
         <button class="menu-item" data-go="guarderia">Guardería<small>Entrenan mientras juegas</small></button><!-- MOD nico: js/systems/guarderia.js -->
         <button class="menu-item" data-go="gacha">Gacha<small>9 regiones · Pokémon y shinies</small></button>
+        <button class="menu-item" data-go="casino">PokéCasino<small>Ruleta de Pokémonedas</small></button><!-- MOD nico: js/systems/casino.js -->
         <button class="menu-item" data-go="goals">Misiones<small id="menu-goals-sub">Misiones, logros y perfil</small></button>
         <button class="menu-item" data-go="friends">Amigos<small id="menu-friends-sub">Juega en grupo, hasta 4</small></button>
         <button class="menu-item" data-go="rank">Ranking<small>Quién aguanta más</small></button>
@@ -392,6 +393,32 @@
   </div>
 </section>
 
+<!-- MOD nico: el PokéCasino, «Danilo's Gamblers Club» (js/systems/casino.js) -->
+<section id="scr-casino" class="scr dim hidden">
+  <div class="box wide">
+    <div class="row between"><h2 class="cas-cartel" translate="no">Danilo's Gamblers Club</h2><button class="btn small ghost" data-back>Volver</button></div>
+    <div class="cas-mesa">
+      <canvas id="cas-escena" width="480" height="270" role="img" aria-label="Danilo's Gamblers Club: Meowth de crupier en la mesa de la ruleta"></canvas>
+      <canvas id="cas-meowth" width="96" height="96" aria-hidden="true"></canvas>
+    </div>
+    <p id="cas-dice" class="cas-dice" aria-live="polite"></p>
+    <p class="sub">Rojo, negro o el 0. Rojo y negro pagan 1 a 1; el 0, 35 a 1.</p>
+    <div class="row wrap cas-apuestas">
+      <button class="btn small cas-rojo" data-apuesta="rojo">Rojo</button>
+      <button class="btn small cas-negro" data-apuesta="negro">Negro</button>
+      <button class="btn small cas-cero" data-apuesta="cero">El 0</button>
+    </div>
+    <div class="row wrap cas-fichas">
+      <label for="cas-cant" style="margin:0">Apuesta</label>
+      <input id="cas-cant" class="field" type="number" min="10" step="10" inputmode="numeric" style="width:120px">
+      <button class="btn small ghost" data-ficha="100">+100</button><button class="btn small ghost" data-ficha="1000">+1000</button>
+      <button class="btn small ghost" data-ficha="mitad">Mitad</button><button class="btn small ghost" data-ficha="todo">Todo</button>
+      <button id="cas-girar" class="btn">Girar</button>
+      <span class="sub">Tienes <b id="cas-saldo">0</b></span>
+    </div>
+  </div>
+</section>
+
 <section id="scr-upgrades" class="scr dim hidden">
   <div class="box wide">
     <div class="row between"><h2>Mejoras</h2><button class="btn small ghost" data-back>Volver</button></div>
@@ -412,7 +439,7 @@
 <!-- ====== Gacha ====== -->
 <section id="scr-gacha" class="scr dim hidden">
   <div class="box wide">
-    <div class="row between"><h2>Gacha</h2><button class="btn small ghost" data-back>Volver</button></div>
+    <div class="row between"><h2>Gacha</h2><button id="gacha-casino" class="btn small" style="margin-left:auto" hidden>PokéCasino</button><!-- MOD nico: js/systems/casino.js --><button class="btn small ghost" data-back>Volver</button></div>
     <div class="gen-tabs" id="gacha-gens"></div>
     <div class="split" style="margin-top:8px">
       <div>
@@ -494,6 +521,6 @@
 </section>
 
 <!-- datos generados -->
-<script defer src="js/app.min.js?v=1a0816885e"></script>
+<script defer src="js/app.min.js?v=4483c3185f"></script>
 </body>
 </html>

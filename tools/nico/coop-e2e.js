@@ -36,12 +36,6 @@
  *        anunciar ('ne'), como en rift.js; las copias nacen con la vida real.
  *   7. Falla si algún cliente habla con la infraestructura del proyecto base, si hay
  *      errores de JavaScript o si el aviso legal no lleva el contacto del fork.
- *   8. Antes de la partida, A trae una partida "oficial" sintética por Ajustes > Cuenta (elegir
- *      archivo, vista previa, Confirmar), con la ventana a 844x390 (móvil en horizontal): tiene
- *      que sumarse y subirse a Firestore con la transacción normal, sin que los avisos flotantes
- *      tapen el resultado; y traer otra vez el mismo archivo no puede sumar nada. El código
- *      de la sección, pegado en la consola de esta versión, avisa y no descarga; y elegir la
- *      partida de la propia cuenta (con o sin el registro de lo traído) da error.
  *   9. Grieta garantizada (G.MODS.grietaGarantizadaAntesDe), al final de la partida: hasta
  *      entonces está desactivada en los dos para que no interfiera. A (anfitrión) adelanta su
  *      reloj hasta la hora elegida (ayuda de depuración: sólo en esta prueba; el juego nunca la
@@ -55,7 +49,7 @@
  *      pies un ticket y un ticket ×10 y los recoge; el contador de la partida sube 1 (es lo que
  *      viaja por la red) y cada uno apunta +2 en su partida guardada. Después, con
  *      ticketsMult = 1 sólo en B, otro ticket: A +2 y B +1.
- *  11. Gacha (A, a 844x390, tras traer la partida): un Pokémon que A tiene, con una evolución que no
+ *  11. Gacha (A, a 844x390): un Pokémon que A tiene (su inicial), con una evolución que no
  *      tiene, sale repetido por la interfaz real (el azar sigue un guion sólo dentro de esa tirada):
  *      la carta dice «¡Repetido! Desbloqueas …» con su sprite, se apunta con from 'evo' y no da
  *      monedas; el cartel dice 1.5% de shiny y la nota nueva de los repetidos.
@@ -392,123 +386,6 @@ async function setPartner(P, dex) {
   return r;
 }
 
-/**
- * Traer la partida del juego oficial por Ajustes > Cuenta, en modo nube (emulador): elegir el
- * archivo, vista previa, Confirmar, subida con la transacción normal y reimportación sin duplicar.
- * La partida "oficial" es sintética (formato de newSave()): la prueba nunca habla con el juego oficial.
- */
-async function importOfficial(P) {
-  const { page, tag } = P;
-  const file = path.join(OUT, 'partida-oficial-sintetica.json');
-  const env = await page.evaluate(() => {
-    const s = G.DB.newSave('OficialE2E');
-    s.created = Date.UTC(2026, 3, 1); s.coins = 4321; s.tickets = { t1: 9, t10: 2 };
-    for (const d of [1, 4, 7, 25, 133, 150, 249]) s.owned[d] = { at: s.created, from: 'gacha' };
-    s.shiny[25] = { at: s.created, from: 'wild' }; s.partner = 25; s.partnerShiny = true;
-    // Coherente, como una real: los logros que ya le dan sus datos (si no, el fork los daría con su premio al entrar al menú).
-    s.legends = { 150: s.created }; s.ach = { own1: s.created, shiny1: s.created, leg_150: s.created }; s.pupg = { 25: { hp: 3 } };
-    return { tipo: 'pokesurvivor-partida', version: 1, origen: 'pruebas', exportado: Date.now(), save: s };
-  });
-  fs.writeFileSync(file, JSON.stringify(env));
-  const antes = await page.evaluate(() => ({ coins: G.DB.save.coins, t1: G.DB.save.tickets.t1, t10: G.DB.save.tickets.t10 }));
-  // Móvil en horizontal: ahí es donde los avisos flotantes (logros, «Partida traída») tapaban el resultado.
-  await page.setViewportSize({ width: 844, height: 390 });
-  await page.click('#btn-settings');
-  await waitVisible(page, '#scr-settings');
-  await page.click('#set-tabs .gen-tab[data-t="acc"]');
-  await waitVisible(page, '#imp-pick');
-  await page.setInputFiles('#imp-file', file);
-  await waitVisible(page, '#imp-ok');
-  await page.locator('#imp-box .imp-prev').scrollIntoViewIfNeeded();
-  report.capturaImportar = await shot(page, tag + '_importar_vista_previa');
-  const previa = (await text(page, '#imp-box .imp-prev')).replace(/\s+/g, ' ');
-  // Desde Confirmar y durante 3,5 s (lo que duran el aviso «Partida traída» y uno de logro): ¿tapa alguno el
-  // resultado? ¿Se ve entero dentro de Ajustes?
-  await page.evaluate(() => {
-    const caja = el => { const b = el.getBoundingClientRect(); return { x: b.left, y: b.top, r: b.right, b: b.bottom }; };
-    const visible = el => !!el && getComputedStyle(el).display !== 'none' && !el.classList.contains('hidden') && el.getBoundingClientRect().height > 0;
-    const cruza = (a, b) => a.x < b.r && b.x < a.r && a.y < b.b && b.y < a.b;
-    const M = window.__solape = { muestras: 0, conToast: 0, conLogro: 0, tapado: [], fuera: [] };
-    M.timer = setInterval(() => {
-      const m = document.querySelector('#imp-box .imp-msg');
-      if (!m) return;
-      const c = caja(m), cuerpo = caja(document.getElementById('set-body'));
-      M.muestras++;
-      if (!(c.y >= Math.max(0, cuerpo.y) - 1 && c.b <= Math.min(innerHeight, cuerpo.b) + 1)) M.fuera.push(c);
-      for (const [el, k] of [[document.querySelector('.toast'), 'conToast'], [document.getElementById('ach-pop'), 'conLogro']]) {
-        if (!visible(el)) continue;
-        M[k]++;
-        if (cruza(c, caja(el))) M.tapado.push({ aviso: k, msg: c, el: caja(el) });
-      }
-    }, 50);
-  });
-  const tConfirmar = Date.now();
-  await page.click('#imp-ok');
-  await sleep(700);
-  report.capturaImportarResultado = await shot(page, tag + '_importar_resultado_844x390');
-  await page.waitForFunction(() => /subida a la nube|se subirá/.test((document.querySelector('#imp-box .imp-msg') || {}).textContent || ''), null, { timeout: 20000 });
-  await sleep(Math.max(0, 3500 - (Date.now() - tConfirmar)));
-  const solape = await page.evaluate(() => { clearInterval(window.__solape.timer); const M = window.__solape; delete M.timer; return M; });
-  check('Importar a 844x390: tras Confirmar, ni el aviso «Partida traída» ni los de logros tapan el resultado, que se ve entero (3,5 s)',
-    solape.muestras >= 30 && solape.conToast > 0 && !solape.tapado.length && !solape.fuera.length,
-    { muestras: solape.muestras, conToast: solape.conToast, conLogro: solape.conLogro, tapado: solape.tapado.slice(0, 3), fuera: solape.fuera.slice(0, 3) });
-  const r = await page.evaluate(async () => {
-    const fb = G.DB.fb, snap = await fb.fs.collection('saves').doc(fb.uid).get({ source: 'server' });
-    const nube = snap.data().save, s = G.DB.save;
-    return { coins: s.coins, t1: s.tickets.t1, t10: s.tickets.t10, partner: s.partner, partnerShiny: s.partnerShiny, sync: G.DB.syncState,
-      nube: { coins: nube.coins, t1: nube.tickets.t1, owned: [1, 4, 7, 25, 133, 150, 249].every(d => nube.owned[d]), shiny25: !!nube.shiny[25],
-        legend150: !!nube.legends[150], hp25: (nube.pupg[25] || {}).hp, reg: nube.importOficial },
-      msg: document.querySelector('#imp-box .imp-msg').textContent.replace(/\s+/g, ' ').trim() };
-  });
-  step(`${tag}: traer partida oficial`, `vista previa «${previa.slice(0, 160)}…» · ${r.msg}`);
-  check('Importar (nube): suma colección, monedas y tickets, pone el compañero y lo sube a Firestore con la transacción normal',
-    r.coins === antes.coins + 4321 && r.t1 === antes.t1 + 9 && r.t10 === antes.t10 + 2 && r.partner === 25 && r.partnerShiny === true && r.sync === 'ok' &&
-    r.nube.coins === r.coins && r.nube.t1 === r.t1 && r.nube.owned && r.nube.shiny25 && r.nube.legend150 && r.nube.hp25 === 3 &&
-    r.nube.reg && r.nube.reg[String(env.save.created)] && r.nube.reg[String(env.save.created)].coins === 4321, { antes, despues: r });
-  // Otra vez el mismo archivo: nada nuevo y Confirmar desactivado.
-  await page.setInputFiles('#imp-file', file);
-  await waitVisible(page, '#imp-box .imp-prev');
-  const re = await page.evaluate(() => ({ desactivado: document.getElementById('imp-ok').disabled,
-    yaTraida: /Ya habías traído esta partida/.test(document.querySelector('#imp-box .imp-prev').textContent),
-    coins: G.DB.save.coins }));
-  check('Importar otra vez el mismo archivo no ofrece sumar nada (monedas y tickets sin duplicar)', re.desactivado && re.yaTraida && re.coins === r.coins, re);
-  await page.click('#imp-cancel');
-  // El código de la sección, pegado en la consola de ESTA versión (la pestaña donde se pulsa Copiar):
-  // avisa de que va en la web donde tienes tu partida y no descarga nada.
-  const codigo = await page.inputValue('#imp-code');
-  let alerta = null, descargas = 0;
-  const onDialog = d => { alerta = d.message(); d.dismiss().catch(() => {}); };
-  const onDownload = () => { descargas++; };
-  page.on('dialog', onDialog); page.on('download', onDownload);
-  await page.evaluate(codigo);
-  await sleep(800);
-  page.off('dialog', onDialog); page.off('download', onDownload);
-  check('El código para la web donde tienes tu partida, pegado en la consola de esta versión, avisa y no descarga nada',
-    /web donde tienes tu partida, no aquí/.test(alerta || '') && descargas === 0, { alerta, descargas });
-  // Elegir la partida de la propia cuenta (como si se exportara desde aquí): error, sin vista previa ni sumar nada.
-  // Con el registro de lo traído (lo normal) y sin él (se reconoce por su `created`).
-  const propias = [];
-  for (const conRegistro of [true, false]) {
-    const f = path.join(OUT, `partida-propia-${conRegistro ? 'con' : 'sin'}-registro.json`);
-    fs.writeFileSync(f, await page.evaluate(conReg => {
-      const s = JSON.parse(JSON.stringify(G.DB.save));
-      if (!conReg) delete s.importOficial;
-      return JSON.stringify({ tipo: 'pokesurvivor-partida', version: 1, origen: 'otra-web.test', exportado: Date.now(), save: s });
-    }, conRegistro));
-    // Sin el mensaje de la vuelta anterior: así se espera al de este archivo (repintar lo vuelve a crear).
-    await page.evaluate(() => { const m = document.querySelector('#imp-box .imp-msg'); if (m) m.remove(); });
-    await page.setInputFiles('#imp-file', f);
-    await waitVisible(page, '#imp-box .imp-msg');
-    propias.push(await page.evaluate(() => ({ msg: document.querySelector('#imp-box .imp-msg').textContent.replace(/\s+/g, ' ').trim(),
-      previa: !!document.querySelector('#imp-box .imp-prev'), confirmar: !!document.getElementById('imp-ok'), coins: G.DB.save.coins })));
-  }
-  report.capturaImportarPropia = await shot(page, tag + '_importar_partida_propia');
-  check('Elegir la partida de la propia cuenta (con y sin el registro) da error, sin vista previa ni Confirmar, y no suma nada',
-    propias.length === 2 && propias.every(p => /es una partida de PokéSwarm/.test(p.msg) && !p.previa && !p.confirmar && p.coins === r.coins), propias);
-  await page.click('#set-close');
-  await page.setViewportSize({ width: 1280, height: 720 });
-}
-
 async function openFriends(P) {
   const { page, tag } = P;
   await page.click('#scr-menu [data-go="friends"]');
@@ -610,6 +487,7 @@ async function trapSummary(P) {
 async function gachaRepetido(P) {
   const { page, tag } = P;
   await page.setViewportSize({ width: 844, height: 390 });
+  await page.evaluate(() => { const s = G.DB.save; if (s.tickets.t1 < 1) { s.tickets.t1 = 1; G.DB.commit(); } });   // un ticket para la tirada
   await page.click('#scr-menu [data-go="gacha"]');
   await waitVisible(page, '#scr-gacha');
   const plan = await page.evaluate(() => {
@@ -1090,8 +968,7 @@ async function vistasCoop(A, B, uidB) {
     const cred = { A: { nombre: 'e2eA_' + tag, pass: pw() }, B: { nombre: 'e2eB_' + tag, pass: pw() } };  // sólo existen en el emulador
     await register(A, cred.A.nombre, cred.A.pass);
     await register(B, cred.B.nombre, cred.B.pass);
-    await elegirCompanero(A, 1); await elegirCompanero(B, 26);   // Charmander y Quaxly (cualquiera vale: luego se cambian)
-    await importOfficial(A);   // Ajustes > Cuenta > traer la partida del juego oficial (sintética), en la nube
+    await elegirCompanero(A, 1); await elegirCompanero(B, 26);   // Charmander y Quaxly (luego se cambian; el gacha usa a Charmander, que tiene una sola evolución)
     await gachaRepetido(A);    // Gacha: un repetido desbloquea su evolución (y el cartel con 1,5 % de shiny)
     const monA = await setPartner(A, BIG), monB = await setPartner(B, NORMAL);
     check('El Pokémon grande de la prueba es de los que se reducen', monA.escalaEsperada < 1, `${monA.name}: ${monA.escalaEsperada.toFixed(3)}`);

@@ -12,7 +12,7 @@
  *      exige: nada de desplazamiento horizontal (página, pantalla y caja), la caja dentro de la ventana, el
  *      menú principal oculto detrás de cualquier .scr.dim y la línea de créditos sin pisar la caja. Con Dex, que la piel está puesta en cada una
  *      (borde de la caja y letra y fondo de los botones: si upstream renombra .box o .btn, falla); con
- *      Clásico, que no. Y el menú principal: las 9 opciones a la vista sin desplazar, el logotipo libre de la
+ *      Clásico, que no. Y el menú principal: las 10 opciones (con el PokéCasino, 22-10-2026) a la vista sin desplazar, el logotipo libre de la
  *      barra superior y la línea de créditos sin pisar ninguna caja.
  *   2. Gacha en pantallas bajas y en los plegables: en los 10 banners (los 9 de upstream y el Multiverso), cada lienzo destacado dentro del
  *      banner y de la ventana, a su tamaño (alto CSS = alto del lienzo), y los tres botones de tirar a la
@@ -370,7 +370,7 @@ async function recorrerPantallas(P) {
   return { malas, piel, acerca };
 }
 
-/** Menú principal: las 9 opciones a la vista sin desplazar nada (ni la pantalla ni una caja), el logotipo libre
+/** Menú principal: las 10 opciones a la vista sin desplazar nada (ni la pantalla ni una caja), el logotipo libre
  *  de la barra superior y la línea de créditos sin pisar ninguna caja (lo que se ve de ella: el menú acaba por encima
  *  de la línea y, si no cabe, se desplaza por encima de ella). sobra: lo que habría que desplazar para verlo todo. */
 const MEDIR_MENU = () => {
@@ -386,7 +386,7 @@ const MEDIR_MENU = () => {
     return { left: x0, top: y0, right: Math.max(x0, x1), bottom: Math.max(y0, y1) };
   };
   const visible = el => !!el && !el.classList.contains('hidden') && getComputedStyle(el).display !== 'none' && getComputedStyle(el).visibility !== 'hidden';
-  const items = [...document.querySelectorAll('#scr-menu .menu-item')];
+  const items = [...document.querySelectorAll('#scr-menu .menu-item')].filter(it => it.getClientRects().length);   // las que se ven: con Dex, el PokéCasino va en el Gacha
   const mal = items.filter(it => {
     const r = rr(it);
     if (r.top < -0.5 || r.bottom > H + 0.5 || r.left < -0.5 || r.right > W + 0.5) return true;
@@ -1079,8 +1079,8 @@ async function pruebaArreglos(browser) {
       await sleep(300);
       const m = await page.evaluate(MEDIR_MENU);
       report.medidas[`menu-barra-${e}-${nv}`] = m;
-      check(`${nv} ${e} (plegable con la barra del navegador): menú principal con las 9 opciones a la vista, entero sin desplazar (${m.sobra} px de más) y la línea de créditos sin pisar ninguna caja`,
-        m.opciones === 9 && !m.mal.length && m.sobra <= 1 && !m.logoTapado && !m.creditosPisan, m);
+      check(`${nv} ${e} (plegable con la barra del navegador): menú principal con sus opciones a la vista (10 en Clásico; 9 en Dex, donde el PokéCasino va en el Gacha), entero sin desplazar (${m.sobra} px de más) y la línea de créditos sin pisar ninguna caja`,
+        m.opciones === (e === 'dex' ? 9 : 10) && !m.mal.length && m.sobra <= 1 && !m.logoTapado && !m.creditosPisan, m);
       if (clave === 'v680' || clave === 'g680') await captura(page, `menu-barra-${e}-${nv}`);
       // Los submenús que llegan abajo (gacha, colección, mejoras, misiones y Ajustes): la línea de créditos, que sólo va con
       // el menú principal, no se monta en el pie de su caja (la verificación de PokéSwarm la vio sobre «Probabilidades»).
@@ -1400,7 +1400,7 @@ async function pruebaPortada(browser) {
       return page.evaluate(() => {
         const W = innerWidth, H = innerHeight, r = el => el.getBoundingClientRect();
         const dentro = b => b.left >= -0.5 && b.top >= -0.5 && b.right <= W + 0.5 && b.bottom <= H + 0.5 && b.width > 0;
-        const card = document.getElementById('tc-card'), botones = [...document.querySelectorAll('#scr-menu .menu-item')];
+        const card = document.getElementById('tc-card'), botones = [...document.querySelectorAll('#scr-menu .menu-item')].filter(b => b.getClientRects().length);
         const cv = document.getElementById('tc-partner'), c = G.Estilo.colocacion(cv);
         const tb = [...document.querySelectorAll('#topbar > *')].filter(e => e.getClientRects().length).map(r);
         const cruza = (a, b) => a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
@@ -1433,7 +1433,7 @@ async function pruebaPortada(browser) {
     await captura(page, `portada-menu-dex-${nv}`);
     const pMenu = await opaco(page);
     report.medidas[`portada-opaco-${nv}`] = { menu: pMenu, login: pLogin };
-    check(`${nv} Dex: menú «Tarjeta de entrenador»: la tarjeta y los 9 botones dentro de la ventana, de 44 px o más, sin textos cortados ni desbordados en vertical (icono y nombre dentro del borde) ni la barra superior encima; el Rotom-Dex delante del nombre, sin lengüeta; el compañero a ×${m.escalaMax}${movil ? ' (retoque a: ×4)' : ''}; ${pMenu} % de pantalla opaca${movil || plegable ? ' (≤ 25 %)' : ''}`,
+    check(`${nv} Dex: menú «Tarjeta de entrenador»: la tarjeta y los 9 botones dentro (el PokéCasino, en Dex, se abre desde el Gacha) de la ventana, de 44 px o más, sin textos cortados ni desbordados en vertical (icono y nombre dentro del borde) ni la barra superior encima; el Rotom-Dex delante del nombre, sin lengüeta; el compañero a ×${m.escalaMax}${movil ? ' (retoque a: ×4)' : ''}; ${pMenu} % de pantalla opaca${movil || plegable ? ' (≤ 25 %)' : ''}`,
       m.tarjeta && m.izquierda === 'none' && m.rotom && !m.lengueta && m.botones === 9 && !m.fuera.length && !m.bajos.length && !m.cortados.length && !m.desbordan.length && !m.pisaBarra &&
       m.escala === m.escalaMax && (!movil || m.escala === 4) && (!(movil || plegable) || pMenu <= 25) && m.pagina <= 0, { m, pMenu });
     if (movil) {
@@ -1441,6 +1441,9 @@ async function pruebaPortada(browser) {
       // ×3, como los gigantes: el 8 % de la Pokédex baja de ×4 para no cortarse).
       for (const dex of [149, 740]) {
         const g = await menu(dex);
+        // Las monedas y los tickets de una cuenta nueva: el regalo «buen humor» (22-10-2026) da 20.000 y 10 tickets ×10,
+        // y con cinco cifras las píldoras de arriba crecen (Dragonite a 784x362: 25,3 %; ver PLAN.md). Aquí se mide el diseño.
+        await page.evaluate(() => { G.DB.save.coins = 500; G.DB.save.tickets = { t1: 0, t10: 0 }; G.UI.refreshCoins(); });
         const pg = await opaco(page);
         report.medidas[`portada-opaco-${nv}-${dex}`] = pg;
         if (dex === 149) await captura(page, `portada-menu-grande-dex-${nv}`);
@@ -3106,8 +3109,8 @@ function hojaDeContactos() {
         await page.evaluate(() => { G.MenuUI.open(); document.getElementById('scr-menu').scrollTop = 0; for (const x of document.querySelectorAll('.ach-pop, .toast')) x.classList.add('hidden'); });
         await sleep(250);
         const m = await page.evaluate(MEDIR_MENU);
-        check(`${nv} ${e}: menú principal con las 9 opciones a la vista sin desplazar, el logotipo libre de la barra superior y los créditos sin pisar ninguna caja`,
-          m.opciones === 9 && !m.mal.length && !m.desplazada && !m.logoTapado && !m.creditosPisan, m);
+        check(`${nv} ${e}: menú principal con sus opciones a la vista (10 en Clásico; 9 en Dex, donde el PokéCasino va en el Gacha) sin desplazar, el logotipo libre de la barra superior y los créditos sin pisar ninguna caja`,
+          m.opciones === (e === 'dex' ? 9 : 10) && !m.mal.length && !m.desplazada && !m.logoTapado && !m.creditosPisan, m);
       }
 
       // 4. Fin de partida: «Volver al menú» a la vista y cada panel, entero en algún momento.

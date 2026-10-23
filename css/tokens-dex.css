@@ -28,7 +28,7 @@
   font-weight: 650 900; font-style: normal; font-display: swap;
   unicode-range: U+0000-2025, U+2027-10FFFF;
 }
-/* El logotipo usa 'Pixelify', ya declarada en css/style.css (assets/fonts/PixelifySans.ttf). */
+/* El logotipo usa 'Pixelify', ya declarada en css/style.css (assets/fonts/PixelifySans-ps2.ttf). */
 
 :root {
   /* ---------- carcasa de la Pokédex (lengüetas, logo, N.º del jefe, acción principal) ---------- */

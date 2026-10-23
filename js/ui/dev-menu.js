@@ -1,7 +1,8 @@
 /* ============ dev-menu.js — menú de pruebas de Nico (MOD nico) ============
  * Petición de Nico (14-10-2026): en Ajustes > Cuenta, sólo con su cuenta, botones para sumarse tickets del gacha y
  * Pokémonedas y probar el gacha, las mejoras y la guardería sin jugar horas. Desde el 15-10-2026, también uno que
- * desbloquea toda la colección (los 966 y el Multiverso) con su shiny (desbloquearTodo).
+ * desbloquea toda la colección (los 966 y el Multiverso) con su shiny (desbloquearTodo). Desde el 22-10-2026, otro que
+ * además sube al máximo todas las mejoras de cada uno (maximizarTodo).
  *
  * Quién lo ve: una sesión de la nube (no invitado) cuyo uid de Firebase tiene una huella de G.MODS.devHuellas. El
  * repositorio es público, así que no se guarda el uid sino su SHA-256 con la sal de abajo (como tools/nico/base.js).
@@ -40,6 +41,11 @@ G.DevMenu = (() => {
     { id: 'todo', txt: 'Desbloquear todos (con shiny)', fn: s => {
       const r = desbloquearTodo(s);
       return `Desbloqueados ${r.nuevos} Pokémon y ${r.shinies} shiny (${r.total} en la colección)`;
+    } },
+    // Petición de Nico (22-10-2026): todos, Multiverso incluido, y con todas sus mejoras al máximo.
+    { id: 'max', txt: 'Todos al máximo', fn: s => {
+      const r = maximizarTodo(s);
+      return `${r.total} Pokémon con todas las mejoras al máximo (${r.subidas} niveles subidos)`;
     } }
   ];
 
@@ -55,6 +61,19 @@ G.DevMenu = (() => {
       if (conShiny(p.dex) && !s.shiny[p.dex]) { s.shiny[p.dex] = { at: ahora, from: 'dev' }; shinies++; }
     }
     return { nuevos, shinies, total: Object.keys(s.owned).length };
+  }
+
+  /** desbloquearTodo() y, para cada uno de G.DEX, cada mejora de G.Upgrades.LIST a su máximo (en save.pupg, como la
+   *  tienda). Nunca baja un nivel. → { total, subidas } (subidas: niveles sumados). */
+  function maximizarTodo(s) {
+    desbloquearTodo(s);
+    s.pupg = s.pupg || {};
+    let subidas = 0;
+    for (const p of G.DEX) {
+      const lv = s.pupg[p.dex] = s.pupg[p.dex] || {};
+      for (const u of G.Upgrades.LIST) if ((lv[u.id] || 0) < u.max) { subidas += u.max - (lv[u.id] || 0); lv[u.id] = u.max; }
+    }
+    return { total: G.DEX.length, subidas };
   }
 
   /** Gancho de settings-ui.js (render): la sección al final de Cuenta, si la cuenta tiene permiso. */
@@ -80,5 +99,5 @@ G.DevMenu = (() => {
     });
   }
 
-  return { ajustes, permitido, huella, desbloquearTodo };
+  return { ajustes, permitido, huella, desbloquearTodo, maximizarTodo };
 })();

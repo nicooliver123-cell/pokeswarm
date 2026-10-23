@@ -8,6 +8,7 @@ G.MenuUI = (() => {
   function init() {
     const ICON = { play: 'ball', dex: 'book', upgrades: 'up', gacha: 'ball4', goals: 'medal3', friends: 'friends', rank: 'trophy', settings: 'gear' };
     ICON.guarderia = 'luckyegg';   // MOD nico: el botón «Guardería» (js/systems/guarderia.js)
+    ICON.casino = 'coin';   // MOD nico: el PokéCasino (js/systems/casino.js)
     document.querySelectorAll('#scr-menu [data-go]').forEach(b => {
       b.insertAdjacentHTML('afterbegin', `<span class="mi-ico">${G.Icons.html(ICON[b.dataset.go], 26)}</span>`);
       b.dataset.sfx = b.dataset.go === 'play' ? 'confirm' : 'click';
@@ -17,6 +18,7 @@ G.MenuUI = (() => {
         else if (go === 'dex') openDex();
         else if (go === 'upgrades') openUpgrades();
         else if (go === 'guarderia') { if (G.Guarderia) G.Guarderia.abrir(); }   // MOD nico: la guardería (js/systems/guarderia.js)
+        else if (go === 'casino') { if (G.Casino) G.Casino.abrir(); }   // MOD nico: el PokéCasino (js/systems/casino.js)
         else if (go === 'gacha') G.GachaUI.open();
         else if (go === 'goals') G.GoalsUI.open();
         else if (go === 'friends') G.FriendsUI.open();

@@ -628,7 +628,6 @@ G.DB = (() => {
   return {
     ready, register, login, loginWithGoogle, playAsGuest, logout, commit, deleteAccount, flush: pushNow,
     owns, grant, ownsShiny, grantShiny, merge, setName, upgradesOf,
-    newSave, migrate, applyInPlace,   // MOD nico: para traer la partida del juego oficial (js/core/importar.js)
     onSync(fn) { listeners.add(fn); },
     onLeave(fn) { leaveHooks.push(fn); },
     /** Acceso de bajo nivel para los módulos de red (sólo en modo nube). */

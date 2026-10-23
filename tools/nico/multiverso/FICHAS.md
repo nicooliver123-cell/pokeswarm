@@ -1449,3 +1449,627 @@ Descartados:
 - https://terraria.wiki.gg/images/Eye_of_Cthulhu_%28Phase_2%29.gif
 - https://terraria.wiki.gg/images/True_Eye_of_Cthulhu.png
 - https://bulbapedia.bulbagarden.net/wiki/Yamask_(Pok%C3%A9mon)
+
+# Tercer lote (23-10-2026)
+
+Petición de Nico: «master chief y kratos». Mismo método que el segundo lote: cada ficha la escribió un agente estudiando su saga y midiendo cada ataque contra los Pokémon de su forma con `moves.js` real (sus guiones, en `work/pokeswarm-multiverso-3/`). Montados el 23-10-2026: el Jefe con las rotaciones de PixelLab y pasos por código; Kratos, sin PixelLab (ver CLAUDE.md, «Multiverso», Sprites). Los nombres no oficiales lo dicen en cada ficha.
+
+| N.º | Personaje | Saga | Tipos | Vida / velocidad / ataque | Ataque inicial |
+|---|---|---|---|---|---|
+| 10011 | Jefe Maestro | Halo | Roca / Lucha | 122 / 106 / ×1,11 | Rifle de Asalto |
+| 10012 | Kratos | God of War | Lucha / Fuego | 120 / 102 / ×1,16 | Espadas del Caos |
+
+## 10011 · Jefe Maestro (Master Chief)
+
+**Saga:** Halo (Bungie, 2001-2010; 343 Industries y Halo Studios desde Halo 4)
+
+**Versión:** el Jefe Maestro de Halo: Combat Evolved (Bungie, Xbox, 2001), con la armadura MJOLNIR Mark V, la de su remake, Halo: Campaign Evolved (Halo Studios; PC, Xbox Series y PS5, 28-07-2026). Es la versión con la que nació el personaje y la que se ha vuelto a jugar este año. A 32 px se reconoce por la armadura verde oliva voluminosa, el casco redondo con un visor dorado reflectante grande y el rifle de asalto en las manos. El repertorio sale del arsenal de Combat Evolved (todas sus armas están también en Campaign Evolved, según su inventario oficial). Algunas evoluciones son armas de las secuelas: el Martillo Gravitatorio y el Láser Spartan son de Halo 3, y la Espada Duelista, de Infinite. Se sigue el precedente de la Hiperesfera de Samus.
+
+**Nombre:** «Jefe Maestro» es el nombre oficial en España: Microsoft España lo usa en sus notas de prensa, y Halo Waypoint en español llama a la recopilación «Halo: la colección Jefe Maestro». En la colección va como `name: 'Jefe Maestro'`, con «Master Chief» en `lang-en-mod.js`, igual que «Cacodemonio» y «Cacodemon».
+
+### Quién es
+
+El Suboficial Jefe Maestro John-117 nació el 07-03-2511 en Eridanus II. En 2517, con seis años, la UNSC lo secuestró junto a otros 74 niños para el programa SPARTAN-II de la Dra. Catherine Halsey. Cada niño fue sustituido por un clon que acabó muriendo de causas aparentemente naturales. A los 14 años sobrevivió a las aumentaciones, que mataron a 30 de sus compañeros. Mide 2,08 m, y 2,18 m con la armadura.
+
+En Halo: Combat Evolved, el capitán Keyes lo despierta del sueño criogénico en la *Pillar of Autumn* y le encarga sacar de la nave a la IA Cortana. La nave se estrella en Halo (la Instalación 04) y allí el Jefe lucha contra el Covenant y el Flood. Cortana descubre que activar el anillo mataría a toda la vida inteligente de la galaxia, así que el Jefe hace estallar el reactor de la *Pillar of Autumn* para destruirlo y escapa en un Longsword. El Covenant lo llama desde entonces «el Demonio».
+
+Su armadura MJOLNIR Mark V fue la primera con escudo de energía autorrecargable: un sistema copiado de los guanteletes de los Kig-Yar, que se recarga cuando deja de recibir fuego (Halopedia). Pesa unos 321 kg. Tiene también inyectores de bioespuma, una capa de cristal reactivo que le dobla la fuerza y un hueco para alojar una IA.
+
+**Lo que importa para el juego:** cómo se pelea en Combat Evolved.
+- **Escudos que se recargan.** Aguanta, se cubre y vuelve. Eso pasa a ser vida alta, y por eso tiene la más alta de los que andan.
+- **Armas humanas y del Covenant.** Usa las balas de la UNSC (rifle de asalto, rifle de precisión) y lo que les quita a los enemigos (plasma, agujas, espada). En Halo, el plasma es mejor contra escudos y las balas contra la carne (inventario oficial de Halo Infinite). En PokéSwarm eso es cubrir muchos tipos: su repertorio tiene 7 tipos distintos en 7 ataques.
+- **Las granadas y el golpe cuerpo a cuerpo** son botones aparte en Halo. Aquí son un meteoro y un golpe.
+- **Los vehículos** (Warthog y Scorpion) están en Combat Evolved. Aquí son una torreta y su evolución.
+
+Se quedan fuera la escopeta, el lanzacohetes y la granada de fragmentación, que harían lo mismo que la Súper Escopeta, el Lanzacohetes y la Granada del Doom Slayer. Cortana tampoco entra porque no ataca.
+
+### Tipos: Roca / Lucha
+
+**Roca:** es la coraza. Media tonelada de armadura que encaja balas y plasma. En la tabla del juego, Roca resiste Normal y Fuego (×0,6), justo las balas y el plasma del Covenant. En Pokémon, Roca es el tipo de las armaduras y caparazones (Aggron, Tyranitar).
+
+**Lucha:** es un supersoldado aumentado, con el doble de fuerza gracias a la Mark V, y en Halo el golpe cuerpo a cuerpo mata de un solo golpe a muchos enemigos. Su equivalente Pokémon es Terrakion (Roca/Lucha), el guerrero del trío de los Espadachines Místicos.
+
+**Defensa:** resiste Normal, Fuego, Veneno, Bicho, Roca y Siniestro (×0,6). Es débil a Agua, Planta, Lucha, Tierra, Psíquico, Acero y Hada (×1,6), pero no tiene ninguna debilidad doble (×2,4). Tiene muchas debilidades pequeñas y aguanta bien lo más común: un tanque de infantería, no una fortaleza.
+
+**Por qué no Acero ni Eléctrico:** serían lo obvio (armadura metálica y escudos de energía), pero los tienen ya 3 de 10 cada uno, el máximo que se dejó. Su energía va en el potenciador (Sobreescudo, Eléctrico) y el metal, en el Láser Spartan (Acero).
+
+**En el conjunto:** Roca no la tiene ningún personaje (es de los siete tipos que faltaban). Lucha la tiene sólo el Slayer, así que con el Jefe serían 2. **Ojo:** la ficha de Kratos (10012), que se escribe a la vez que esta, lo pone Lucha/Fuego. Si quedan los dos, Lucha llegaría a 3 (Slayer, Jefe Maestro y Kratos), el máximo.
+
+**Alternativa:** Roca/Normal. Normal sería el soldado sin rostro en el que el jugador se proyecta: Bungie nunca le enseña la cara, y la wiki en español dice que su personalidad se deja en blanco para eso. Pero Roca/Normal lo deja con debilidad doble a Lucha (×2,4) y es más pobre de lore. Lo propongo sólo si Nico prefiere no llegar a 3 en Lucha.
+
+### Estadísticas: vida 122, velocidad 106, ataque ×1,11
+
+Perfil: el tanque que anda. Aguanta más que cualquiera con piernas y apenas pega más que nadie.
+
+| Personaje | Vida | Velocidad | Ataque | bst |
+|---|---|---|---|---|
+| Cacodemonio | 126 | 92 | ×1,08 | 420 |
+| **Jefe Maestro** | **122** | **106** | **×1,11** | **425** |
+| Kratos (ficha paralela) | 120 | 102 | ×1,16 | 430 |
+| Samus | 116 | 100 | ×1,10 | 420 |
+| Link | 110 | 108 | ×1,12 | 415 |
+| Doom Slayer | 104 | 116 | ×1,18 | 425 |
+
+- **Vida 122:** el escudo autorrecargable más la armadura. Es la más alta de los que andan: supera a Kratos (120), Samus (116), Link (110) y al Slayer (104). Sólo la supera el Cacodemonio (126), que flota y es todo pellejo.
+- **Velocidad 106:** es un supersoldado aumentado, más rápido que Samus (100) y que Kratos (102). Pero en Combat Evolved no puede esprintar y su ritmo es pausado al lado del de DOOM, así que es más lento que el Slayer (116) y algo más lento que Link (108).
+- **Ataque ×1,11:** bajo. Su fuerza está en la vida y en un arsenal de 7 tipos, no en el multiplicador. Pega lo justo por encima de Samus (×1,10) y por debajo de Link y Kirby (×1,12), Kratos (×1,16) y el Slayer (×1,18). Frente al Slayer es la otra cara del soldado con armadura: el Slayer es rápido, frágil y brutal, y el Jefe, lento, duro y versátil. Frente a Samus, aguanta más y corre más, pero cubre los tipos con armas distintas, no con rayos.
+- **bst 425.**
+
+Stats base equivalentes, con la fórmula de `tools/fetch_pokedex.py` (vida = 70 + PS × 0,45; velocidad = 78 + Vel × 0,42; ataque = 0,70 + máx(Atq, AtqEsp) / 100 × 0,55): PS 116, Ataque 74, Defensa 85, Ataque Especial 40, Defensa Especial 43 y Velocidad 67. Suman 425 y dan 122,2 / 106,1 / ×1,107, redondeados a 122 / 106 / ×1,11. Rareza 2, como todos.
+
+Entrada de `PERSONAJES`:
+
+```js
+{ dex: 10011, name: 'Jefe Maestro', types: ['rock', 'fighting'], hp: 122, spd: 106, atk: 1.11, rarity: 2, bst: 425,
+  starter: false, gen: GEN, mv: true, start: 'rifle-de-asalto', serie: 'Halo',
+  pool: ['rifle-de-asalto', 'aguijoneador', 'granada-de-plasma', 'culatazo', 'espada-de-energia', 'rifle-de-precision', 'warthog', 'sobreescudo'] },
+```
+
+### Ataques
+
+| Ataque | Forma | Tipo | Evoluciona a (pide) | En inglés |
+|---|---|---|---|---|
+| Rifle de Asalto (inicial) | proyectil | Normal | Rifle de Batalla (Reflejos) | Assault Rifle → Battle Rifle |
+| Aguijoneador | proyectil | Roca | Supercombinación (Imán) | Needler → Supercombine |
+| Granada de Plasma | meteoro | Fuego | Cañón de Combustible (Potencia) | Plasma Grenade → Fuel Rod Cannon |
+| Culatazo | golpe | Lucha | Martillo Gravitatorio (Vigor) | Rifle Butt → Gravity Hammer |
+| Espada de Energía | embestida | Fuego | Espada Duelista (Carrera) | Energy Sword → Duelist Sword |
+| Rifle de Precisión | rayo | Acero | Láser Spartan (Potencia) | Sniper Rifle → Spartan Laser |
+| Warthog | torreta | Tierra | Scorpion (Coraza) | Warthog → Scorpion |
+| Sobreescudo | potenciador | Eléctrico | — | Overshield |
+
+Cubre 7 tipos con 7 ataques que dañan, más el potenciador: Normal, Roca, Fuego, Lucha, Acero, Tierra y Eléctrico. Fuego se repite porque el plasma del Covenant es Fuego en la granada y en la espada, igual que en el Rayo de Plasma de Samus: así es coherente en todo el Multiverso.
+
+**Nombres:** los de Halo salen de la Halo Wiki en español (Fandom), porque no he podido abrir una lista oficial de la versión española del juego. Las páginas de Halo Waypoint de cada arma ya no existen y su centro de soporte sólo responde en inglés. Por eso son los nombres de uso común en español, **sin confirmar en el juego**: Rifle de Asalto, Rifle de Batalla, Aguijoneador, Granada de Plasma, Cañón de Combustible, Martillo Gravitatorio (la misma wiki dice también «Martillo de Gravedad»), Espada de Energía, Rifle de Precisión, Láser Spartan, Scorpion y Sobreescudo. Oficiales en español sí son «Warthog» (Halo Waypoint en español, página de Campaign Evolved) y «Jefe Maestro». Son míos, y no oficiales, «Culatazo», «Supercombinación» y «Espada Duelista»: se explica en cada uno.
+
+**Repetidos:** ninguno de los 16 nombres, ni su inglés, está en `moves.js`, `multiverso.js` ni `lang-en-mod.js` (lo he buscado en todo `js/` y `tools/`). Tampoco chocan con los de la ficha de Kratos. No repito Granada, Lanzacohetes, Súper Escopeta ni Rifle de Plasma, que son del Slayer.
+
+Entradas de `ATAQUES` (bloque `// ---- Jefe Maestro (Halo) ----`):
+
+```js
+    { id: 'rifle-de-asalto', name: 'Rifle de Asalto', type: 'normal', kind: 'projectile',  // 30,0 (Pistola Agua 31,8)
+      desc: 'Fuego automático y rapidísimo al enemigo más cercano, algo disperso.',
+      cd: 0.3, dmg: 9, speed: 440, count: 1, spread: 0.16, pierce: 0, life: 1, size: 4, vis: { proj: 'needle', pal: 'electric' },
+      evo: ['Rifle de Batalla', 'cd'] },
+    { id: 'aguijoneador', name: 'Aguijoneador', type: 'rock', kind: 'projectile',          // 26,7 (Esfera Aural 27,4)
+      desc: 'Dispara dos agujas de cristal rosa que persiguen solas al enemigo.',
+      cd: 0.75, dmg: 10, speed: 300, count: 2, spread: 0.25, pierce: 0, life: 1.8, size: 5, homing: 2.5, vis: { proj: 'shard', pal: 'psychic', trail: 'spark' },
+      evo: ['Supercombinación', 'mag'] },
+    { id: 'granada-de-plasma', name: 'Granada de Plasma', type: 'fire', kind: 'meteor',    // 49,2 (Puño Meteoro 48,6)
+      desc: 'Lanza una granada de plasma que se pega al enemigo y estalla con fuerza. Quema.',
+      cd: 1.3, dmg: 64, count: 1, radius: 46, burn: 1, vis: { proj: 'ball', pal: 'aura', trail: 'spark' },
+      evo: ['Cañón de Combustible', 'atk'] },
+    { id: 'culatazo', name: 'Culatazo', type: 'fighting', kind: 'melee',                   // 41,7 (Golpe Kárate 44,0)
+      desc: 'Un golpe seco con la culata del rifle, lento y brutal, en arco estrecho. Empuja mucho.',
+      cd: 0.6, dmg: 25, radius: 58, arc: 1.6, knock: 120, vis: { melee: 'impact' },
+      evo: ['Martillo Gravitatorio', 'hp'] },
+    { id: 'espada-de-energia', name: 'Espada de Energía', type: 'fire', kind: 'dash',      // 26,3 (Ataque Rápido 26,7)
+      desc: 'Se lanza en estocada hacia el enemigo con la espada de plasma y corta todo lo del camino.',
+      cd: 0.8, dmg: 21, radius: 115, width: 28, knock: 30, vis: { proj: 'streak', melee: 'claw', pal: 'aura' },
+      evo: ['Espada Duelista', 'spd'] },
+    { id: 'rifle-de-precision', name: 'Rifle de Precisión', type: 'steel', kind: 'beam',   // 23,3 (Furia Dragón 24,0)
+      desc: 'Un disparo lento y certero que cruza todo el campo en línea recta y atraviesa a todos.',
+      cd: 1.5, dmg: 35, radius: 250, width: 20, vis: { beam: 'streak', pal: 'normal' },
+      evo: ['Láser Spartan', 'atk'] },
+    { id: 'warthog', name: 'Warthog', type: 'ground', kind: 'turret',                      // 3,5 (Sustituto 3,5)
+      desc: 'Aparca un Warthog con un marine en la ametralladora, que dispara solo una ráfaga rápida.',
+      cd: 4, dmg: 14, rate: 0.35, dur: 5, count: 1, range: 290, speed: 420, size: 5, vis: { proj: 'needle', pal: 'electric' },
+      evo: ['Scorpion', 'def'] },
+    { id: 'sobreescudo', name: 'Sobreescudo', type: 'electric', kind: 'buff',              // los números de Fortaleza
+      desc: 'No hace daño: acumula DEFENSA mientras esté activo.',
+      cd: 0.85, stat: 'def', amount: 0.07, dur: 7, stacks: 5, vis: { buff: 'ring', pal: 'aura' } },
+```
+
+Medido con `moves.js` real y la misma regla que `check.js` §24 (daño nominal = daño × proyectiles ÷ recarga; alcance = velocidad × vida en proyectiles, `range` en torretas y radio en lo demás). Los ocho quedan dentro:
+
+| Ataque | Daño nominal (rango de su forma) | Alcance (rango) |
+|---|---|---|
+| Rifle de Asalto | 30,0 (22,4-34,6) | 440 (364-616) |
+| Aguijoneador | 26,7 (22,4-34,6) | 540 (364-616) |
+| Granada de Plasma | 49,2 (48,6-60,0) | 46 (40-54) |
+| Culatazo | 41,7 (29,2-44,0) | 58 (55-85) |
+| Espada de Energía | 26,3 (24,0-26,7) | 115 (110-120) |
+| Rifle de Precisión | 23,3 (14,8-24,0) | 250 (215-250) |
+| Warthog | 3,5 (3,5-4,3) | 290 (280-300) |
+| Sobreescudo | los números de Fortaleza | — |
+
+#### Rifle de Asalto
+
+Fuego automático y rapidísimo al enemigo más cercano, algo disperso.
+
+Es el ataque inicial porque es el arma de serie del Jefe en Combat Evolved, la que se asocia a él. El inventario oficial de Campaign Evolved lo describe como «fuego automático sostenido», más preciso en ráfagas cortas. Es de tipo Normal porque son balas corrientes, sin el plasma que el Covenant usa contra los escudos. Las agujas amarillas son mi elección, para que las balas se lean sobre el suelo.
+
+**Números:** es la recarga más corta de todos los proyectiles (0,30 s; Picotazo Veneno, 0,34) y tiene la mayor dispersión del Multiverso (0,16). Lo paga con 9 de daño por bala y el alcance más corto de los proyectiles del Multiverso (440). Da 30,0 de daño nominal, por debajo de Pistola Agua (31,8) e Impactrueno (32,5) y del Rayo de Poder de Samus (33,3), que es más certero. Gana cadencia y lo paga con daño, alcance y puntería.
+
+**Evolución:** el Rifle de Batalla (BR55 en Halo 2; también en Campaign Evolved), que según su inventario oficial «dispara una ráfaga de 3 balas». Es exactamente los +2 proyectiles de la evolución de un proyectil. Pide Reflejos porque es el rifle de precisión a media distancia.
+
+#### Aguijoneador
+
+Dispara dos agujas de cristal rosa que persiguen solas al enemigo.
+
+Es el arma más extraña del Covenant: dispara fragmentos de cristal que buscan a los seres vivos. Según el inventario oficial de Campaign Evolved, sus proyectiles «persiguen a los enemigos cercanos», y si varias agujas se clavan en el mismo enemigo provocan una explosión supercombinada.
+
+**Tipo:** Roca, por los cristales: en Pokémon, Joya de Luz y Roca Afilada son cristal y Roca. Además es el ataque de su propio tipo. Las astillas rosa (`shard` con la paleta psíquica) imitan las agujas rosa y violeta del arma.
+
+**Equilibrio:** gana persecución (2,5) y dos agujas, y lo paga con 10 de daño cada una y 0,75 s de recarga: 26,7 de daño nominal. Esfera Aural da 27,4 y persigue 4; el Siervo de Cthulhu, 25,7 y persigue 2.
+
+**Evolución:** la Supercombinación, la explosión que hacen varias agujas juntas, como los +2 proyectiles y +2 perforaciones de la evolución. Pide Imán por la persecución. El nombre es mío: la wiki en español dice «explosión supercombinada».
+
+#### Granada de Plasma
+
+Lanza una granada de plasma que se pega al enemigo y estalla con fuerza. Quema.
+
+Es la granada del Covenant y la más famosa de Halo. Según el inventario oficial de Campaign Evolved, es «un explosivo adhesivo que se pega a los objetivos vivos» y estalla poco después con mucho daño en un radio pequeño. Es la que el jugador busca pegar.
+
+**Tipo:** Fuego, porque es plasma, como el Rayo de Plasma de Samus. Quema porque, según la wiki, deja a su víctima «reducida a restos carbonizados».
+
+**Equilibrio:** es el único meteoro con una sola bomba. Pega fuerte (64) sobre un único enemigo y quema, y lo paga cayendo sobre un solo blanco cuando los de upstream reparten 2-4, con 1,3 s de recarga y el radio de Avalancha (46, el «radio pequeño» de la descripción oficial). Da 49,2 de daño nominal, frente a 48,6 de Puño Meteoro y 51,2 de la Granada del Slayer, que lanza dos y empuja. Se ve como una bola azul con chispas: la granada brilla azul.
+
+**Evolución:** el Cañón de Combustible, que según el inventario oficial de Campaign Evolved dispara proyectiles en «un arco lento» que estallan y dañan a varios en un radio: los +2 meteoros de la evolución. Pide Potencia: es un arma pesada.
+
+#### Culatazo
+
+Un golpe seco con la culata del rifle, lento y brutal, en arco estrecho. Empuja mucho.
+
+En Halo, el golpe cuerpo a cuerpo tiene botón propio desde Combat Evolved, y el Jefe golpea con el arma que lleva en las manos. Es de tipo Lucha: es la fuerza del supersoldado.
+
+**Nombre:** en el juego es sólo el «ataque cuerpo a cuerpo». «Culatazo» es mío, y no lo he comprobado en el doblaje.
+
+**Equilibrio:** pega fuerte (25) y empuja mucho (120), y lo paga con 0,6 s de recarga, un arco de 1,6 y 58 de alcance. Da 41,7 de daño nominal, frente a 44 de Golpe Kárate (0,5 s) y 37,9 de Golpe Cuerpo (0,95 s). Ya lleva el +20 % de daño y +25 % de alcance de los golpes.
+
+**Evolución:** el Martillo Gravitatorio (Halo 3), que según el inventario oficial de Halo Infinite genera en cada golpe «un potente impulso gravitatorio que repele a los atacantes». Es exactamente el «golpea en 360°» de la evolución de un golpe. Pide Vigor porque hay que aguantar en el cuerpo a cuerpo para usarlo.
+
+#### Espada de Energía
+
+Se lanza en estocada hacia el enemigo con la espada de plasma y corta todo lo del camino.
+
+Es el arma de honor de los Élites (Sangheili): una hoja de «plasma sobrecalentado» que quema carne y armadura (wiki en español). El inventario oficial de Campaign Evolved dice que de cerca «permite una estocada que acorta la distancia», y eso es la embestida.
+
+**Tipo:** Fuego, por el plasma, como la granada. No quema: corta, no prende.
+
+**Equilibrio:** pega la estocada más fuerte de las embestidas (21) en una hoja estrecha (28 de ancho, la más estrecha del juego; Ataque Rápido, 34), y empuja poco (30). Lo paga con 0,8 s de recarga. Da 26,3 de daño nominal, entre Golpe Aéreo (24,0) y Ataque Rápido (26,7). La estela es azul (`aura`), el color de la hoja.
+
+**Evolución:** la Espada Duelista. En Halo Infinite, la «Duelist Energy Sword» tiene un armazón ligero que da «más agilidad», como la evolución de una embestida (más distancia y menos recarga). Pide Carrera. El nombre es traducción mía, sin comprobar en el doblaje.
+
+#### Rifle de Precisión
+
+Un disparo lento y certero que cruza todo el campo en línea recta y atraviesa a todos.
+
+Es el rifle de francotirador SRS99 de la UNSC, que según el inventario oficial de Campaign Evolved dispara balas capaces de eliminar a casi cualquier objetivo de un tiro a la cabeza. La línea recta y larga del rayo es la trayectoria de la bala.
+
+**Tipo:** Acero, por la bala perforante de la UNSC, como Foco Resplandor es el rayo de Acero.
+
+**Equilibrio:** gana el alcance máximo de los rayos (250, como Hidrobomba) y el golpe más fuerte (35), y lo paga con la recarga más lenta (1,5 s, como Hidrobomba) y la línea más fina del juego (20; las de upstream, 30-40). Da 23,3 de daño nominal, por debajo de Furia Dragón (24,0). Es un hilo blanco (`streak`).
+
+**Evolución:** el Láser Spartan (Halo 3), un arma de energía dirigida que, según la wiki, carga 3-4 s y dispara un pulso capaz de atravesar planchas gruesas de acero. Es el rayo más grueso y largo de la evolución. Pide Potencia.
+
+#### Warthog
+
+Aparca un Warthog con un marine en la ametralladora, que dispara solo una ráfaga rápida.
+
+Es el todoterreno de la UNSC, el vehículo de Combat Evolved. Según el inventario oficial de Campaign Evolved, su ametralladora trasera «proporciona fuego sostenido contra la infantería». En la campaña es habitual que un marine vaya en la ametralladora mientras conduce el Jefe.
+
+**Tipo:** Tierra, por el todoterreno: es el único ataque terrestre.
+
+**Equilibrio:** dispara más deprisa que las torretas de upstream (una bala cada 0,35 s; Sustituto, 0,4) y lo paga con menos tiempo puesto (5 s frente a 6). Da 3,5 de daño nominal, como Sustituto, y 290 de alcance. Con su cadencia, el daño real por segundo de recarga es 50,0, entre los 46,8 de Fuego Fatuo y los 52,5 de Sustituto.
+
+**Evolución:** el Scorpion, el tanque de la UNSC en Combat Evolved, que según su inventario oficial está «muy blindado» y dispara proyectiles muy explosivos. Pide Coraza, por ese blindaje. «Scorpion» se queda igual en español (wiki).
+
+#### Sobreescudo
+
+No hace daño: acumula DEFENSA mientras esté activo.
+
+Copia exacta de los números de Fortaleza, como el Escudo Hyliano y el Pellejo Grueso. Según el inventario oficial de Campaign Evolved, es «una capa temporal de escudo de energía que absorbe el daño antes que el escudo base». La wiki en español dice que en Combat Evolved triplica el escudo. Las acumulaciones son esas capas. Es de tipo Eléctrico, la energía del escudo, y se ve como un anillo azul. Como todo potenciador, no evoluciona.
+
+Descartado: el Camuflaje Activo, que también es de Combat Evolved, pero su número natural sería la Agilidad y la invisibilidad no se ve en un potenciador.
+
+### Variocolor
+
+El Jefe con la armadura **azul**: la misma Mark V con las placas en azul acero y el visor dorado. Es el color del equipo azul del multijugador de Combat Evolved, el de *Red vs. Blue*, la serie machinima rodada con ese juego desde 2003. Con el azul se distingue al instante del verde oliva y no choca con otro variocolor: el Slayer ya es carmesí, Link lleva la Túnica Goron roja, Samus va en negro y el Cacodemonio en morado.
+
+Descartados:
+- **El rojo del multijugador:** demasiado cerca de la armadura carmesí del Slayer.
+- **Las armaduras de Halo 4 y Halo Infinite:** otra silueta, no un cambio de color.
+
+### Sprite (PixelLab)
+
+Riesgo principal: **parecerse al Doom Slayer**, que ya está en el juego (armadura verde oliva, visor dorado y un arma en las manos). El prompt insiste en lo que los separa a 32 px: el casco redondo y liso, el visor enorme que cubre toda la cara, las placas lisas sin pinchos ni brazos descubiertos y un rifle largo y negro en vez de la escopeta de dos cañones. Antes de animar hay que mirar las rotaciones al lado de las del Slayer.
+
+Anda con pasos, en 3 direcciones como Link y Samus: 2 generaciones para crear y 3 para andar. Según CLAUDE.md quedaban 3 de las 40 rápidas, así que habrá que tirar de las lentas diarias (5 al día, sin comprobar aún que la API las dé). En `PJ` de `montar.py`: `mov` con pasos, sin `retoque` previsto y el variocolor azul.
+
+`DESC`:
+
+```python
+    'jefe': ("Master Chief (John-117) from Halo: Combat Evolved in his MJOLNIR Mark V armor, full-body chibi super-soldier, Pokémon Mystery Dungeon style pixel art, 32x32, low top-down view, facing south toward the viewer, standing. Shapes that must read at 32 px: a smooth ROUNDED olive-green helmet with a huge reflective gold-orange visor that covers the whole face (no face, no eyes, no mouth visible); bulky but smooth olive-green chest plate and rounded shoulder plates, dark charcoal-grey flexible undersuit visible at the neck, elbows, waist and knees; armored olive-green forearms, thighs and boots. He holds a long matte-black MA5B assault rifle diagonally across his chest with both hands, the barrel pointing down-left, a small glowing blue digital ammo counter on top of the rifle. Palette: armor olive green #6B7A3A, shade #4A5626, highlight #93A35A; undersuit #2E3034, darker #1C1D20; visor gold #E8A82A with an orange shade #B5651A and a pale yellow glint #FFE38A; rifle #1E1F22 with grey edges #4A4C52; ammo counter #4FC3F7; dark outline #14160E. Avoid: the Doom Slayer (already in the game): no ridged or striped helmet, no narrow slit visor, no double-barreled shotgun, no exposed arms or skin, no spikes, no wrist blade, no shoulder cannon; also avoid Halo 4/5/Infinite armor, red or blue armor, a cape, a backpack, wings, a tail, mech-robot proportions, an Iron Man faceplate, an oversized head.",
+              'Master Chief'),
+```
+
+`ANDAR`:
+
+```python
+    'jefe': 'walking forward holding the assault rifle across his chest, a small heavy step with each foot, same size and same view',
+```
+
+Lo que distingue a la variante, para `montar.py`: recolorear sólo los verdes de la armadura (#6B7A3A, #4A5626, #93A35A) a azul acero (#3D6FB6, #274B85, #6F9BD8), sin tocar el visor ni el rifle.
+
+### Fuentes
+
+Consultadas el 23-10-2026.
+
+- https://en.wikipedia.org/wiki/Master_Chief_(Halo)
+- https://www.halopedia.org/John-117
+- https://www.halopedia.org/MJOLNIR_Powered_Assault_Armor/Mark_V
+- https://support.halowaypoint.com/hc/en-us/articles/50948184078228-Weapons-Vehicles-in-Halo-Campaign-Evolved (inventario oficial de Campaign Evolved: rifle de asalto, rifle de batalla, rifle de precisión, espada de energía y su estocada, Aguijoneador, granada de plasma, Cañón de Combustible, Sobreescudo, Warthog y Scorpion)
+- https://support.halowaypoint.com/hc/en-us/articles/6882880281364-Halo-Infinite-Weapon-Equipment-and-Vehicle-Inventory (inventario oficial de Halo Infinite: Martillo Gravitatorio, Duelist Energy Sword, plasma contra escudos)
+- https://www.halowaypoint.com/es-es/halo-campaign-evolved («Jefe Maestro», «Warthog» y «Spartans» en el texto oficial en español)
+- https://www.halowaypoint.com/es-es/news (menú oficial: «Halo: la colección Jefe Maestro», «Halo: Campaña Evolucionada»)
+- https://news.microsoft.com/es-es/2015/03/24/nuevo-teaser-halo-5-guardians/ («Jefe Maestro» en la prensa de Microsoft España)
+- https://www.videogameschronicle.com/news/halo-campaign-evolved-gets-a-new-trailer-and-a-confirmed-release-date-of-july-28/ (fecha de Campaign Evolved, 28-07-2026)
+- Halo Wiki en español (Fandom), leída por su API: «John-117», «Lanzador de Agujas Patrón-Nahle'hax» (Aguijoneador), «Granada Patrón-Anskum» (Granada de Plasma), «Espada de Energía», «Martillo Gravitatorio», «Sobreescudo», «Rifle No Lineal Anti-Vehículos Grindell/Galileian M6» (Láser Spartan), «Vehículo de Aplicación de Fuerza M12» (Warthog), «Tanque Principal de Batalla M808» (Scorpion), «Rifle de Batalla», «Cañón de Combustible», «Rifle de Precisión SRS99 AM» y «Armadura Potenciada de Asalto MJOLNIR/Mark V» (https://halo.fandom.com/es/wiki/)
+- https://en.wikipedia.org/wiki/Red_vs._Blue (variocolor; no lo abrí en esta sesión: es conocimiento general, por comprobar)
+
+Pendiente de comprobar: los nombres en el doblaje de España (sobre todo Aguijoneador, Rifle de Precisión y Martillo Gravitatorio frente a «Martillo de Gravedad») y el color exacto del escudo y del Sobreescudo, que el `vis` no afirma.
+
+## 10012 · Kratos
+
+Ficha de estudio del 23-10-2026, con el formato de las del segundo lote. Se escribió a la vez que la del Jefe Maestro (10011, Roca/Lucha), sin verla: el reparto de tipos se ha corregido después.
+
+**Saga:** God of War (Santa Monica Studio y Sony Interactive Entertainment; trilogía griega en PS2 y PS3, remasterizada en PS3 y PS4)
+
+**Versión:** el Kratos de la trilogía griega, el «Fantasma de Esparta», con las Espadas del Caos de God of War (2005), y el aspecto con el que sigue en God of War II y III: piel blanca como la ceniza, el tatuaje rojo que le baja del ojo izquierdo por la cabeza rapada hasta el hombro izquierdo, perilla negra, torso desnudo, faldellín de cuero con tiras de metal y las dos espadas encadenadas a los antebrazos.
+
+**Por qué la griega y no la nórdica:**
+- **A 32 px se reconoce mejor.** La piel blanca y la franja roja son una silueta que no se parece a nada del juego. El Kratos nórdico (God of War de 2018 y Ragnarök) lleva una barba poblada, piel más oscura, ropa de cuero y pieles, y el Hacha Leviatán. Reducido a 32 px se lee como un guerrero vikingo barbudo cualquiera, y se confundiría con un enano de fantasía.
+- **Lo diferencia de los demás.** El Doom Slayer y Samus van con armadura entera. Kratos, con el torso desnudo y blanco, no se confunde con ellos.
+- **Le da más juego.** El repertorio griego, con armas encadenadas y una magia de cada dios (Zeus, Poseidón, Medusa, Hades, Atlas), da más formas distintas que el del hacha (que se lanza y vuelve) y las Espadas del Caos recuperadas en 2018.
+
+Contra la nórdica: el Hacha Leviatán es el arma más conocida para quien empezó con el juego de 2018. La guía oficial de PlayStation lo dice: «Tu hacha Leviatán es la primera de las dos armas que empuñarás». Queda descartada a favor del diseño original.
+
+### Quién es
+
+Kratos es un guerrero espartano. Lo creó David Jaffe, director de God of War (2005), y lo diseñó Charlie Wen. De joven se tatuó en rojo la marca de nacimiento de su hermano Deimos, al que se llevaron los dioses. Según Wikipedia, el tatuaje iba a ser azul y pasó a rojo al final de la producción.
+
+A punto de morir contra los bárbaros, juró servir a Ares. El dios le dio las Espadas del Caos, que según el wiki de God of War forjó Hefesto en el fuego del Inframundo, y cuyas cadenas quedaron soldadas a la carne de sus antebrazos. Ares lo engañó para que matara, en pleno arrebato, a su mujer Lysandra y a su hija Calliope. Una oráculo lo maldijo a llevar sus cenizas pegadas a la piel, y de ahí su piel blanca y su apodo, el Fantasma de Esparta.
+
+Sirvió diez años a los dioses del Olimpo para librarse de sus pesadillas.
+- **God of War (2005):** mata a Ares con la ayuda de los dioses (Poseidón, Zeus, Afrodita, Hades) y ocupa su trono como nuevo dios de la guerra.
+- **God of War II:** Zeus lo traiciona y lo mata.
+- **God of War III:** se venga del Olimpo. Mata a Poseidón, y con su muerte los mares inundan Grecia. Acaba con Hades, con Helios y, al final, con Zeus.
+
+**Lo que importa para el juego:** su forma de pelear en la trilogía griega.
+- **Un arma principal encadenada** que barre a todo lo que tiene alrededor desde lejos. Según el wiki, las Espadas del Caos tenían menos fuerza bruta que la Espada de Artemisa, pero lo compensaban «con su alcance».
+- **Una magia por dios**, que se gana y se mejora con orbes rojos: la Ira de Poseidón, la Mirada de Medusa, la Furia de Zeus y el Ejército de Hades en el primero; la Ira de Cronos, la Cabeza de Euríale y el Terremoto de Atlas en el segundo; el Ejército de Esparta en el tercero.
+- **Una ira que se llena peleando**: la Ira de los Dioses en el primero y la Ira de Esparta en el tercero.
+
+En PokéSwarm eso da un luchador cuerpo a cuerpo de mucho alcance, con un ataque de cada dios (cada uno de un tipo) y un potenciador de rabia.
+
+Fuera quedan las Alas de Ícaro, el Vellocino de Oro y el Tridente de Poseidón (que le deja bucear), porque no hacen daño, y las armas secundarias (Espada de Artemisa, Cestus de Nemea, Arco de Apolo), para no repetir formas.
+
+### Tipos: Lucha / Fuego
+
+**Lucha:** es un general espartano y, desde el primer juego, el dios de la guerra. Toda su saga es combate cuerpo a cuerpo, con agarres y remates.
+
+**Fuego:** las Espadas del Caos nacen del fuego del Inframundo y arden al golpear. En God of War (2018), su mejora final «inflige mucho daño por QUEMADURA» (wiki). Es lo que se ve de él en cualquier imagen: las hojas al rojo colgando de las cadenas.
+
+**Defensa** (tabla suavizada de `types.js`, la de Infernape):
+- Débil a Agua, Tierra, Volador y Psíquico (×1,6).
+- Resiste Fuego, Planta, Hielo, Siniestro y Acero (×0,6), y Bicho (×0,36).
+- Roca y Hada le hacen daño neutro (×0,96).
+
+Encaja con la saga. El agua es la de Poseidón, que le dio guerra en el Egeo y en God of War III, y la tierra, la de Gaia, la Titán que lo traicionó y lo dejó caer al Inframundo. Ningún monstruo de bajo nivel le hace mella.
+
+**En el conjunto:** con el Jefe Maestro (Roca/Lucha), Lucha la llevan el Doom Slayer, el Jefe y Kratos: 3 de 12, el máximo que se dejó. Fuego, Agumon, Drácula y Kratos: también 3. Son el Slayer y Kratos, dos brutos de Lucha, pero los separa el segundo tipo y el estilo: uno tirotea a media distancia y el otro barre de cerca.
+
+**Alternativas descartadas:**
+- **Lucha/Fantasma** (por «Fantasma de Esparta»): el apodo viene de las cenizas, no de que sea un espíritu.
+- **Lucha/Tierra** (Tierra falta en el Multiverso): sólo la justifican el Terremoto de Atlas y el Cestus, que son secundarios.
+
+Los tipos que faltan los aporta su repertorio. Lleva Agua, Roca y Tierra en tres de sus ataques, y Roca no la tenía ningún ataque del Multiverso.
+
+### Estadísticas: vida 120, velocidad 102, ataque ×1,16
+
+Perfil: el bruto que aguanta, un cuerpo a cuerpo con mucha vida.
+
+- **Vida 120, la segunda del Multiverso:** es un semidiós de 2,34 m (wiki) que sale tres veces del Inframundo y se cura absorbiendo la vida de sus víctimas con las espadas. Supera a Samus (116) y a Drácula (110); el tanque sigue siendo el Cacodemonio (126).
+- **Velocidad 102, en medio:** corre y rueda, pero no es un velocista. Es más lento que el Doom Slayer (116), Pac-Man (118) y Link (108), y más rápido que Drácula (96) y Kirby (98).
+- **Ataque ×1,16, por debajo del Slayer (×1,18) y Drácula (×1,20):** su inicial es cuerpo a cuerpo, y mientras un ataque de cerca está activo recibe un 25 % menos de daño (`player.js`). Con la segunda vida más alta y esa reducción, darle también el multiplicador más alto lo haría el mejor en todo. Su fuerza está en el alcance de las espadas y en la Ira de Esparta.
+- **bst 430, el tope del rango, igual que Drácula:** mata a casi todo el panteón griego.
+
+Los stats base equivalentes, con la fórmula de `tools/fetch_pokedex.py`, son PS 111, Ataque 84, Defensa 80, Ataque Especial 50, Defensa Especial 48 y Velocidad 57. Suman 430 y dan 120 (70 + 111 × 0,45 = 119,95), 102 (78 + 57 × 0,42 = 101,94) y ×1,16 (0,70 + 0,84 × 0,55 = 1,162).
+
+| Personaje | Vida | Velocidad | Ataque | bst |
+|---|---|---|---|---|
+| Doom Slayer | 104 | 116 | ×1,18 | 425 |
+| Samus | 116 | 100 | ×1,10 | 420 |
+| Drácula | 110 | 96 | ×1,20 | 430 |
+| Cacodemonio | 126 | 92 | ×1,08 | 420 |
+| **Kratos** | **120** | **102** | **×1,16** | **430** |
+
+Entrada de `PERSONAJES`:
+
+```js
+{ dex: 10012, name: 'Kratos', types: ['fighting', 'fire'], hp: 120, spd: 102, atk: 1.16, rarity: 2, bst: 430,
+  starter: false, gen: GEN, mv: true, start: 'espadas-del-caos', serie: 'God of War',
+  pool: ['espadas-del-caos', 'arpon-de-orion', 'furia-de-zeus', 'ira-de-poseidon', 'mirada-de-medusa', 'ejercito-de-hades', 'terremoto-de-atlas', 'ira-de-esparta'] },
+```
+
+### Ataques
+
+| Ataque | Forma | Tipo | Evoluciona a (pide) | En inglés |
+|---|---|---|---|---|
+| Espadas del Caos (inicial) | golpe | Fuego | Ciclón del Caos (Reflejos) | Blades of Chaos → Cyclone of Chaos |
+| Arpón de Orión | bumerán | Lucha | Espadas de Atenea (Potencia) | Orion's Harpoon → Blades of Athena |
+| Furia de Zeus | proyectil | Eléctrico | Ira de Cronos (Imán) | Zeus' Fury → Cronos' Rage |
+| Ira de Poseidón | meteoro | Agua | Diluvio de Poseidón (Carrera) | Poseidon's Rage → Poseidon's Flood |
+| Mirada de Medusa | rayo | Roca | Cabeza de Euríale (Coraza) | Medusa's Gaze → Head of Euryale |
+| Ejército de Hades | orbe | Fantasma | Ejército de Esparta (Vigor) | Army of Hades → Army of Sparta |
+| Terremoto de Atlas | nova | Tierra | Tierra Destructiva (Aprendizaje) | Atlas Quake → Destructive Earth |
+| Ira de Esparta | potenciador | Lucha | — | Rage of Sparta |
+
+Tiene siete tipos de ataque: Fuego, Lucha, Eléctrico, Agua, Roca, Fantasma y Tierra. Las siete evoluciones piden cada una una mejora distinta.
+
+**Equilibrio**, medido como `check.js` §24 (daño nominal = daño × proyectiles ÷ recarga; alcance = radio, o velocidad × vida en proyectiles, abanicos y novas) contra los ataques Pokémon de `moves.js`, con los de cuerpo a cuerpo ya con su +20 % y +25 %. Los ocho pasan; lo he ejecutado con node (`work/pokeswarm-multiverso-3/kratos.js`):
+
+| Ataque | Daño nominal (rango de su forma) | Alcance (rango) |
+|---|---|---|
+| Espadas del Caos | 30,0 (29,2-44,0) | 85 (55-85) |
+| Arpón de Orión | 20,0 (16,8-22,5) | 225 (200-230) |
+| Furia de Zeus | 31,3 (22,4-34,6) | 552 (364-616) |
+| Ira de Poseidón | 50,0 (48,6-60,0) | 42 (40-54) |
+| Mirada de Medusa | 17,5 (14,8-24,0) | 215 (215-250) |
+| Ejército de Hades | 150,0 (140,0-215,4) | 70 (62-74) |
+| Terremoto de Atlas | 80,0 (70,0-121,7) | 231 (200-368) |
+| Ira de Esparta | los números de Danza Espada | — |
+
+Las entradas de `ATAQUES`, tal cual irían en `multiverso.js` (con el comentario de daño nominal y el ataque Pokémon con que se compara, como los demás):
+
+```js
+    // ---- Kratos (God of War) ----
+    { id: 'espadas-del-caos', name: 'Espadas del Caos', type: 'fire', kind: 'melee',     // 30,0 (Látigo Cepa 30,6)
+      desc: 'Dos espadas al rojo atadas a cadenas: barren un arco amplio y lejano. Quema.',
+      cd: 0.6, dmg: 18, radius: 85, arc: 2.4, knock: 30, burn: 1, vis: { melee: 'claw', pal: 'fire' },
+      evo: ['Ciclón del Caos', 'cd'] },
+    { id: 'arpon-de-orion', name: 'Arpón de Orión', type: 'fighting', kind: 'boomerang', // 20,0 (Hoja Afilada 22,2)
+      desc: 'Lanza una espada encadenada contra el enemigo y la recoge, golpeando a la ida y a la vuelta.',
+      cd: 0.85, dmg: 17, speed: 340, count: 1, radius: 225, size: 8, vis: { proj: 'crescent', pal: 'fire', trail: 'ember' },
+      evo: ['Espadas de Atenea', 'atk'] },
+    { id: 'furia-de-zeus', name: 'Furia de Zeus', type: 'electric', kind: 'projectile',  // 31,3 (Impactrueno 32,5)
+      desc: 'Arroja un rayo de Zeus, rápido y lejano, que atraviesa a uno.',
+      cd: 0.48, dmg: 15, speed: 460, count: 1, spread: 0.08, pierce: 1, life: 1.2, size: 6, vis: { proj: 'bolt', trail: 'spark' },
+      evo: ['Ira de Cronos', 'mag'] },
+    { id: 'ira-de-poseidon', name: 'Ira de Poseidón', type: 'water', kind: 'meteor',     // 50,0 (Puño Meteoro 48,6; Granizo 60)
+      desc: 'Rayos azules del dios del mar caen sobre los enemigos cercanos y los frenan.',
+      cd: 1.2, dmg: 15, count: 4, radius: 42, slow: 0.3, vis: { proj: 'bolt', pal: 'water', trail: 'spark' },
+      evo: ['Diluvio de Poseidón', 'spd'] },
+    { id: 'mirada-de-medusa', name: 'Mirada de Medusa', type: 'rock', kind: 'beam',      // 17,5 (Rayo Hielo 18,2)
+      desc: 'La cabeza de la Gorgona lanza una mirada en línea recta que petrifica: frena muchísimo.',
+      cd: 1.2, dmg: 21, radius: 215, width: 28, slow: 0.75, vis: { beam: 'ring', pal: 'grass' },
+      evo: ['Cabeza de Euríale', 'def'] },
+    { id: 'ejercito-de-hades', name: 'Ejército de Hades', type: 'ghost', kind: 'orbit',  // 150,0 (Tornado 150,0)
+      desc: 'Las almas del Inframundo giran a tu alrededor y golpean lo que tocan.',
+      cd: 0.28, dmg: 14, count: 3, radius: 70, speed: 2.5, size: 8, vis: { proj: 'shadow', trail: 'wisp' },
+      evo: ['Ejército de Esparta', 'hp'] },
+    { id: 'terremoto-de-atlas', name: 'Terremoto de Atlas', type: 'ground', kind: 'nova', // 80,0 (Disparo Lodo 70,0; Burbuja 72,0)
+      desc: 'Golpea el suelo y salen rocas en todas direcciones que empujan.',
+      cd: 1.2, dmg: 12, speed: 210, count: 8, pierce: 0, life: 1.1, size: 9, knock: 70, vis: { proj: 'rock', trail: 'dirt', pal: 'ground' },
+      evo: ['Tierra Destructiva', 'xp'] },
+    { id: 'ira-de-esparta', name: 'Ira de Esparta', type: 'fighting', kind: 'buff',      // los números de Danza Espada
+      desc: 'No hace daño: acumula ATAQUE mientras esté activo.',
+      cd: 0.85, stat: 'atk', amount: 0.13, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'fire' } }
+```
+
+Al montarlo habría que añadir también la lista de §24 en `check.js` (que hoy cuenta 77 ataques y 67 que evolucionan; con Kratos, 85 y 74), su inglés en `lang-en-mod.js` y su marca en `CREDITS.md`, como dice CLAUDE.md.
+
+#### Espadas del Caos
+
+Barre con las dos espadas encadenadas un arco amplio y lejano. Quema.
+
+Es el ataque inicial y el que define a Kratos: sus armas de los juegos griegos, que vuelven en 2018. Las cadenas se estiran con cada golpe (wiki), así que llegan más lejos que cualquier puño.
+
+**Números:** alcance 85, el tope de los golpes (igual que Látigo Cepa), y arco de 2,4, de los más anchos (Golpe Cuerpo, 2,75). Además quema. Lo paga con 30,0 de daño nominal, casi el suelo de su forma: Lengüetazo da 29,2, Látigo Cepa 30,6 y Golpe Kárate 44. Empuja poco (30), porque las espadas cortan más que derriban.
+
+**Aspecto:** el zarpazo (`claw`) en la paleta de fuego, como dos hojas al rojo.
+
+**Nombre:** «Espadas del Caos» es oficial en España; lo usan los trofeos de God of War (2018) («Recupera las Espadas del Caos»). En inglés, Blades of Chaos.
+
+**Evolución:** el Ciclón del Caos, el giro de 360° con las espadas («Mueve rápidamente tus espadas, golpeando varias veces a los enemigos que te rodean», wiki en español). Es justo lo que da la evolución de un golpe: ×1,9 de daño y 360°. Pide Reflejos, porque es un giro rápido. El nombre es el del wiki en español; no lo he podido contrastar con el juego.
+
+#### Arpón de Orión
+
+Lanza una espada encadenada contra el enemigo y la recoge, golpeando a la ida y a la vuelta.
+
+En God of War, Kratos «lanza la cadena para arponear a un enemigo» (wiki, Blades of Chaos), y en los juegos siguientes la usa para estampar contra el suelo al que está en el aire. El bumerán reproduce la cadena que sale y vuelve.
+
+**Tipo:** Lucha. Es una técnica de combate, no magia, y así su repertorio no lleva dos ataques de Fuego.
+
+**Equilibrio:** sale a 225 (casi el tope, 230), con una sola hoja y 20,0 de daño nominal. Hoja Afilada da 22,2 con dos, y Huesomerang 16,8 con empuje. La estela de ascuas son las espadas encendidas.
+
+**Nombre:** el del wiki en español («Arpón de Orión»), sin contrastar con el doblaje.
+
+**Evolución:** las Espadas de Atenea, las que Atenea le da en God of War II en lugar de las del Caos: «Espadas que fueron entregadas por Atenea sustituyendo las Espadas del Caos» (wiki en español). Son la forma más fuerte de sus espadas, y la evolución de un bumerán da +1 bumerán (las dos cadenas a la vez). Pide Potencia, porque son armas de un dios. El nombre es el del wiki en español.
+
+#### Furia de Zeus
+
+Arroja un rayo, rápido y lejano, que atraviesa a uno.
+
+Es la magia que Zeus le da en el Templo de Zeus de Atenas en God of War: le deja «invocar rayos en las manos y lanzarlos contra enemigos lejanos», y al subirla gana potencia y cadencia (wiki). Es su único ataque a distancia de verdad.
+
+**Equilibrio:** 31,3 de daño nominal, con 552 de alcance y una perforación. Impactrueno da 32,5, perfora 2 y llega a 528. Gana alcance, pierde una perforación y algo de daño.
+
+**Aspecto:** el rayo (`bolt`) con chispas, como Impactrueno.
+
+**Nombre:** oficial. Es el trofeo español de God of War «Consigue la furia de Zeus» (EliteGuías).
+
+**Evolución:** la Ira de Cronos (nombre oficial del trofeo de God of War II, «la Ira de Cronos»), la magia eléctrica de la secuela. Son orbes de rayos que «electrocutan y aturden a varios enemigos» (wiki), como los +2 proyectiles y +2 perforaciones de la evolución de un proyectil. Pide Imán porque los orbes atraen sus descargas hacia los enemigos de alrededor.
+
+Ojo: el wiki en español la llama «Furia de Cronos». El trofeo dice «Ira de Cronos», y me quedo con el trofeo.
+
+#### Ira de Poseidón
+
+Rayos azules del dios del mar caen sobre los enemigos cercanos y los frenan.
+
+Es la primera magia de God of War. Poseidón se la da en el Egeo para matar a la Hidra: rodea a Kratos de electricidad y hace caer rayos del cielo sobre sus enemigos (wiki). De ahí el meteoro: caen sobre los cercanos.
+
+**Tipo:** Agua. En el juego se ve como electricidad azul, pero es la ira del dios del mar y se usa en el mar contra un monstruo del mar. Además, el rayo del repertorio ya es la Furia de Zeus, y así aporta un tipo que falta en el Multiverso. El aspecto conserva lo que se ve: rayos (`bolt`) en la paleta del agua. Alternativa: Eléctrico, más fiel a cómo se ve, pero repetiría el tipo de Zeus.
+
+**Equilibrio:** cuatro rayos de 15 que frenan un poco (0,3), 50,0 de daño nominal. Granizo da 60 con cuatro y frena 0,4; Puño Meteoro da 48,6 con dos que empujan. Gana el frenado y lo paga con daño.
+
+**Nombre:** oficial. Es el trofeo español de God of War «Consigue la ira de Poseidón» (EliteGuías, y también Exophase).
+
+**Evolución:** el Diluvio de Poseidón. En God of War III, Kratos mata a Poseidón, y con su muerte «los océanos desataron una inundación» que arrasó Grecia (wiki). Es la ira del mar entera, como los +2 meteoros y más radio de la evolución. Pide Carrera, por la ola que barre. **El nombre es mío**: el juego no le pone nombre de ataque a la inundación.
+
+#### Mirada de Medusa
+
+La cabeza de la Gorgona lanza en línea recta una mirada que petrifica: frena muchísimo.
+
+En God of War, Kratos le corta la cabeza a Medusa y la usa para convertir en piedra a los enemigos con un rayo de magia de Gorgona (wiki). El rayo es literal: su ataque básico es un chorro sostenido. Petrificar es el frenado más fuerte del repertorio.
+
+**Tipo:** Roca, la piedra en la que convierte a sus víctimas. Ningún ataque del Multiverso era de Roca.
+
+**Equilibrio:** frena 0,75, más que Rayo Hielo (0,7), y lo paga con un rayo más estrecho (28 frente a 30), más corto (215, el mínimo de los rayos) y menos daño nominal (17,5 frente a 18,2).
+
+**Aspecto:** anillos (`ring`) en verde, la magia de Gorgona del juego (verdosa; según el wiki, «al máximo, la mirada era verdiazul»).
+
+**Nombre:** oficial. Es el trofeo español de God of War «Consigue la mirada de Medusa». Se parece a «Mirada del Ojo» (Cacodemonio), pero es otro texto y las traducciones van por texto.
+
+**Evolución:** la Cabeza de Euríale (nombre oficial, trofeo de God of War II), la hermana de Medusa. Con su cabeza Kratos petrifica moviéndose, y también a otras Gorgonas (wiki). Pide Coraza, la piedra.
+
+#### Ejército de Hades
+
+Las almas del Inframundo giran a tu alrededor y golpean lo que tocan.
+
+Es la magia que Hades le da en God of War, tras vencer al Guardián de Pandora. Invoca almas del Inframundo que atacan a sus enemigos y, mejorada, son más y más fuertes (wiki). Aquí giran a su alrededor como un orbe.
+
+**Equilibrio:** tres almas de 14 a radio 70, con 150,0 de daño nominal, igual que Tornado (150, radio 72). No quema ni empuja: es un orbe puro.
+
+**Aspecto:** sombras (`shadow`) con estela de humo (`wisp`), en la paleta de Fantasma.
+
+**Nombre:** oficial. Es el trofeo español de God of War «Consigue el ejército de Hades».
+
+**Evolución:** el Ejército de Esparta, la magia de las Espadas del Exilio en God of War III. Invoca a los soldados espartanos «para formar una falange para proteger a Kratos» (wiki en español), que arrojan sus lanzas. Es un orbe vivo alrededor de él, y la evolución de un orbe da +2 orbes. Pide Vigor, porque son sus hermanos de armas, que lo mantienen en pie. El nombre es el del wiki en español, que cita la frase de Atenea al dárselo; sin contrastar con el doblaje.
+
+#### Terremoto de Atlas
+
+Golpea el suelo y salen rocas en todas direcciones que empujan.
+
+Es la magia que Atlas le da en God of War II cuando Kratos lo libera de sus cadenas. Golpea el suelo, provoca un terremoto que «lanza rocas gigantes en todas direcciones», y tanto el temblor como las rocas empujan (wiki). Es una nova de piedras.
+
+**Tipo:** Tierra, como Disparo Lodo, la nova de Tierra de upstream. Tierra la llevaba ya la Bomba de Morfosfera de Samus. Como Tierra no afecta a Volador (×0,3), lo que vuela apenas lo nota, igual que en el juego el temblor es del suelo.
+
+**Equilibrio:** ocho rocas de 12 que empujan (70), 80,0 de daño nominal y 231 de alcance. Disparo Lodo da 70 y frena; Pulso Umbrío, 121,7. Gana empuje y algo de daño frente a Disparo Lodo, y lo paga con ocho rocas en vez de diez y sin perforar.
+
+**Aspecto:** pedruscos (`rock`) con polvo (`dirt`) en la paleta de Tierra.
+
+**Nombre:** oficial. Es el trofeo español de God of War II «Obtén el Terremoto de Atlas» (EliteGuías). El wiki en español lo llama «Temblor de Atlas»; me quedo con el trofeo. Se parece a «Terremoto», la evolución de Terratemblor de upstream, pero es otro texto.
+
+**Evolución:** Tierra Destructiva, el ataque de nivel 3 de la misma magia: «provoca un terremoto, y después pulsa rápidamente para crear más escombros y provocar más daño» (wiki en español). Son los +6 proyectiles de la evolución de una nova. Pide Aprendizaje, porque en el juego se aprende al subir la magia al nivel 3 con orbes. El nombre es el del wiki en español (en inglés, Destructive Earth).
+
+#### Ira de Esparta
+
+No hace daño: acumula ATAQUE mientras esté activo.
+
+Copia exacta de los números de Danza Espada. Es la capacidad de ira de God of War III: con ella Kratos es más rápido y resistente, y sus ataques «hacen mucho más daño» (wiki en español). Las acumulaciones son la ira que se llena peleando.
+
+**Tipo:** Lucha, la de Kratos.
+
+**Aspecto:** flechas que suben en la paleta de fuego, el tatuaje que se le enciende en rojo.
+
+**Nombre:** el del wiki en español, que cita a Atenea en el juego: «¡Que la Ira de Esparta cargue tu espada, Kratos!». No lo he contrastado con el doblaje. La de God of War (2018) se llama en español sólo «ira» («Mejora tu ira por completo», trofeo).
+
+**Repetición:** el Berserker, el Rayo Recarga y la Píldora de Poder también copian Danza Espada. Si se quiere variar, Danza Dragón (como el Emblema del Valor y la Segunda Forma) es la otra pareja posible.
+
+Como todo potenciador, no evoluciona.
+
+### Variocolor
+
+Kratos de piel olivácea: el mismo Kratos, con la piel morena que tenía antes de las cenizas, conservando el tatuaje rojo, la perilla y las espadas. Es un traje del juego: «Olive Skin Kratos» de God of War: Ascension, descrito por el wiki como «el aspecto de siempre, pero con la piel aceitunada normal». A 32 px es el cambio que más se ve, porque lo que lo define es la piel blanca, y también cuenta su historia (el espartano antes de la maldición).
+
+El nombre en español es traducción mía; no he encontrado el oficial.
+
+Descartados:
+- **El tatuaje azul del diseño original de Charlie Wen** (Wikipedia): sería un buen guiño, pero sólo existió en la producción, no en un juego.
+- **Los trajes Deimos, Ares o Hércules:** son otros personajes.
+- **Trajes de broma** (Chef of War, Cod of War): rompen el tono.
+
+### Sprite (PixelLab)
+
+Prompt para `DESC['kratos']` de `generar.py`, con el estilo de los del segundo lote:
+
+```python
+'kratos': ("Kratos, the Ghost of Sparta from the original Greek God of War trilogy (PS2/PS3 era, NOT the bearded Norse version), full-body chibi Spartan warrior, Pokémon Mystery Dungeon style pixel art, 32x32, low top-down view, facing south toward the viewer, standing in a wide fighting stance. Shapes that must read at 32 px: chalk-white ash-pale skin all over his bare muscular torso, arms and head; a completely bald head; a thick bold blood-red tattoo stripe that starts around his left eye (on the viewer's right), runs up over the top of the bald scalp and down the back of the head, and continues down his left shoulder and the left side of his chest and arm; a short black goatee around the mouth (chin only, no full beard, no moustache-only); angry amber eyes under heavy brows. Bare chest, no shirt, no armor plates on the torso. Waist: a wide brown leather belt with a small gold buckle over a short skirt of dark brown leather strips with bronze studs, and a dark red cloth hanging in front. Brown leather bracers on the forearms wrapped with dark metal chains; bronze greaves and sandals. In each hand he holds one of the Blades of Chaos hanging down at his sides: a short curved single-edged blade with a dark iron body and a glowing orange-yellow cutting edge, attached to the chain on his forearm. Palette: skin #E6E2DA, skin shade #B9B3AA; tattoo red #B3121B, dark red #6E0A10; goatee #1E1A18; eyes #F2A33A; leather #5A3A22, dark leather #3A2414; red cloth #7A1414; bronze #A87A3A; chains #6E6A66; blade iron #4A4A50 with glowing edge #FF7A1A and highlight #FFD24A; dark outline #1A0E0A. Avoid: full beard or long hair, the Leviathan Axe or any axe, a round shield, a helmet or Spartan crested helmet, a cape, fur or Norse leather armor, Atreus or a child, tan or brown skin, a blue tattoo, a tattoo on the right side, a red skin color, a sword held overhead, extra weapons on the back, an oversized head, wings, tail.",
+           'Kratos'),
+```
+
+Prompt para `ANDAR['kratos']`:
+
+```python
+'kratos': 'walking forward with a heavy stride, a glowing chained blade hanging in each hand, a small step with each foot, shoulders swaying slightly, same size and same view',
+```
+
+**Cómo generarlo:**
+- `generar.py crear kratos <carpeta>` (2 generaciones) y `generar.py andar kratos <carpeta> south,east,north` (3), como Link y Samus.
+- Antes de animar, mirar las rotaciones: lo que hay que comprobar es que el tatuaje quede en su lado izquierdo (a la derecha de quien mira al sur) y que no salga con barba.
+- En `PJ` de `montar.py`, `mov` que anda con sus pasos, como el Slayer, Link y Samus.
+
+**Riesgos a vigilar:**
+- **El tatuaje:** a 32 px PixelLab puede pintarlo simétrico o como una cinta en la frente. Si pasa, `retoque` en `montar.py`, como el mechón de Kirby.
+- **Las espadas:** pueden salir como dos espadas rectas cualquiera. La hoja corta y curva con el filo naranja es lo que las distingue.
+
+### Fuentes
+
+Consultadas el 23-10-2026.
+
+- https://en.wikipedia.org/wiki/Kratos_(God_of_War)
+- https://en.wikipedia.org/wiki/God_of_War_III
+- https://www.playstation.com/es-es/editorial/the-playstation-guide-to-god-of-war/
+- https://godofwar.fandom.com/wiki/Kratos
+- https://godofwar.fandom.com/wiki/Blades_of_Chaos
+- https://godofwar.fandom.com/wiki/Cyclone_of_Chaos
+- https://godofwar.fandom.com/wiki/Zeus%27_Fury
+- https://godofwar.fandom.com/wiki/Cronos%27_Rage
+- https://godofwar.fandom.com/wiki/Poseidon%27s_Rage
+- https://godofwar.fandom.com/wiki/Poseidon%27s_Trident
+- https://godofwar.fandom.com/wiki/Medusa%27s_Gaze
+- https://godofwar.fandom.com/wiki/Head_of_Euryale
+- https://godofwar.fandom.com/wiki/Army_of_Hades
+- https://godofwar.fandom.com/wiki/Army_of_Sparta
+- https://godofwar.fandom.com/wiki/Atlas_Quake
+- https://godofwar.fandom.com/wiki/Rage_of_Sparta
+- https://godofwar.fandom.com/wiki/Costumes
+- https://godofwar.fandom.com/es/wiki/Espadas_del_Caos
+- https://godofwar.fandom.com/es/wiki/Espadas_de_Atenea
+- https://godofwar.fandom.com/es/wiki/Ira_de_Poseidón
+- https://godofwar.fandom.com/es/wiki/Furia_de_Cronos
+- https://godofwar.fandom.com/es/wiki/Temblor_de_Atlas
+- https://godofwar.fandom.com/es/wiki/Ejército_de_Esparta
+- https://godofwar.fandom.com/es/wiki/Ira_de_Esparta
+- https://www.eliteguias.com/trucos/g/god-of-war.php (trofeos en español de God of War: ira de Poseidón, mirada de Medusa, furia de Zeus, ejército de Hades)
+- https://www.eliteguias.com/trucos/g/god-of-war-2.php (trofeos en español de God of War II: Ira de Cronos, Cabeza de Euríale, Terremoto de Atlas)
+- https://www.3djuegos.com/juegos/god-of-war-2018/guias-y-trucos/god-of-war-2018-lista-completa-logros-trofeos (trofeos de 2018: «Recupera las Espadas del Caos», «Mejora tu ira por completo»)
+- https://www.exophase.com/game/god-of-war/trophies/es/ (sólo a través del buscador; la página devuelve 403)
+
+**Límites de lo comprobado:**
+- Los nombres de los trofeos (Espadas del Caos, Ira de Poseidón, Mirada de Medusa, Furia de Zeus, Ejército de Hades, Ira de Cronos, Cabeza de Euríale, Terremoto de Atlas) son los oficiales de la versión española de los trofeos, leídos en EliteGuías y 3DJuegos, no en el juego.
+- Arpón de Orión, Ciclón del Caos, Espadas de Atenea, Ejército de Esparta, Tierra Destructiva e Ira de Esparta salen del wiki en español, que puede usar traducciones de aficionados o de la versión latinoamericana.
+- Diluvio de Poseidón y «Kratos de piel olivácea» son míos.
+- Las páginas del wiki se leyeron por su API (el navegador normal devuelve 402).

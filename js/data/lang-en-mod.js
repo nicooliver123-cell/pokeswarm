@@ -22,87 +22,6 @@ G.I18n.add({
   'Entrar o crear cuenta': 'Sign in or create an account',
   'Si eres titular de derechos y quieres que retiremos algo, abre un aviso en el repositorio de PokéSwarm y lo quitaremos lo antes posible:':
     'If you are a rights holder and want something removed, open an issue in the PokéSwarm repository and we\'ll take it down as soon as possible:',
-  // Ajustes > Cuenta: traer una partida guardada (js/ui/importar-ui.js y js/core/importar.js)
-  'Traer partida guardada': 'Bring a saved game',
-  'Suma aquí tu colección, shinies, mejoras, logros, Pokémonedas y tickets de una partida guardada en otra web. No se borra nada de lo que ya tienes.':
-    'Adds your collection, shinies, upgrades, achievements, PokéCoins and tickets from a save on another website. Nothing you already have here is removed.',
-  'Estás jugando como invitado: lo que traigas no se guardará al salir. Mejor crea una cuenta antes (botón de arriba) y tráela después.':
-    'You\'re playing as a guest: whatever you bring won\'t be saved when you leave. Better create an account first (button above) and bring it afterwards.',
-  'Abre en un PC la web donde tienes tu partida, con tu cuenta iniciada.': 'On a computer, open the website where your save is, signed in to your account.',
-  'Pulsa F12 y ve a la pestaña Consola. Si Chrome te pide escribir «permitir pegar» (o «allow pasting»), escríbelo y pulsa Enter.':
-    'Press F12 and go to the Console tab. If Chrome asks you to type “allow pasting”, type it and press Enter.',
-  'Copia este código, pégalo en la consola y pulsa Enter: se descargará un archivo con tu partida.':
-    'Copy this code, paste it into the console and press Enter: a file with your save will download.',
-  'Vuelve aquí, pulsa «Elegir archivo» y elige ese archivo.': 'Come back here, press “Choose file” and pick that file.',
-  'Código para la consola de esa web': 'Code for that website\'s console',
-  // El código de la sección pegado en la consola de PokéSwarm: su alert() pasa por G.I18n. (En la web del
-  // proyecto base, el propio código elige español o inglés según el idioma del navegador.)
-  'Este código va en la consola de la web donde tienes tu partida, no aquí. Pégalo allí con tu cuenta iniciada.':
-    'This code goes in the console of the website where your save is, not here. Paste it there, signed in to your account.',
-  'Copiar': 'Copy',
-  'Copiado': 'Copied',
-  'Selecciónalo y cópialo a mano': 'Select it and copy it by hand',
-  'Elegir archivo': 'Choose file',
-  'Confirmar': 'Confirm',
-  'Trayendo…': 'Bringing…',
-  'Los pasos 1 a 3 necesitan un PC: en el móvil no hay consola. Vale cualquier PC, porque tu partida está en la nube de esa web: basta con entrar con tu cuenta. El código sólo lee tu partida y la descarga; no envía nada a ninguna parte.':
-    'Steps 1 to 3 need a computer: phones have no console. Any computer works, because your save is in that website\'s cloud: just sign in with your account. The code only reads your save and downloads it; it sends nothing anywhere.',
-  'Pega sólo este código, copiado de esta página: nunca pegues en la consola código que te pase otra persona.':
-    'Only paste this code, copied from this page: never paste code someone else gives you into the console.',
-  'Ver el código comentado': 'See the commented code',
-  'Para traer la partida, vuelve al menú: termina o abandona la run.': 'To bring your save, go back to the menu: finish or quit the run.',
-  'Vista previa': 'Preview',
-  'Partida que traes': 'Save you\'re bringing',
-  'Exportada el': 'Exported on',
-  'Pokémon en esa partida': 'Pokémon in that save',
-  'Pokémon nuevos': 'New Pokémon',
-  'Shinies nuevos': 'New shinies',
-  'Pokémonedas que se suman': 'PokéCoins added',
-  'Tickets ×1 que se suman': '×1 tickets added',
-  'Tickets ×10 que se suman': '×10 tickets added',
-  'Legendarios vencidos nuevos': 'New legendaries defeated',
-  'Logros nuevos': 'New achievements',
-  'Arenas ganadas nuevas': 'New arenas won',
-  'Objetos nuevos': 'New items',
-  'Movimientos evolucionados nuevos': 'New evolved moves',
-  'Pokémon con mejoras subidas': 'Pokémon with higher upgrades',
-  'Récords y estadísticas mejorados': 'Records and stats improved',
-  'Banners con más tiradas sin legendaria': 'Banners with more pulls without a legendary',
-  'Favoritos del perfil': 'Profile favourites',
-  'Título del perfil': 'Profile title',
-  'Ya habías traído esta partida: sólo se suma lo que tenga de nuevo. De Pokémonedas y tickets, lo que tenga de más desde la última vez; tu compañero, tu perfil y el pity de los banners no cambian.':
-    'You already brought this save: only what is new is added. For PokéCoins and tickets, what it has gained since last time; your partner, your profile and the banners\' pity don\'t change.',
-  'No hay nada nuevo que traer.': 'There is nothing new to bring.',
-  'Tu apodo, tus misiones de hoy, tu personalidad y tu inicial no cambian.':
-    'Your nickname, today\'s missions, your personality and your starter don\'t change.',
-  'No se ha podido leer el archivo.': 'Couldn\'t read the file.',
-  '¡Hecho! Tu partida ya está aquí.': 'Done! Your save is here now.',
-  'Como eres invitado, se perderá al salir: crea una cuenta y vuelve a traerla.':
-    'As you\'re a guest, it will be lost when you leave: create an account and bring it again.',
-  'Guardada en este navegador.': 'Saved in this browser.',
-  'No se ha podido guardar en este navegador (¿modo incógnito o sin espacio?).':
-    'Couldn\'t save in this browser (private mode or out of space?).',
-  'Subiendo a la nube…': 'Uploading to the cloud…',
-  'Guardada y subida a la nube.': 'Saved and uploaded to the cloud.',
-  'Guardada en este dispositivo; se subirá a la nube en cuanto se pueda.':
-    'Saved on this device; it will upload to the cloud as soon as possible.',
-  'Si vuelves a traerla más adelante, sólo se sumará lo nuevo.': 'If you bring it again later, only what is new will be added.',
-  'Partida traída': 'Save brought over',
-  'El archivo está vacío.': 'The file is empty.',
-  'El archivo es demasiado grande para ser una partida (máximo 2 MB).': 'The file is too big to be a save (2 MB max).',
-  'El archivo no es un JSON válido: usa el que descarga el código, sin editarlo.':
-    'The file isn\'t valid JSON: use the one the code downloads, without editing it.',
-  'Este archivo no es una partida guardada.': 'This file isn\'t a saved game.',
-  'Este archivo es de una versión más nueva del exportador: actualiza esta página y vuelve a probar.':
-    'This file comes from a newer version of the exporter: reload this page and try again.',
-  'La partida no tiene una fecha de creación válida.': 'The save doesn\'t have a valid creation date.',
-  'Este archivo es una partida de PokéSwarm: el código hay que pegarlo en la consola de la web donde tienes la partida que quieres traer, con tu cuenta iniciada.':
-    'This file is a PokéSwarm save: the code has to be pasted into the console of the website where the save you want to bring is, signed in to your account.',
-  'No hay ninguna partida abierta.': 'No save is open.',
-  '{x} datos no reconocidos se han descartado.': '{x} unrecognised entries were discarded.',
-  '{x} números fuera de rango se han ajustado.': '{x} out-of-range numbers were adjusted.',
-  'La partida es de una versión más nueva del juego: se trae lo que PokéSwarm reconoce.':
-    'The save is from a newer version of the game: whatever PokéSwarm recognises is brought over.',
   // Tickets ganados ×ticketsMult (js/core/mods.js, textoTicket): lo que flota al coger uno. '+2 tickets' es igual.
   '¡{x} tickets ×10!': '{x} ×10 tickets!',
   // Gacha: un repetido desbloquea su evolución (js/core/mods.js, textoEvolucion y NOTA_REPETIDOS). El shiny, antes.
@@ -313,6 +232,39 @@ G.I18n.add({
   'Esferas Fantasmales': 'Phantasmal Spheres', 'Presencia Maligna': 'Evil Presence',
   'Los enemigos sienten que una presencia maligna los observa: daña y frena algo a lo que tienes cerca.': 'Foes feel an evil presence watching them: damages and slightly slows anything near you.', 'Infierno Inminente': 'Impending Doom',
   'Segunda Forma': 'Second Form', 'Ojo de Cthulhu': 'Eye of Cthulhu',
+  // Tercer lote (23-10-2026): el Jefe Maestro (Halo)
+  'Jefe Maestro': 'Master Chief',
+  'Rifle de Asalto': 'Assault Rifle', 'Rifle de Batalla': 'Battle Rifle',
+  'Fuego automático y rapidísimo al enemigo más cercano, algo disperso.': 'Rapid automatic fire at the nearest enemy, a little spread out.',
+  'Aguijoneador': 'Needler', 'Supercombinación': 'Supercombine',
+  'Dispara dos agujas de cristal rosa que persiguen solas al enemigo.': 'Fires two pink crystal needles that home in on the enemy by themselves.',
+  'Granada de Plasma': 'Plasma Grenade', 'Cañón de Combustible': 'Fuel Rod Cannon',
+  'Lanza una granada de plasma que se pega al enemigo y estalla con fuerza. Quema.': 'Throws a plasma grenade that sticks to the enemy and blows up hard. Burns.',
+  'Culatazo': 'Rifle Butt', 'Martillo Gravitatorio': 'Gravity Hammer',
+  'Un golpe seco con la culata del rifle, lento y brutal, en arco estrecho. Empuja mucho.': 'A sharp blow with the rifle butt, slow and brutal, in a narrow arc. Strong knockback.',
+  'Espada de Energía': 'Energy Sword', 'Espada Duelista': 'Duelist Sword',
+  'Se lanza en estocada hacia el enemigo con la espada de plasma y corta todo lo del camino.': 'Lunges at the enemy with the plasma sword, cutting through everything in the way.',
+  'Rifle de Precisión': 'Sniper Rifle', 'Láser Spartan': 'Spartan Laser',
+  'Un disparo lento y certero que cruza todo el campo en línea recta y atraviesa a todos.': 'A slow, accurate shot that crosses the whole field in a straight line and goes through everyone.',
+  'Warthog': 'Warthog', 'Scorpion': 'Scorpion',
+  'Aparca un Warthog con un marine en la ametralladora, que dispara solo una ráfaga rápida.': 'Parks a Warthog with a marine on the machine gun, who fires quick bursts on his own.',
+  'Sobreescudo': 'Overshield',
+  // Tercer lote (23-10-2026): Kratos (God of War)
+  'Espadas del Caos': 'Blades of Chaos', 'Ciclón del Caos': 'Cyclone of Chaos',
+  'Dos espadas al rojo atadas a cadenas: barren un arco amplio y lejano. Quema.': 'Two red-hot blades on chains: they sweep a wide, far-reaching arc. Burns.',
+  'Arpón de Orión': 'Orion\'s Harpoon', 'Espadas de Atenea': 'Blades of Athena',
+  'Lanza una espada encadenada contra el enemigo y la recoge, golpeando a la ida y a la vuelta.': 'Throws a chained blade at the enemy and pulls it back, hitting on the way out and back.',
+  'Furia de Zeus': 'Zeus\' Fury', 'Ira de Cronos': 'Cronos\' Rage',
+  'Arroja un rayo de Zeus, rápido y lejano, que atraviesa a uno.': 'Hurls one of Zeus\' bolts, fast and long-ranged, piercing one enemy.',
+  'Ira de Poseidón': 'Poseidon\'s Rage', 'Diluvio de Poseidón': 'Poseidon\'s Flood',
+  'Rayos azules del dios del mar caen sobre los enemigos cercanos y los frenan.': 'Blue bolts from the sea god strike nearby enemies and slow them down.',
+  'Mirada de Medusa': 'Medusa\'s Gaze', 'Cabeza de Euríale': 'Head of Euryale',
+  'La cabeza de la Gorgona lanza una mirada en línea recta que petrifica: frena muchísimo.': 'The Gorgon\'s head casts a petrifying gaze in a straight line: slows a lot.',
+  'Ejército de Hades': 'Army of Hades', 'Ejército de Esparta': 'Army of Sparta',
+  'Las almas del Inframundo giran a tu alrededor y golpean lo que tocan.': 'Souls of the Underworld circle around you and hit whatever they touch.',
+  'Terremoto de Atlas': 'Atlas Quake', 'Tierra Destructiva': 'Destructive Earth',
+  'Golpea el suelo y salen rocas en todas direcciones que empujan.': 'Strikes the ground and sends rocks flying in every direction, knocking enemies back.',
+  'Ira de Esparta': 'Spartan Rage',
   'Drácula': 'Dracula',
   // Sugerencias y fallos (js/ui/sugerencias.js)
   'Sugerencias y fallos': 'Suggestions and bugs', 'Sugerencia o fallo': 'Suggestion or bug',
@@ -344,5 +296,18 @@ G.I18n.add({
   'El buzón aún no está listo: de momento no se puede enviar.': 'The mailbox isn\'t ready yet: sending isn\'t possible for now.',
   'Enviando…': 'Sending…', '¡Enviado! Gracias por contarlo.': 'Sent! Thanks for letting me know.',
   'Sin conexión: no se ha enviado. Tu texto sigue aquí; prueba otra vez.': 'No connection: it wasn\'t sent. Your text is still here; try again.',
-  'No se ha podido enviar. Tu texto sigue aquí; prueba otra vez en un rato.': 'It couldn\'t be sent. Your text is still here; try again in a while.'
+  'No se ha podido enviar. Tu texto sigue aquí; prueba otra vez en un rato.': 'It couldn\'t be sent. Your text is still here; try again in a while.',
+  // Regalo «buen humor» (G.MODS.regaloBuenHumor, aviso al entrar en game.js)
+  'Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades':
+    'Nico woke up in a good mood. These tickets have a ×3 shiny chance. Here is some gold as a gift to upgrade your Pokémon or try out what\'s new',
+  // El PokéCasino (js/systems/casino.js y su pantalla en dev.html)
+  'PokéCasino': 'PokéCasino', 'Ruleta de Pokémonedas': 'PokéCoin roulette',
+  'Rojo, negro o el 0. Rojo y negro pagan 1 a 1; el 0, 35 a 1.': 'Red, black or 0. Red and black pay 1 to 1; 0 pays 35 to 1.',
+  'Rojo': 'Red', 'Negro': 'Black', 'El 0': 'The 0', 'Apuesta': 'Bet', 'Tienes': 'You have', 'Mitad': 'Half', 'Todo': 'All', 'Girar': 'Spin',
+  '¡Bienvenidos al club, nya! Rojo, negro o el 0: hagan sus apuestas.': 'Welcome to the club, meowth! Red, black or 0: place your bets.',
+  'No va más, nya…': 'No more bets, meowth…', 'Sale el': 'It\'s', '¡Ganas': 'You win', 'Pokémonedas, nya!': 'PokéCoins, meowth!',
+  'La casa gana, nya… ¿Otra?': 'The house wins, meowth… Another?',
+  '¡Prepárate para los problemas! El Team Rocket te ha robado': 'Prepare for trouble! Team Rocket stole', 'Pokémonedas.': 'PokéCoins.',
+  '«Mejor me quedo este oro, al menos yo lo usaré para robar Pokémons y no lo tiraré aquí...»': '“I\'d better keep this gold, at least I\'ll use it to steal Pokémon instead of throwing it away here...”',
+  'Elige rojo, negro o el 0.': 'Pick red, black or 0.', 'No tienes tantas Pokémonedas.': 'You don\'t have that many PokéCoins.'
 });

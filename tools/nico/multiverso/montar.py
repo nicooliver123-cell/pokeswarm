@@ -160,7 +160,25 @@ def vario_cthulhu(c):
     return c
 
 
-# mov: 'anda' (sus pasos de PixelLab), 'flota' (se mece VUELO px sobre el suelo), 'contonea' (de lado a lado),
+
+def vario_jefe(c):
+    """El Jefe Maestro con la armadura azul del multijugador de Halo (la de «Azul» frente a «Rojo»): los verdes oliva de
+    la armadura, azul acero. El visor dorado, el traje gris y el rifle, igual."""
+    h, s, v = hsv(c)
+    if s > 0.25 and 60 / 360 <= h <= 110 / 360:
+        return rgb(214 / 360, min(1, s * 1.05), v)
+    return c
+
+
+def vario_kratos(c):
+    """Kratos de piel olivácea (God of War: Ascension), la que tenía antes de las cenizas: la piel blanca y gris, morena.
+    El tatuaje, el faldón, las espadas y el contorno, igual."""
+    h, s, v = hsv(c)
+    if s < 0.16 and v > 0.45:
+        return rgb(28 / 360, 0.42, v * 0.72)
+    return c
+
+# mov: 'anda' (sus pasos de PixelLab o de pasos.py), 'flota' (se mece VUELO px sobre el suelo), 'contonea' (de lado a lado),
 # 'desliza' (sube y baja 1 px) o 'rueda' (sus pasos dibujados). disparo: 1 se impulsa hacia delante al disparar,
 # -1 retrocede. propias: {Anim: duraciones} de las animaciones dibujadas aparte (<Anim>-<dirección>.png).
 PJ = {
@@ -179,6 +197,10 @@ PJ = {
     'dracula': {'dex': 10009, 'mov': 'desliza', 'sombra': 1, 'disparo': 1, 'vario': vario_dracula},
     'cthulhu': {'dex': 10010, 'mov': 'flota', 'sombra': 1, 'disparo': 1, 'vario': vario_cthulhu,
                 'retoque': {'esfera': True}},   # sin los nervios colgando, que PixelLab dibuja como patas
+    # Tercer lote (23-10-2026). Sin generaciones de PixelLab para animar: los pasos, de pasos.py (por código).
+    'jefe':    {'dex': 10011, 'mov': 'anda', 'sombra': 1, 'disparo': -1, 'vario': vario_jefe},
+    # Kratos, sin PixelLab: imagen de FLUX (Workers AI) -> 3D con TRELLIS.2 -> rotar3d.py -> pixelar.py; pasos de pasos.py.
+    'kratos':  {'dex': 10012, 'mov': 'anda', 'sombra': 1, 'disparo': 1, 'vario': vario_kratos},
 }
 VUELO = 7   # píxeles de arte entre el suelo y el que flota
 

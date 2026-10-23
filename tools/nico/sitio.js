@@ -1,7 +1,7 @@
 /* ============ tools/nico/sitio.js — lo que publica GitHub Pages ============
  *   node tools/nico/sitio.js [<carpeta>]      (por defecto, _site en la raíz del repo)
  * Monta en <carpeta> sólo el juego: las páginas, el código, los estilos, los sprites y lo que el juego enlaza (la
- * licencia, los créditos y la versión comentada del exportador de partidas). Las notas de trabajo (CLAUDE.md, PLAN.md),
+ * licencia y los créditos). Las notas de trabajo (CLAUDE.md, PLAN.md),
  * las herramientas y las reglas de Firebase no se publican en la web, aunque el repositorio siga siendo público.
  * Lo usa el workflow .github/workflows/publicar.yml. check.js comprueba que todo lo que cargan las páginas, los
  * estilos y el código está en la lista, y las pruebas E2E pueden jugar contra la carpeta montada (PS_SITIO, en serve.js).
@@ -15,7 +15,7 @@ const MARCA = '.sitio-pokeswarm';   // la deja en la carpeta montada: sólo se v
 
 /** Lo publicado: ficheros y carpetas (enteras) de la raíz del repo. */
 const SITIO = ['index.html', 'dev.html', '404.html', 'sw.js', 'manifest.webmanifest', 'favicon.ico', 'LICENSE', 'CREDITS.md',
-  'contacto', 'js', 'css', 'assets', 'tools/nico/exportar-oficial.js'];
+  'contacto', 'js', 'css', 'assets'];
 
 const dentro = f => SITIO.some(s => f === s || f.startsWith(s + '/'));
 

@@ -72,29 +72,6 @@ más de retraso.
 El guardado de un invitado vive sólo en su navegador: si borras los datos del
 sitio, se pierde. Con cuenta, se guarda en la nube.
 
-## Traer partida guardada
-
-Si tienes una partida en otra web de este juego, puedes sumarla aquí: colección,
-shinies, mejoras, logros, Pokémonedas y tickets. No se borra nada de lo que ya
-tienes y, si la traes otra vez, sólo se suma lo nuevo.
-
-**Antes de empezar:** PokéSwarm no puede entrar en la otra web, así que la
-partida la sacas tú, pegando en la consola de esa web un código de una línea que
-sólo lee la partida que ya tiene tu navegador y la descarga, sin enviar nada a
-ninguna parte. Su versión comentada está en
-[tools/nico/exportar-oficial.js](tools/nico/exportar-oficial.js). Pega sólo ese
-código, copiado tú mismo del juego: nunca pegues en la consola código que te pase
-otra persona.
-
-1. En un **PC**, abre la web donde tienes tu partida, con tu cuenta iniciada.
-2. Pulsa `F12` y ve a la pestaña **Consola**. Si Chrome te pide escribir
-   `permitir pegar` (o `allow pasting`), escríbelo y pulsa Enter.
-3. En PokéSwarm, abre **Ajustes > Cuenta > Traer partida guardada**, pulsa
-   **Copiar**, pega el código en esa consola y pulsa Enter: se descarga un
-   archivo `.json` con tu partida.
-4. Vuelve a PokéSwarm, pulsa **Elegir archivo**, elige ese archivo, mira la
-   vista previa y pulsa **Confirmar**.
-
 ## Créditos
 
 - **Sprites:** [PMD SpriteCollab](https://github.com/PMDCollab/SpriteCollab) y
