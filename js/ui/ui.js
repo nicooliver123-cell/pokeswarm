@@ -11,6 +11,7 @@ G.UI = (() => {
                    'scr-dex', 'scr-upgrades', 'scr-gacha', 'scr-levelup', 'scr-pause', 'scr-over',
                    'scr-nick', 'scr-friends', 'scr-lobby', 'scr-rank', 'scr-item', 'scr-goals', 'scr-bond'];
   if (typeof document !== 'undefined' && document.getElementById && $('scr-guarderia')) SCREENS.push('scr-guarderia');   // MOD nico: la pantalla de la guardería (js/systems/guarderia.js)
+  if (typeof document !== 'undefined' && document.getElementById && $('scr-casino')) SCREENS.push('scr-casino');   // MOD nico: el PokéCasino (js/systems/casino.js); sin esto, «Volver» lo dejaba abierto encima
 
   function show(id, keepMenu = false) {
     for (const s of SCREENS) if (s !== id && !(keepMenu && s === 'scr-menu')) $(s).classList.add('hidden');

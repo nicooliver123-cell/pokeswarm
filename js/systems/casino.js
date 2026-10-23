@@ -345,9 +345,12 @@ G.Casino = (() => {
     $('cas-saldo').textContent = (s.coins || 0).toLocaleString('es-ES');
   }
 
-  function abrir() {
+  /** `desde`: 'gacha' si se entra desde la pestaña del Gacha (entonces «Volver» vuelve allí); si no, al menú. */
+  function abrir(desde) {
     if (!activo() || !$('scr-casino')) return;
     G.UI.show('scr-casino', true);
+    const volver = document.querySelector('#scr-casino [data-back]');
+    if (volver) volver.onclick = () => (desde === 'gacha' && G.GachaUI ? G.GachaUI.open() : G.MenuUI.open());
     const s = G.DB.save, m = $('cas-meowth');
     if (m) G.UI.sprite(m, 52, { lively: true, scale: 3, hero: true });   // Meowth, el del Team Rocket
     dice('¡Bienvenidos al club, nya! Rojo, negro o el 0: hagan sus apuestas.');
@@ -406,12 +409,12 @@ G.Casino = (() => {
     G.UI.refreshCoins();
   }
 
-  /** El botón «PokéCasino» de la pantalla del Gacha (con Dex, la entrada al casino: css/nico.css lo quita del menú). */
+  /** La pestaña «PokéCasino» del Gacha, la primera de las regiones (con Dex, la entrada al casino: css/nico.css lo quita del menú). */
   function enganchar() {
     const b = $('gacha-casino');
     if (!b) return;
     b.hidden = !activo();
-    b.onclick = () => { G.Audio.sfx('click'); abrir(); };
+    b.onclick = () => { G.Audio.sfx('click'); abrir('gacha'); };
   }
   if (typeof document !== 'undefined' && document.addEventListener) {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enganchar); else enganchar();

@@ -6710,6 +6710,10 @@ function casinoChecks() {
   const html = rd('dev.html');
   t('la pantalla: el cartel «Danilo\'s Gamblers Club», el botón «PokéCasino» del menú y las tres apuestas',
     /<h2 class="cas-cartel"[^>]*>Danilo's Gamblers Club<\/h2>/.test(html) && /data-go="casino">PokéCasino</.test(html) && ['rojo', 'negro', 'cero'].every(x => html.includes(`data-apuesta="${x}"`)));
+  t('«Volver» cierra el casino: scr-casino está en la lista de pantallas de ui.js (gancho como el de la guardería) y vuelve al Gacha si se entró desde él',
+    /SCREENS\.push\('scr-casino'\);\s*\/\/ MOD nico/.test(rd('js/ui/ui.js')) && /desde === 'gacha' && G\.GachaUI \? G\.GachaUI\.open\(\) : G\.MenuUI\.open\(\)/.test(rd('js/systems/casino.js')) && /abrir\('gacha'\)/.test(rd('js/systems/casino.js')));
+  t('el casino, la primera pestaña del Gacha (en dorado), antes de las regiones',
+    /<div class="gen-tabs" id="gacha-gens"><button id="gacha-casino" class="gen-tab cas-tab" hidden>/.test(html) && /#gacha-gens \.cas-tab \{/.test(rd('css/nico.css')));
   t('con Dex se entra desde el Gacha (#gacha-casino) y el botón del menú se esconde; con Clásico, desde el menú',
     /id="gacha-casino"/.test(html) && /html\.estilo-dex #scr-menu \.menu-item\[data-go="casino"\] \{ display: none; \}/.test(rd('css/nico.css')) && /\$\('gacha-casino'\)/.test(rd('js/systems/casino.js')));
   t('Meowth (#52) de crupier y los dos del Team Rocket en píxeles con su paleta', /G\.UI\.sprite\(m, 52,/.test(rd('js/systems/casino.js')) &&
