@@ -30,7 +30,7 @@ G.Combat = (() => {
     m.t -= dt;
     if (m.t > 0) return;
     // Los ataques que necesitan blanco esperan a tenerlo (no gastes animación al aire).
-    if (needsTarget(m) && !(pl.target && G.U.dist(pl.x, pl.y, pl.target.x, pl.target.y) <= reach(m))) {
+    if (needsTarget(m) && !(pl.target && G.U.dist(pl.x, pl.y, pl.target.x, pl.target.y) <= (G.MODS && G.MODS.alcanceGolpe ? G.MODS.alcanceGolpe(m, pl.target, reach(m)) : reach(m)))) {   // MOD nico: cuerpo a cuerpo, sólo si el golpe llega (Placaje se lanzaba al aire)
       m.t = 0.05;
       return;
     }

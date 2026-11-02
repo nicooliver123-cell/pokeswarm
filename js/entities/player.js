@@ -342,7 +342,7 @@ G.Player = class Player {
     const threat = G.Projectiles.nearest(all, this.x, this.y, this.r + 24);
     const boss = all.find(e => e.boss && !e.dead && G.U.dist(this.x, this.y, e.x, e.y) < 330);
     const tg = (ranged ? boss || threat : threat || boss)
-            || (G.MODS && G.MODS.cofreCercano ? G.MODS.cofreCercano(this, m && G.Combat.reach ? G.Combat.reach(m) : 0) : null)   // MOD nico: los cofres pequeños a tiro, también con enemigos
+            || (G.MODS && G.MODS.cofreCercano ? G.MODS.cofreCercano(this, m && G.Combat.reach ? G.Combat.reach(m) : 0, m) : null)   // MOD nico: los cofres pequeños a tiro, también con enemigos
             || G.Projectiles.nearest(all, this.x, this.y, 520)
             || G.World.nearestBreakable(this.x, this.y, 200);
     this.target = tg;

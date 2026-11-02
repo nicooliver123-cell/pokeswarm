@@ -609,12 +609,22 @@ G.MODS = {
     if (ref) ref.after(p); else box.appendChild(p);
   },
 
+  /** combat.js tickMove() y cofreCercano(): hasta dónde se lanza el ataque `m` contra el blanco `tg`. Upstream lanza un
+   *  golpe cuerpo a cuerpo con el blanco a radio + 30 px (reach()), pero el golpe sólo llega a radio + el radio del blanco
+   *  (queryCircle y propsInCircle): con los enemigos pequeños (10-20 px) Placaje salía al aire y gastaba su recarga. Visto
+   *  el 02-11-2026 (aviso de un jugador: «bugs en placaje»): 2 de cada 55 Placajes, con el enemigo a 84-89 px y llegando
+   *  a 70-81. El resto de ataques, como upstream (`base`). */
+  alcanceGolpe(m, tg, base) {
+    if (!m || m.kind !== 'melee' || !tg || !(m.radius > 0)) return base;
+    return m.radius + (tg.r > 0 ? tg.r : 0);
+  },
+
   /** player.js, apuntado: el cofre pequeño (type 'chest', sin romper) más cercano a `pl` a menos de cofreBlanco px,
    *  o null. Va después de lo que te toca y del jefe, y antes del enemigo más cercano. Con `alcance` (el reach() del
    *  ataque activo, combat.js), sólo uno al que llegue ese ataque y sin pared por medio: el 02-11-2026 se vio que con
    *  un cofre fuera de alcance (Placaje llega a 78 px) o tras una pared, tu Pokémon no atacaba a nadie o disparaba a
    *  la pared mientras la horda se le echaba encima. */
-  cofreCercano(pl, alcance) {
+  cofreCercano(pl, alcance, mv) {
     let r = +this.cofreBlanco;
     if (alcance > 0) r = Math.min(r, alcance);
     if (!(r > 0) || !pl || !G.World || !G.World.propsInCircle) return null;
@@ -628,6 +638,7 @@ G.MODS = {
     for (const p of G.World.propsInCircle(pl.x, pl.y, r)) {
       if (p.type !== 'chest' || !(p.hp > 0)) continue;
       const d = (p.x - pl.x) ** 2 + (p.y - pl.y) ** 2;
+      if (mv && d > this.alcanceGolpe(mv, p, alcance) ** 2) continue;   // con un golpe cuerpo a cuerpo, sólo si le llega
       if (d < bd && !pared(p)) { bd = d; best = p; }
     }
     return best;

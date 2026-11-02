@@ -464,12 +464,13 @@ const HOOKS = [
   ['js/systems/rift.js', /shiny: G\.Sprites\.hasShiny\(mon\.dex\) && Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(1 \/ 512\) : 1 \/ 512\),\s*\/\/ MOD nico/, 'shiny ×1,5: legendario de la grieta'],
   ['js/systems/gacha.js', /Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(SHINY_RATE, regalo\[i\]\) : SHINY_RATE\)\);\s*\/\/ MOD nico/, 'shiny ×1,5: gacha (y el de los tickets de regalo)'],
   ['js/systems/gacha.js', /save\.tickets\.t10 -= cost\.t10;\r?\n\s*const regalo = G\.MODS && G\.MODS\.gastarRegalo \? G\.MODS\.gastarRegalo\(save, n, cost\) : \[\];\s*\/\/ MOD nico/, 'regalo «buen humor»: pull() gasta los tickets del regalo tras cobrar'],
-  ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this, m && G\.Combat\.reach \? G\.Combat\.reach\(m\) : 0\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
+  ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this, m && G\.Combat\.reach \? G\.Combat\.reach\(m\) : 0, m\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
   ['js/game.js', /G\.Audio\.music\('village'\);\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalo && G\.MODS\.darRegalo\(G\.DB\.save\)\) \{ G\.DB\.commit\(true\); G\.UI\.toast\(G\.T\(G\.MODS\.regaloBuenHumor\.texto\), 12000\); G\.UI\.refreshCoins\(\); \}\s*\/\/ MOD nico/, 'regalo «buen humor»: afterLogin() lo da una vez y avisa'],
   ['js/entities/player.js', /this\.baseAtk = mon\.atk;\r?\n\s*if \(G\.MODS && G\.MODS\.ventajaShiny\) G\.MODS\.ventajaShiny\(this\);\s*\/\/ MOD nico/, 'ventaja del shiny: el constructor la aplica tras la vida y el ataque base'],
   ['js/entities/player.js', /if \(this\.dead\) return;\r?\n\s*if \(this\.shiny && G\.MODS && G\.MODS\.brilloShiny\) G\.MODS\.brilloShiny\(this, dt\);\s*\/\/ MOD nico/, 'ventaja del shiny: destellos en update()'],
   ['js/ui/menu.js', /if \(G\.MODS && G\.MODS\.notaShiny\) G\.MODS\.notaShiny\(box, own && hasSh && viewShiny\);\s*\/\/ MOD nico/, 'ventaja del shiny: la nota en la ficha'],
   ['js/ui/menu.js', /G\.DB\.commit\(\);\s*if \(G\.Social && G\.Social\.refreshMember\) G\.Social\.refreshMember\(\);\s*\/\/ MOD nico/, 'cooperativo: al cambiar de compañero en una sala, los demás lo ven'],
+  ['js/systems/combat.js', /if \(needsTarget\(m\) && !\(pl\.target && G\.U\.dist\(pl\.x, pl\.y, pl\.target\.x, pl\.target\.y\) <= \(G\.MODS && G\.MODS\.alcanceGolpe \? G\.MODS\.alcanceGolpe\(m, pl\.target, reach\(m\)\) : reach\(m\)\)\)\) \{\s*\/\/ MOD nico/, 'cuerpo a cuerpo: sólo se lanza si el golpe llega al blanco'],
   ['js/game.js', /\/\/ MOD nico: regalo «buen humor», una vez por cuenta\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalosTodos\) \{ const t = G\.MODS\.darRegalosTodos\(G\.DB\.save\); if \(t\.length\) \{ G\.DB\.commit\(true\); G\.UI\.toast\([^\n]*\/\/ MOD nico/, 'regalos para todos: afterLogin() los da una vez y avisa, tras el «buen humor»'],
   ['js/game.js', /if \(G\.MODS && G\.MODS\.darRegalosCuenta\) G\.MODS\.darRegalosCuenta\(G\.DB\.save, G\.MODS\.nombresCuenta\(\)\)\.then\([^\n]*G\.T\(x\)[^\n]*\/\/ MOD nico/, 'regalos a una cuenta: afterLogin() los da y avisa'],
   ['js/ui/gacha-ui.js', /<span>1%<\/span><\/div>[\s\S]*?<\/p>`;\r?\n\s*if \(G\.MODS && G\.MODS\.notasGacha\) \$\('gacha-rates'\)\.innerHTML = G\.MODS\.notasGacha\(\$\('gacha-rates'\)\.innerHTML\);\s*\/\/ MOD nico/,
@@ -6724,6 +6725,14 @@ function cofresChecks() {
   c.G.World.isWall = (x, y) => y > 60 && y < 80;   // una pared entre el jugador y el cofre de (0, 140)
   r.push(['tras una pared, no es blanco', M.cofreCercano(pl, 520) === null]);
   delete c.G.World.isWall;
+  // 02-11-2026: el alcance de un golpe cuerpo a cuerpo es su radio + el del blanco (G.MODS.alcanceGolpe).
+  const plac = { kind: 'melee', radius: 60 }, rayo = { kind: 'beam', radius: 200 };
+  r.push(['Placaje (60 px) llega a un enemigo de radio 10 a 70 px, no a 90', M.alcanceGolpe(plac, { r: 10 }, 90) === 70]);
+  r.push(['los que no son cuerpo a cuerpo, como upstream', M.alcanceGolpe(rayo, { r: 10 }, 220) === 220 && M.alcanceGolpe(plac, null, 90) === 90]);
+  props[4].r = 12; props[4].y = 80;
+  r.push(['con Placaje, el cofre a 80 px (radio 12) no es blanco: sólo llega a 72', M.cofreCercano(pl, 90, plac) === null]);
+  props[4].y = 70;
+  r.push(['a 70 px, sí', M.cofreCercano(pl, 90, plac) === props[4]]);
   M.cofreBlanco = 0;
   r.push(['con cofreBlanco = 0, como upstream', M.cofreCercano(pl) === null]);
   const failed = r.filter(x => !x[1]);
