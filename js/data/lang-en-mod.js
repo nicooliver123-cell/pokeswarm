@@ -265,6 +265,24 @@ G.I18n.add({
   'Terremoto de Atlas': 'Atlas Quake', 'Tierra Destructiva': 'Destructive Earth',
   'Golpea el suelo y salen rocas en todas direcciones que empujan.': 'Strikes the ground and sends rocks flying in every direction, knocking enemies back.',
   'Ira de Esparta': 'Spartan Rage',
+  // Ash (23-10-2026): sus Pokémon (forma summon, js/systems/invocar.js)
+  'Ash': 'Ash', 'Pokémon (anime)': 'Pokémon (anime)',
+  '¡Te elijo a ti! Pikachu sale a tu lado y lanza Impactrueno al enemigo más cercano.': 'I choose you! Pikachu comes out by your side and fires Thunder Shock at the nearest enemy.',
+  'Gigavoltio Destructor': 'Gigavolt Havoc',
+  'Charmander sale de su Poké Ball y escupe llamas en abanico. Quema. Evoluciona a Charizard.': 'Charmander comes out of its Poké Ball and breathes a fan of flames. Burns. Evolves into Charizard.',
+  'Squirtle sale y dispara Pistola Agua, que empuja. Evoluciona a la Escuadra Squirtle: tres a la vez.': 'Squirtle comes out and fires Water Gun, which knocks back. Evolves into the Squirtle Squad: three at once.',
+  'Escuadra Squirtle': 'Squirtle Squad',
+  'Bulbasaur sale, azota con Látigo Cepa en arco y te cura un poco mientras está fuera.': 'Bulbasaur comes out, lashes with Vine Whip in an arc and heals you a little while it is out.',
+  'Rayo Solar': 'Solar Beam',
+  'Pidgeotto sale volando y embiste a los enemigos atravesándolos. Evoluciona a Pidgeot.': 'Pidgeotto flies out and rams through the enemies. Evolves into Pidgeot.',
+  'Froakie sale y lanza Shuriken de Agua, que va y vuelve. Evoluciona a Greninja.': 'Froakie comes out and throws Water Shuriken, which goes and comes back. Evolves into Greninja.',
+  'Snorlax se planta, atrae a los enemigos de su alrededor y los aplasta. Tu escudo.': 'Snorlax plants itself, pulls nearby enemies in and squashes them. Your shield.',
+  'Golpe Cuerpo': 'Body Slam',
+  '¡Nunca me rindo!': 'I never give up!',
+  'Cambia de ataque: ¡hasta dos Pokémon fuera a la vez!': 'Switch attacks: up to two Pokémon out at once!',
+  'No hace daño: acumula ATAQUE (también el de tus Pokémon) mientras esté activo.': 'Deals no damage: stacks ATTACK (your Pokémon\'s too) while it is active.',
+  '¡Evoluciona! ×1,7 daño y +30% tiempo fuera': 'It evolves! ×1.7 damage and +30% time out',
+  '+35% tiempo fuera': '+35% time out', 'Ataca un 25% más rápido': 'Attacks 25% faster', '+40% daño y +30% tiempo fuera': '+40% damage and +30% time out',
   'Drácula': 'Dracula',
   // Sugerencias y fallos (js/ui/sugerencias.js)
   'Sugerencias y fallos': 'Suggestions and bugs', 'Sugerencia o fallo': 'Suggestion or bug',
@@ -300,6 +318,9 @@ G.I18n.add({
   // Regalo «buen humor» (G.MODS.regaloBuenHumor, aviso al entrar en game.js)
   'Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades':
     'Nico woke up in a good mood. These tickets have a ×3 shiny chance. Here is some gold as a gift to upgrade your Pokémon or try out what\'s new',
+  // Regalo del parche de noviembre (G.MODS.regalosTodos)
+  '¡Parche nuevo! Llega Ash al Multiverso y desde hoy los tickets que ganáis cuentan ×3. Tomad 10 tickets ×10 de regalo':
+    'New patch! Ash joins the Multiverse and from today every ticket you earn counts ×3. Here are 10 ×10 tickets as a gift',
   // El PokéCasino (js/systems/casino.js y su pantalla en dev.html)
   'PokéCasino': 'PokéCasino', 'Ruleta de Pokémonedas': 'PokéCoin roulette',
   'Rojo, negro o el 0. Rojo y negro pagan 1 a 1; el 0, 35 a 1.': 'Red, black or 0. Red and black pay 1 to 1; 0 pays 35 to 1.',

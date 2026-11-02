@@ -60,6 +60,7 @@ G.Combat = (() => {
       case 'dash':       dash(pl, m); break;
       case 'trail':      trailPatch(pl, m); break;
       case 'cone':       cone(pl, m); break;
+      case 'summon':     if (G.Invocar) G.Invocar.lanzar(pl, m, ghost); break;   // MOD nico: los Pokémon de Ash (js/systems/invocar.js)
     }
   }
 
@@ -359,6 +360,7 @@ G.Combat = (() => {
   }
 
   function updateFields(dt) {
+    if (G.Invocar) G.Invocar.update(dt);   // MOD nico: los Pokémon de Ash (js/systems/invocar.js)
     for (let i = fields.length - 1; i >= 0; i--) {
       const f = fields[i];
       f.t += dt;
@@ -448,6 +450,7 @@ G.Combat = (() => {
 
   /** Lo de los campos que va por encima (meteoros cayendo, torretas). */
   function drawAirFields(ctx) {
+    if (G.Invocar) G.Invocar.draw(ctx);   // MOD nico: los Pokémon de Ash (js/systems/invocar.js)
     const now = performance.now() / 1000;
     for (const f of fields) {
       if (!G.Camera.sees(f.x, f.y, 200)) continue;
@@ -463,7 +466,9 @@ G.Combat = (() => {
     }
   }
 
-  function clearFields(owner) { fields = owner ? fields.filter(f => f.owner !== owner) : []; }
+  function clearFields(owner) { fields = owner ? fields.filter(f => f.owner !== owner) : []; if (G.Invocar) G.Invocar.clear(owner); }   // MOD nico: y los Pokémon de Ash
+  /** MOD nico: lanza `m` desde otro (un Pokémon de Ash, js/systems/invocar.js), sin daño si `isGhost`. */
+  function castAs(who, m, isGhost) { const prev = ghost; ghost = !!isGhost; try { run(who, m); } finally { ghost = prev; } }
 
   function orbit(pl, m, dt, now, isGhost = false) {
     const col = G.U.TYPE_COLOR[m.type];
@@ -665,7 +670,7 @@ G.Combat = (() => {
     }
   }
 
-  return { tick, resolve, ghostCast, ghostOrbit, updateFields, drawGroundFields, drawAirFields, clearFields,
+  return { tick, resolve, ghostCast, ghostOrbit, updateFields, drawGroundFields, drawAirFields, clearFields, castAs,   // MOD nico: castAs
            get fieldCount() { return fields.length; },
            get campos() { return fields; } };   // MOD nico: los campos de tus ataques, para el búfer de luz (js/world/luz.js)
 })();

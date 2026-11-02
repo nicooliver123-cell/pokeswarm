@@ -45,10 +45,10 @@
  *      vuelta real, con la cuenta atrás de B retrasada 1 s (así fallaba): B vuelve con A ('af'),
  *      sin quedarse en pausa dentro de la arena, con la copia de todos los enemigos vivos de A,
  *      y ninguno ve su propio nombre en el aviso «Pausa: … elige fusión».
- *  10. Tickets ganados ×2 (G.MODS.ticketsMult), en plena partida: A (anfitrión) suelta a sus
+ *  10. Tickets ganados ×3 (G.MODS.ticketsMult), en plena partida: A (anfitrión) suelta a sus
  *      pies un ticket y un ticket ×10 y los recoge; el contador de la partida sube 1 (es lo que
- *      viaja por la red) y cada uno apunta +2 en su partida guardada. Después, con
- *      ticketsMult = 1 sólo en B, otro ticket: A +2 y B +1.
+ *      viaja por la red) y cada uno apunta +3 en su partida guardada. Después, con
+ *      ticketsMult = 1 sólo en B, otro ticket: A +3 y B +1.
  *  11. Gacha (A, a 844x390): un Pokémon que A tiene (su inicial), con una evolución que no
  *      tiene, sale repetido por la interfaz real (el azar sigue un guion sólo dentro de esa tirada):
  *      la carta dice «¡Repetido! Desbloqueas …» con su sprite, se apunta con from 'evo' y no da
@@ -571,14 +571,14 @@ async function ticketsCoop(A, B) {
   }
   const cuadra = c => c.guardada[0] === c.partida[0] * c.mult + c.logros[0] && c.guardada[1] === c.partida[1] * c.mult + c.logros[1];
   const r1 = await ronda(['ticket', 'ticket10']);
-  check('Tickets ×2: A (anfitrión) recoge un ticket y un ticket ×10; el contador de la partida (lo que viaja por la red) sube 1 por objeto, igual en A y B, y los dos apuntan el doble en su partida guardada',
-    r1.A.mult === 2 && r1.B.mult === 2 && r1.A.partida[0] >= 1 && r1.A.partida[1] >= 1 && r1.B.partida[0] === r1.A.partida[0] && r1.B.partida[1] === r1.A.partida[1] &&
+  check('Tickets ×3: A (anfitrión) recoge un ticket y un ticket ×10; el contador de la partida (lo que viaja por la red) sube 1 por objeto, igual en A y B, y los dos apuntan el triple en su partida guardada',
+    r1.A.mult === 3 && r1.B.mult === 3 && r1.A.partida[0] >= 1 && r1.A.partida[1] >= 1 && r1.B.partida[0] === r1.A.partida[0] && r1.B.partida[1] === r1.A.partida[1] &&
     cuadra(r1.A) && cuadra(r1.B), r1);
   await B.page.evaluate(() => { G.MODS.ticketsMult = 1; });
   const r2 = await ronda(['ticket']);
-  await B.page.evaluate(() => { G.MODS.ticketsMult = 2; });
-  check('Tickets: con ticketsMult = 1 sólo en B, otro ticket: A apunta +2 y B +1',
-    r2.A.mult === 2 && r2.B.mult === 1 && r2.A.partida[0] >= 1 && r2.B.partida[0] === r2.A.partida[0] && cuadra(r2.A) && cuadra(r2.B), r2);
+  await B.page.evaluate(() => { G.MODS.ticketsMult = 3; });
+  check('Tickets: con ticketsMult = 1 sólo en B, otro ticket: A apunta +3 y B +1',
+    r2.A.mult === 3 && r2.B.mult === 1 && r2.A.partida[0] >= 1 && r2.B.partida[0] === r2.A.partida[0] && cuadra(r2.A) && cuadra(r2.B), r2);
   report.tickets = { r1, r2 };
 }
 
@@ -1075,7 +1075,7 @@ async function vistasCoop(A, B, uidB) {
     check('Transporte: A y B se hablan por el canal directo de WebRTC: par elegido conectado, sin TURN, y el canal del juego abierto con mensajes en los dos sentidos', directOk(trA) && directOk(trB),
       { A: { modo: trA.modo, pares: trA.pares }, B: { modo: trB.modo, pares: trB.pares } });
 
-    // ---- Tickets ganados ×2, en los dos clientes ----
+    // ---- Tickets ganados ×3, en los dos clientes ----
     await ticketsCoop(A, B);
 
     // ---- Vida en el ANFITRIÓN: curandera forzada, y control con la curación activada ----

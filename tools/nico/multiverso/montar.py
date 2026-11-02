@@ -178,6 +178,14 @@ def vario_kratos(c):
         return rgb(28 / 360, 0.42, v * 0.72)
     return c
 
+
+def vario_ash(c):
+    """Ash con la gorra azul: el rojo de la gorra y las zapatillas, azul. La ropa, la piel y el logo, igual."""
+    h, s, v = hsv(c)
+    if s > 0.35 and (h <= 15 / 360 or h >= 340 / 360):
+        return rgb(215 / 360, s, v)
+    return c
+
 # mov: 'anda' (sus pasos de PixelLab o de pasos.py), 'flota' (se mece VUELO px sobre el suelo), 'contonea' (de lado a lado),
 # 'desliza' (sube y baja 1 px) o 'rueda' (sus pasos dibujados). disparo: 1 se impulsa hacia delante al disparar,
 # -1 retrocede. propias: {Anim: duraciones} de las animaciones dibujadas aparte (<Anim>-<dirección>.png).
@@ -201,6 +209,7 @@ PJ = {
     'jefe':    {'dex': 10011, 'mov': 'anda', 'sombra': 1, 'disparo': -1, 'vario': vario_jefe},
     # Kratos, sin PixelLab: imagen de FLUX (Workers AI) -> 3D con TRELLIS.2 -> rotar3d.py -> pixelar.py; pasos de pasos.py.
     'kratos':  {'dex': 10012, 'mov': 'anda', 'sombra': 1, 'disparo': 1, 'vario': vario_kratos},
+    'ash':     {'dex': 10013, 'mov': 'anda', 'sombra': 1, 'disparo': 1, 'vario': vario_ash},   # como Kratos (23-10-2026)
 }
 VUELO = 7   # píxeles de arte entre el suelo y el que flota
 

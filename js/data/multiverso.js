@@ -89,7 +89,11 @@ G.MULTIVERSO = (() => {
       pool: ['rifle-de-asalto', 'aguijoneador', 'granada-de-plasma', 'culatazo', 'espada-de-energia', 'rifle-de-precision', 'warthog', 'sobreescudo'] },
     { dex: 10012, name: 'Kratos', types: ['fighting', 'fire'], hp: 120, spd: 102, atk: 1.16, rarity: 2, bst: 430,
       starter: false, gen: GEN, mv: true, start: 'espadas-del-caos', serie: 'God of War',
-      pool: ['espadas-del-caos', 'arpon-de-orion', 'furia-de-zeus', 'ira-de-poseidon', 'mirada-de-medusa', 'ejercito-de-hades', 'terremoto-de-atlas', 'ira-de-esparta'] }
+      pool: ['espadas-del-caos', 'arpon-de-orion', 'furia-de-zeus', 'ira-de-poseidon', 'mirada-de-medusa', 'ejercito-de-hades', 'terremoto-de-atlas', 'ira-de-esparta'] },
+    // Ash (petición de Nico, 23-10-2026): pega poco él; sus ataques son sus Pokémon (forma summon, js/systems/invocar.js).
+    { dex: 10013, name: 'Ash', types: ['normal'], hp: 104, spd: 112, atk: 1.0, rarity: 2, bst: 400,
+      starter: false, gen: GEN, mv: true, start: 'pikachu', serie: 'Pokémon (anime)',
+      pool: ['pikachu', 'charmander', 'squirtle', 'bulbasaur', 'pidgeotto', 'froakie', 'snorlax', 'nunca-me-rindo'] }
   ];
 
   // En el comentario de cada uno, su daño nominal y el de ataques Pokémon de su forma.
@@ -474,7 +478,49 @@ G.MULTIVERSO = (() => {
       evo: ['Tierra Destructiva', 'xp'] },
     { id: 'ira-de-esparta', name: 'Ira de Esparta', type: 'fighting', kind: 'buff',      // los números de Danza Espada
       desc: 'No hace daño: acumula ATAQUE mientras esté activo.',
-      cd: 0.85, stat: 'atk', amount: 0.13, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'fire' } }
+      cd: 0.85, stat: 'atk', amount: 0.13, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'fire' } },
+    // ---- Ash (Pokémon, el anime) ----
+    // Forma summon: mientras es el ataque activo, su Pokémon está fuera (recarga 5 < tiempo fuera 6) y usa solo su
+    // `golpe`; al cambiar de ataque sigue `dur` segundos (como mucho dos fuera a la vez, js/systems/invocar.js).
+    // check.js §24 mide el golpe contra los ataques Pokémon de su forma.
+    { id: 'pikachu', name: 'Pikachu', type: 'electric', kind: 'summon', pk: 25,             // golpe 28,6 (Impactrueno 32,5)
+      desc: '¡Te elijo a ti! Pikachu sale a tu lado y lanza Impactrueno al enemigo más cercano.',
+      cd: 5, dur: 6, dmg: 12, count: 1, vis: { proj: 'bolt', trail: 'spark' },
+      golpe: { kind: 'projectile', cd: 0.42, speed: 400, life: 1.1, spread: 0.1, pierce: 1, size: 6 },
+      evo: ['Gigavoltio Destructor', 'atk'] },
+    { id: 'charmander', name: 'Charmander', type: 'fire', kind: 'summon', pk: 4, pkEvo: 6,  // golpe 65,3 (Lanzallamas 70)
+      desc: 'Charmander sale de su Poké Ball y escupe llamas en abanico. Quema. Evoluciona a Charizard.',
+      cd: 5, dur: 6, dmg: 7, count: 1,
+      golpe: { kind: 'cone', cd: 0.75, count: 7, arc: 0.9, speed: 370, life: 0.42, size: 6, pierce: 1, burn: 1 },
+      evo: ['Charizard', 'atk'] },
+    { id: 'squirtle', name: 'Squirtle', type: 'water', kind: 'summon', pk: 7, evoMas: 2,    // golpe 26 (Pistola Agua 30)
+      desc: 'Squirtle sale y dispara Pistola Agua, que empuja. Evoluciona a la Escuadra Squirtle: tres a la vez.',
+      cd: 5, dur: 6, dmg: 13, count: 1, vis: { proj: 'ball', pal: 'water' },
+      golpe: { kind: 'projectile', cd: 0.5, speed: 330, life: 1.3, spread: 0.08, pierce: 0, size: 7, knock: 30 },
+      evo: ['Escuadra Squirtle', 'def'] },
+    { id: 'bulbasaur', name: 'Bulbasaur', type: 'grass', kind: 'summon', pk: 1,              // golpe 34 (Látigo Cepa 34)
+      desc: 'Bulbasaur sale, azota con Látigo Cepa en arco y te cura un poco mientras está fuera.',
+      cd: 5, dur: 6, dmg: 17, count: 1, cura: 2, vis: { melee: 'claw', pal: 'grass' },
+      golpe: { kind: 'melee', cd: 0.5, radius: 75, arc: 2.0, knock: 40 },
+      evo: ['Rayo Solar', 'hp'] },
+    { id: 'pidgeotto', name: 'Pidgeotto', type: 'flying', kind: 'summon', pk: 17, pkEvo: 18, // golpe 25 (Ataque Rápido 26,7)
+      desc: 'Pidgeotto sale volando y embiste a los enemigos atravesándolos. Evoluciona a Pidgeot.',
+      cd: 5, dur: 6, dmg: 20, count: 1, vis: { proj: 'streak', melee: 'claw', pal: 'normal' },
+      golpe: { kind: 'dash', cd: 0.8, radius: 115, width: 32, knock: 30 },
+      evo: ['Pidgeot', 'spd'] },
+    { id: 'froakie', name: 'Froakie', type: 'water', kind: 'summon', pk: 656, pkEvo: 658,   // golpe 21,2 (Hoja Afilada 22,2)
+      desc: 'Froakie sale y lanza Shuriken de Agua, que va y vuelve. Evoluciona a Greninja.',
+      cd: 5, dur: 6, dmg: 9, count: 1, vis: { proj: 'shard', pal: 'water' },
+      golpe: { kind: 'boomerang', cd: 0.85, count: 2, speed: 330, radius: 215, size: 7, spread: 0.5 },
+      evo: ['Greninja', 'cd'] },
+    { id: 'snorlax', name: 'Snorlax', type: 'normal', kind: 'summon', pk: 143,              // golpe 16,7 (Hierba Lazo 16,4)
+      desc: 'Snorlax se planta, atrae a los enemigos de su alrededor y los aplasta. Tu escudo.',
+      cd: 5, dur: 6, dmg: 10, count: 1, atrae: 55, radioAtrae: 160,
+      golpe: { kind: 'aura', cd: 0.6, radius: 78 },
+      evo: ['Golpe Cuerpo', 'def'] },
+    { id: 'nunca-me-rindo', name: '¡Nunca me rindo!', type: 'normal', kind: 'buff',         // los números de Danza Dragón
+      desc: 'No hace daño: acumula ATAQUE (también el de tus Pokémon) mientras esté activo.',
+      cd: 0.7, stat: 'atk', amount: 0.11, dur: 7, stacks: 5, vis: { buff: 'arrow' } }
   ];
 
   // Geometría de las hojas (G.SPRITE_META): la escribe tools/nico/multiverso/montar.py.
@@ -492,6 +538,7 @@ G.MULTIVERSO = (() => {
     10010: {"s":1,"a":{"Idle":{"w":32,"h":39,"n":4,"r":8,"d":[10,10,10,10],"ax":15.5,"ay":33.5},"Walk":{"w":32,"h":39,"n":4,"r":8,"d":[6,6,6,6],"ax":15.5,"ay":33.5},"Attack":{"w":40,"h":39,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":33.5},"Shoot":{"w":40,"h":39,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":33.5},"Charge":{"w":32,"h":39,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":33.5},"Hurt":{"w":40,"h":39,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":33.5},"Faint":{"w":40,"h":39,"n":4,"r":8,"d":[8,6,6,10],"ax":19.5,"ay":33.5}},"sh":1,"hv":1},
     10011: {"s":1,"a":{"Idle":{"w":32,"h":37,"n":2,"r":8,"d":[36,20],"ax":15.5,"ay":31.5},"Walk":{"w":48,"h":45,"n":4,"r":8,"d":[6,8,6,8],"ax":23.5,"ay":39.5},"Attack":{"w":40,"h":37,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":31.5},"Shoot":{"w":40,"h":37,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":31.5},"Charge":{"w":32,"h":37,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":31.5},"Hurt":{"w":40,"h":37,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":31.5},"Faint":{"w":40,"h":37,"n":4,"r":8,"d":[8,12,4,10],"ax":19.5,"ay":31.5}},"sh":1},
     10012: {"s":1,"a":{"Idle":{"w":32,"h":37,"n":2,"r":8,"d":[36,20],"ax":15.5,"ay":31.5},"Walk":{"w":48,"h":45,"n":4,"r":8,"d":[6,8,6,8],"ax":23.5,"ay":39.5},"Attack":{"w":40,"h":37,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":31.5},"Shoot":{"w":40,"h":37,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":31.5},"Charge":{"w":32,"h":37,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":31.5},"Hurt":{"w":40,"h":37,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":31.5},"Faint":{"w":40,"h":37,"n":4,"r":8,"d":[8,12,4,10],"ax":19.5,"ay":31.5}},"sh":1},
+    10013: {"s":1,"a":{"Idle":{"w":32,"h":37,"n":2,"r":8,"d":[36,20],"ax":15.5,"ay":31.5},"Walk":{"w":48,"h":45,"n":4,"r":8,"d":[6,8,6,8],"ax":23.5,"ay":39.5},"Attack":{"w":40,"h":37,"n":7,"r":8,"d":[2,2,3,3,2,2,2],"ax":19.5,"ay":31.5},"Shoot":{"w":40,"h":37,"n":5,"r":8,"d":[2,2,3,2,2],"ax":19.5,"ay":31.5},"Charge":{"w":32,"h":37,"n":2,"r":8,"d":[4,4],"ax":15.5,"ay":31.5},"Hurt":{"w":40,"h":37,"n":2,"r":8,"d":[2,8],"ax":19.5,"ay":31.5},"Faint":{"w":40,"h":37,"n":4,"r":8,"d":[8,12,4,10],"ax":19.5,"ay":31.5}},"sh":1},
   };
   // </meta montar.py>
 
@@ -503,13 +550,25 @@ G.MULTIVERSO = (() => {
     G.DEX_BY[mon.dex] = mon;
   }
 
+  // La forma summon (los Pokémon de Ash, js/systems/invocar.js): su escalera y lo que gana al evolucionar (el Pokémon
+  // evoluciona: `pkEvo` / `evoMas`). `dmg` es el daño de su golpe; `rate`, lo que multiplica su ritmo (golpe.cd);
+  // `dur`, lo que sigue fuera al cambiar de ataque.
+  const ESCALERA_SUMMON = [
+    { t: '+40% daño', m: { dmg: 1.40 } },
+    { t: '+35% tiempo fuera', m: { dur: 1.35 } },
+    { t: 'Ataca un 25% más rápido', m: { rate: 0.75 } },
+    { t: '+40% daño y +30% tiempo fuera', m: { dmg: 1.40, dur: 1.30 } }
+  ];
+  if (G.Moves && G.Moves.EVO_MODS && !G.Moves.EVO_MODS.summon)
+    G.Moves.EVO_MODS.summon = { t: '¡Evoluciona! ×1,7 daño y +30% tiempo fuera', m: { dmg: 1.7, dur: 1.3 } };
+
   if (G.Moves) {
     for (const a of ATAQUES) {
       if (G.Moves.BY_ID[a.id]) continue;
       // La escalera de mejoras es la de su forma: la copia de un ataque de esa forma.
       const igual = G.Moves.ALL.find(m => m.kind === a.kind && m.ups);
-      if (!igual) continue;
-      const m = Object.assign({}, a, { ups: igual.ups, maxLvl: igual.maxLvl });
+      if (!igual && a.kind !== 'summon') continue;
+      const m = Object.assign({}, a, igual ? { ups: igual.ups, maxLvl: igual.maxLvl } : { ups: ESCALERA_SUMMON, maxLvl: ESCALERA_SUMMON.length + 1 });
       delete m.evo;
       G.Moves.ALL.push(m);
       G.Moves.BY_ID[m.id] = m;

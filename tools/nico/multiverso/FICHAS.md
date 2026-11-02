@@ -2073,3 +2073,31 @@ Consultadas el 23-10-2026.
 - Arpón de Orión, Ciclón del Caos, Espadas de Atenea, Ejército de Esparta, Tierra Destructiva e Ira de Esparta salen del wiki en español, que puede usar traducciones de aficionados o de la versión latinoamericana.
 - Diluvio de Poseidón y «Kratos de piel olivácea» son míos.
 - Las páginas del wiki se leyeron por su API (el navegador normal devuelve 402).
+
+## 10013 · Ash (Ash Ketchum, el anime de Pokémon)
+
+Propuesta aceptada por Nico el 23-10-2026 («quiero hacer otro personaje de multiverso… Ash, el entrenador Pokémon. Sus
+habilidades son invocar diferentes Pokémon»). Versión: el Ash de Kanto (gorra roja y blanca con el logo verde, chaleco
+azul, guantes verdes), la que se reconoce a 32 px. Tipo Normal: es un humano y no pelea él; vida 104, velocidad 112
+(corre mucho) y ataque ×1,0, el más bajo, porque toda su fuerza está en sus Pokémon.
+
+**La mecánica (forma `summon`, `js/systems/invocar.js`):** cada ataque es un Pokémon que sale de la Poké Ball, corre
+hacia el enemigo más cercano sin alejarse de Ash y usa él solo su golpe, con la forma y los números de un ataque
+Pokémon de esa forma (por eso check.js §24 lo mide contra ellos). Mientras su ataque es el activo sigue fuera; al
+cambiar de ranura pelea unos segundos más, así que cambiando con ritmo Ash junta dos (no más). Al evolucionar el
+ataque, evoluciona el Pokémon. No reciben daño (no hay vida que sincronizar en cooperativo).
+
+| Ataque (Pokémon) | Golpe | Tipo | Evoluciona a (pide) | Extra |
+|---|---|---|---|---|
+| Pikachu (inicial) | proyectil: Impactrueno (28,6) | Eléctrico | Gigavoltio Destructor (Potencia) | — |
+| Charmander | abanico de llamas (65,3), quema | Fuego | Charizard (Potencia) | sale Charizard |
+| Squirtle | proyectil: Pistola Agua (26), empuja | Agua | Escuadra Squirtle (Coraza) | tres a la vez |
+| Bulbasaur | golpe: Látigo Cepa (34) | Planta | Rayo Solar (Vigor) | cura 2/s a Ash |
+| Pidgeotto | embestida en vuelo (25) | Volador | Pidgeot (Carrera) | sale Pidgeot |
+| Froakie | bumerán: Shuriken de Agua (21,2) | Agua | Greninja (Reflejos) | sale Greninja |
+| Snorlax | aura: aplasta (16,7) | Normal | Golpe Cuerpo (Coraza) | atrae a los enemigos |
+| ¡Nunca me rindo! | potenciador (Danza Dragón) | Normal | — | también sube a sus Pokémon |
+
+Nombres: los de los Pokémon, oficiales; «Gigavoltio Destructor» es el movimiento Z de Pikachu en la versión española
+de Sol y Luna; «Escuadra Squirtle» y «¡Nunca me rindo!» son míos (el doblaje dice «Escuadrón Squirtle» en algunos
+episodios: sin comprobar). Variocolor: la gorra azul. Sprite sin PixelLab (FLUX → TRELLIS.2 → rotar3d.py → pixelar.py).

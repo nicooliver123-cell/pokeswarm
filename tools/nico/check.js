@@ -466,6 +466,7 @@ const HOOKS = [
   ['js/systems/gacha.js', /save\.tickets\.t10 -= cost\.t10;\r?\n\s*const regalo = G\.MODS && G\.MODS\.gastarRegalo \? G\.MODS\.gastarRegalo\(save, n, cost\) : \[\];\s*\/\/ MOD nico/, 'regalo «buen humor»: pull() gasta los tickets del regalo tras cobrar'],
   ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
   ['js/game.js', /G\.Audio\.music\('village'\);\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalo && G\.MODS\.darRegalo\(G\.DB\.save\)\) \{ G\.DB\.commit\(true\); G\.UI\.toast\(G\.T\(G\.MODS\.regaloBuenHumor\.texto\), 12000\); G\.UI\.refreshCoins\(\); \}\s*\/\/ MOD nico/, 'regalo «buen humor»: afterLogin() lo da una vez y avisa'],
+  ['js/game.js', /\/\/ MOD nico: regalo «buen humor», una vez por cuenta\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalosTodos\) \{ const t = G\.MODS\.darRegalosTodos\(G\.DB\.save\); if \(t\.length\) \{ G\.DB\.commit\(true\); G\.UI\.toast\([^\n]*\/\/ MOD nico/, 'regalos para todos: afterLogin() los da una vez y avisa, tras el «buen humor»'],
   ['js/game.js', /if \(G\.MODS && G\.MODS\.darRegalosCuenta\) G\.MODS\.darRegalosCuenta\(G\.DB\.save, G\.MODS\.nombresCuenta\(\)\)\.then\([^\n]*\/\/ MOD nico/, 'regalos a una cuenta: afterLogin() los da y avisa'],
   ['js/ui/gacha-ui.js', /<span>1%<\/span><\/div>[\s\S]*?<\/p>`;\r?\n\s*if \(G\.MODS && G\.MODS\.notasGacha\) \$\('gacha-rates'\)\.innerHTML = G\.MODS\.notasGacha\(\$\('gacha-rates'\)\.innerHTML\);\s*\/\/ MOD nico/,
     'shiny ×1,5: el cartel del gacha (el «1%» de upstream sigue ahí y el gancho lo cambia después de pintarlo)'],
@@ -701,7 +702,8 @@ const KNOWN = [
   ['js/systems/interact.js|pl.hp = Math.min(pl.maxHp, pl.hp + pl.maxHp * 0.14 * dt);', 1, 'manantial: cura al JUGADOR'],
   ['js/systems/weather.js|pl.hp -= d;', 1, 'clima: daño al jugador'],
   ['js/systems/events.js|L.hp -= Math.min(30, hits.reduce((a, e) => a + 4 + e.dmg * 0.12, 0));', 1, 'Pokémon perdido que escoltas (baja)'],
-  ['js/world/world.js|p.hp -= amount;', 1, 'rocas y cofres (baja)']
+  ['js/world/world.js|p.hp -= amount;', 1, 'rocas y cofres (baja)'],
+  ['js/systems/invocar.js|hp: { get: () => pl.hp, set: v => { pl.hp = v; } },', 1, 'Pokémon de Ash: el lanzador delegado reenvía la vida a Ash (no cura nada por sí)']
 ];
 const HP_RE = /\.hp\s*(\+\+|--|[-+*\/]?=(?!=))|\bhp\s*(\+\+|--)|\[\s*['"]hp['"]\s*\]\s*[-+*\/]?=(?!=)|Object\.assign\([^)]*\bhp\s*:/;
 const SCAN = walk('js').filter(f => f.endsWith('.js') && f !== 'js/app.min.js');
@@ -1161,22 +1163,22 @@ function gachaChecks() {
   // ---- A. Tickets ganados ×ticketsMult ----
   {
     const M = nuevoMods().G.MODS;
-    t('tickets: por defecto ×2 (entero)', M.ticketsMult === 2 && M.multTickets() === 2 && M.tickets(3) === 6 && M.tickets(0) === 0);
+    t('tickets: por defecto ×3 (entero; ×2 hasta el 02-11-2026)', M.ticketsMult === 3 && M.multTickets() === 3 && M.tickets(3) === 9 && M.tickets(0) === 0);
     const raros = [0, -2, NaN, 'x', Infinity, 0.5, 2.7].map(v => { M.ticketsMult = v; return M.multTickets(); });
-    M.ticketsMult = 2;
+    M.ticketsMult = 3;
     t('tickets: un ajuste no válido (0, negativo, NaN, texto, infinito, <1) vale 1; con decimales, la parte entera', raros.join() === '1,1,1,1,1,1,2', raros);
     const def = { t1: 3, t10: 1, coins: 150 }, antes = JSON.stringify(def), p = M.premio(def);
-    t('premio(): una copia con los tickets ×2, las Pokémonedas igual y la definición intacta', p !== def && p.t1 === 6 && p.t10 === 2 && p.coins === 150 &&
+    t('premio(): una copia con los tickets ×3, las Pokémonedas igual y la definición intacta', p !== def && p.t1 === 9 && p.t10 === 3 && p.coins === 150 &&
       JSON.stringify(def) === antes, p);
     const soloMonedas = M.premio({ coins: 100 });
     t('premio(): sin tickets no inventa ninguno; null y undefined pasan', soloMonedas.coins === 100 && !('t1' in soloMonedas) && !('t10' in soloMonedas) &&
       M.premio(null) === null && M.premio(undefined) === undefined);
     M.ticketsMult = 1;
     t('premio() y textos con ticketsMult = 1: como el proyecto base', M.premio(def) === def && M.textoTicket('ticket') === '+1 ticket' && M.textoTicket('ticket10') === '¡Ticket ×10!');
-    M.ticketsMult = 2;
-    t('texto que flota con ×2: «+2 tickets» y «¡2 tickets ×10!»', M.textoTicket('ticket') === '+2 tickets' && M.textoTicket('ticket10') === '¡2 tickets ×10!');
-    const en = ['+2 tickets', '¡2 tickets ×10!', '+1 ticket', '¡Ticket ×10!'].map(EN);
-    t('texto que flota, en inglés (i18n.js real): «+2 tickets», «2 ×10 tickets!» y los del proyecto base', en.join('|') === '+2 tickets|2 ×10 tickets!|+1 ticket|Ticket ×10!', en);
+    M.ticketsMult = 3;
+    t('texto que flota con ×3: «+3 tickets» y «¡3 tickets ×10!»', M.textoTicket('ticket') === '+3 tickets' && M.textoTicket('ticket10') === '¡3 tickets ×10!');
+    const en = ['+3 tickets', '¡3 tickets ×10!', '+1 ticket', '¡Ticket ×10!'].map(EN);
+    t('texto que flota, en inglés (i18n.js real): «+3 tickets», «3 ×10 tickets!» y los del proyecto base', en.join('|') === '+3 tickets|3 ×10 tickets!|+1 ticket|Ticket ×10!', en);
   }
 
   // Trozos de js/game.js, tal cual: si upstream los cambia, esto falla y hay que revisarlo.
@@ -1257,20 +1259,20 @@ ${fTicket}      }
     const m = { id: 'survive', goal: 5, param: null, prog: 5, claimed: false, told: true };
     const okClaim = G.Progress.claim(m);
     const tras = { t1: s.tickets.t1, t10: s.tickets.t10, coins: s.coins };
-    t(`misión (premio ${JSON.stringify(surv)}): se recoge con los tickets ×2 y las Pokémonedas igual`, okClaim && tras.t1 === surv.t1 * 2 && tras.coins === surv.coins && tras.t10 === 0, tras);
+    t(`misión (premio ${JSON.stringify(surv)}): se recoge con los tickets ×3 y las Pokémonedas igual`, okClaim && tras.t1 === surv.t1 * 3 && tras.coins === surv.coins && tras.t10 === 0, tras);
     t('misión: recogerla otra vez no da nada', G.Progress.claim(m) === false && s.tickets.t1 === tras.t1 && s.coins === tras.coins);
     const A = id => G.AchDefs.LIST.find(a => a.id === id);
     delete s.ach.evo1; delete s.ach.evo25; delete s.ach.own1;
     s.stats.evolutions = 25; s.owned[1] = { at: 1, from: 'gacha' };
     G.Progress.checkAch();
     const logro = { t1: s.tickets.t1 - tras.t1, t10: s.tickets.t10 - tras.t10, coins: s.coins - tras.coins };
-    const esperado = { t1: (A('evo1').reward.t1 || 0) * 2, t10: (A('evo25').reward.t10 || 0) * 2, coins: A('own1').reward.coins || 0 };
-    t('logros (evo1, evo25 y own1): tickets y tickets ×10 ×2; las Pokémonedas igual', logro.t1 === esperado.t1 && logro.t10 === esperado.t10 && logro.coins === esperado.coins &&
+    const esperado = { t1: (A('evo1').reward.t1 || 0) * 3, t10: (A('evo25').reward.t10 || 0) * 3, coins: A('own1').reward.coins || 0 };
+    t('logros (evo1, evo25 y own1): tickets y tickets ×10 ×3; las Pokémonedas igual', logro.t1 === esperado.t1 && logro.t10 === esperado.t10 && logro.coins === esperado.coins &&
       esperado.t1 > 0 && esperado.t10 > 0 && esperado.coins > 0, { logro, esperado });
     G.Progress.checkAch();
     t('logros: no se dan dos veces', s.tickets.t1 - tras.t1 === logro.t1 && s.tickets.t10 - tras.t10 === logro.t10);
     const txt = G.Progress.rewardText(surv), txt10 = G.Progress.rewardText(A('evo25').reward);
-    t('rewardText enseña lo que se da (×2) y las monedas igual', txt === `[ticket] ${surv.t1 * 2} &nbsp;<span class="coin"></span> ${surv.coins}` && txt10 === `[ticket10] ${A('evo25').reward.t10 * 2} ×10`, [txt, txt10]);
+    t('rewardText enseña lo que se da (×3) y las monedas igual', txt === `[ticket] ${surv.t1 * 3} &nbsp;<span class="coin"></span> ${surv.coins}` && txt10 === `[ticket10] ${A('evo25').reward.t10 * 3} ×10`, [txt, txt10]);
     t('las definiciones de misiones y logros no cambian', JSON.stringify([G.MissionDefs.daily, G.MissionDefs.weekly, G.AchDefs.LIST].map(l => l.map(d => d.reward))) === defs);
   } catch (e) { t('js/systems/progress.js en node:vm', false, String(e && e.stack || e)); }
 
@@ -1411,6 +1413,20 @@ ${fTicket}      }
     t('cartel del gacha (refresh() real): «1.5%» de shiny con 1,5 y «1%» con 1, como el proyecto base', /\[shiny\] Shiny<\/span><span>1\.5%<\/span>/.test(c15) && !c15.includes('<span>1%</span>') &&
       /\[shiny\] Shiny<\/span><span>1%<\/span>/.test(c1), c15.slice(c15.indexOf('[shiny]'), c15.indexOf('[shiny]') + 60));
   } catch (e) { t('shiny con el código real', false, String(e && e.stack || e)); }
+
+  // ---- B1. Regalos para todas las cuentas (02-11-2026): el del parche, 10 tickets ×10 una vez ----
+  {
+    const M = nuevoMods().G.MODS, r = (M.regalosTodos || []).find(x => x.id === 'parche-2026-11');
+    const s = { coins: 50, tickets: { t1: 30, t10: 2 } }, d1 = M.darRegalosTodos(s), d2 = M.darRegalosTodos(s);
+    t('regalo del parche: 10 tickets ×10 (los lila) una vez, sin monedas ni shiny de más, y lo apunta; la segunda vez, nada',
+      !!r && r.t10 === 10 && d1.length === 1 && d1[0] === r.texto && !d2.length && s.tickets.t10 === 12 && s.tickets.t1 === 30 && s.coins === 50 &&
+      !s.regaloShiny && !s.regaloLotes && s.regalos[r.id] > 0, { d1, d2, s });
+    const v = {}, dv = M.darRegalosTodos(v);
+    t('regalo del parche: también a una partida sin tickets todavía (cuenta nueva)', dv.length === 1 && v.tickets.t10 === 10 && v.tickets.t1 === 0, v);
+    t('regalo del parche: el aviso tiene su inglés', EN(r.texto) !== r.texto && /10 ×10 tickets/.test(EN(r.texto)), EN(r.texto));
+    M.regalosTodos = [];
+    t('regalo del parche: con regalosTodos = [] no se da nada', !M.darRegalosTodos({ tickets: { t1: 0, t10: 0 } }).length && !M.darRegalosTodos(null).length);
+  }
 
   // ---- B2. Regalo «buen humor» (22-10-2026): 10 tickets ×10 una vez, y shiny ×3 sólo en las tiradas que pagan ----
   try {
@@ -4648,6 +4664,7 @@ function companeroChecks() {
       Object.assign(c.G, { Audio: { music: x => llamadas.push('música ' + x) }, DB: { save: { partner }, commit: () => llamadas.push('guarda') }, TestUI: { start: () => llamadas.push('test') },
         UI: { toast: (x, ms) => llamadas.push(`aviso ${ms}: ${x}`), refreshCoins() {} }, T: x => x });
       if (!mods.conRegalo) c.G.MODS.regaloBuenHumor = null;   // el regalo, aparte (abajo)
+      if (!mods.conRegalosTodos) c.G.MODS.regalosTodos = [];   // el del parche, aparte (abajo)
       if (!sinFichero) c.G.ElegirCompanero = { activo: () => !!(c.G.MODS && c.G.MODS.sinTest), abrir: () => llamadas.push('elegir') };
       vm.runInContext('var Flujo = {\n' + m[0] + '  goMenu() { G.__menu = true; }\n};\nFlujo.afterLogin();', c, { filename: 'js/game.js (afterLogin)' });
       if (c.G.__menu) llamadas.push('menú');
@@ -4656,6 +4673,9 @@ function companeroChecks() {
     const conRegalo = caso({ partner: 4, mods: { conRegalo: true } });
     t('afterLogin() real con el regalo «buen humor»: guarda y avisa con su texto 12 s, y luego el menú como siempre',
       conRegalo === 'música village, guarda, aviso 12000: Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades, menú', conRegalo);
+    const conTodos = caso({ partner: 4, mods: { conRegalosTodos: true } });
+    t('afterLogin() real con los regalosTodos: guarda y avisa con su texto 12 s, y luego el menú como siempre',
+      conTodos === 'música village, guarda, aviso 12000: ¡Parche nuevo! Llega Ash al Multiverso y desde hoy los tickets que ganáis cuentan ×3. Tomad 10 tickets ×10 de regalo, menú', conTodos);
     const casos = { nueva: caso(), conTest: caso({ mods: { sinTest: false } }), conCompanero: caso({ partner: 4 }), sinFichero: caso({ sinFichero: true }), sinAjuste: caso({ mods: { sinTest: undefined } }) };
     t('afterLogin() real: sin compañero, «Elige a tu compañero» (nunca el test); con sinTest = false, el test; con compañero, el menú; si falta elegir-companero.js tras un merge, o el ajuste, el test de upstream',
       casos.nueva === 'música village, elegir' && casos.conTest === 'música village, test' && casos.conCompanero === 'música village, menú' &&
@@ -5838,7 +5858,7 @@ function multiversoChecks() {
     });
     const FLOTAN = [10003, 10008, 10010];   // el Cacodemonio, Blinky y el Ojo de Cthulhu (Drácula se desliza por el suelo)
     t('geometría propia (META de multiverso.js, la escribe montar.py): las 7 animaciones en 8 direcciones con su ancla dentro, variocolor, el radio y el tamaño de un Pokémon normal (Idle de 32 de ancho, como Charmander), y sólo flotan el Cacodemonio, Blinky y el Ojo de Cthulhu',
-      lista.length === 12 && geo.every(g => g.idle && g.filas && g.sh && g.radio && g.escala && g.flota === FLOTAN.includes(g.dex)) && lista.every(p => Object.keys(G.SPRITE_META[p.dex].a).length === 7), geo);
+      lista.length === 13 && geo.every(g => g.idle && g.filas && g.sh && g.radio && g.escala && g.flota === FLOTAN.includes(g.dex)) && lista.every(p => Object.keys(G.SPRITE_META[p.dex].a).length === 7), geo);
     // La lista que validó Nico el 14-10-2026: [id, nombre, forma, tipo, evolución, lo que pide] (sin evolución, un potenciador).
     const LISTA = {
       10001: [['llama-bebe', 'Llama Bebé', 'projectile', 'fire', 'Mega Llama', 'atk'], ['garra-afilada', 'Garra Afilada', 'melee', 'dragon', 'Brazo Tridente', 'atk'],
@@ -5890,7 +5910,12 @@ function multiversoChecks() {
       10012: [['espadas-del-caos', 'Espadas del Caos', 'melee', 'fire', 'Ciclón del Caos', 'cd'], ['arpon-de-orion', 'Arpón de Orión', 'boomerang', 'fighting', 'Espadas de Atenea', 'atk'],
         ['furia-de-zeus', 'Furia de Zeus', 'projectile', 'electric', 'Ira de Cronos', 'mag'], ['ira-de-poseidon', 'Ira de Poseidón', 'meteor', 'water', 'Diluvio de Poseidón', 'spd'],
         ['mirada-de-medusa', 'Mirada de Medusa', 'beam', 'rock', 'Cabeza de Euríale', 'def'], ['ejercito-de-hades', 'Ejército de Hades', 'orbit', 'ghost', 'Ejército de Esparta', 'hp'],
-        ['terremoto-de-atlas', 'Terremoto de Atlas', 'nova', 'ground', 'Tierra Destructiva', 'xp'], ['ira-de-esparta', 'Ira de Esparta', 'buff', 'fighting']]
+        ['terremoto-de-atlas', 'Terremoto de Atlas', 'nova', 'ground', 'Tierra Destructiva', 'xp'], ['ira-de-esparta', 'Ira de Esparta', 'buff', 'fighting']],
+      // Ash (23-10-2026): sus ataques son sus Pokémon (forma summon, js/systems/invocar.js).
+      10013: [['pikachu', 'Pikachu', 'summon', 'electric', 'Gigavoltio Destructor', 'atk'], ['charmander', 'Charmander', 'summon', 'fire', 'Charizard', 'atk'],
+        ['squirtle', 'Squirtle', 'summon', 'water', 'Escuadra Squirtle', 'def'], ['bulbasaur', 'Bulbasaur', 'summon', 'grass', 'Rayo Solar', 'hp'],
+        ['pidgeotto', 'Pidgeotto', 'summon', 'flying', 'Pidgeot', 'spd'], ['froakie', 'Froakie', 'summon', 'water', 'Greninja', 'cd'],
+        ['snorlax', 'Snorlax', 'summon', 'normal', 'Golpe Cuerpo', 'def'], ['nunca-me-rindo', '¡Nunca me rindo!', 'buff', 'normal']]
     };
     const malLista = [];
     for (const [dex, at] of Object.entries(LISTA)) {
@@ -5898,19 +5923,22 @@ function multiversoChecks() {
       if (JSON.stringify(pool) !== JSON.stringify(at.map(a => a[0])) || pool[0] !== G.Moves.startFor(p)) malLista.push(`${dex}: aprende ${pool.join()}`);
       for (const [id, nombre, kind, ty, evo, need] of at) {
         const m = G.Moves.BY_ID[id], igual = sin.Moves.ALL.find(x => x.kind === kind && x.ups);
-        if (!m || m.name !== nombre || m.kind !== kind || m.type !== ty || m.ups !== G.Moves.BY_ID[igual.id].ups || m.maxLvl !== igual.maxLvl || 'evo' in m ||
+        // La forma summon (Ash) no tiene ningún ataque Pokémon del que copiar la escalera: la suya, de 4 mejoras.
+        const escalera = kind === 'summon' ? !!(m && m.ups && m.ups.length === 4 && m.maxLvl === 5 && m.ups.every(u => u.t && u.m) && G.Moves.EVO_MODS.summon)
+          : !!(m && igual && m.ups === G.Moves.BY_ID[igual.id].ups && m.maxLvl === igual.maxLvl);
+        if (!m || m.name !== nombre || m.kind !== kind || m.type !== ty || !escalera || 'evo' in m ||
           JSON.stringify(G.Moves.EVO[id] || null) !== JSON.stringify(evo ? [evo, need] : null) || (evo && !G.Moves.NEED_NAME[need])) malLista.push(id);
       }
     }
     t('cada personaje aprende sólo su lista (poolFor() real, el inicial el primero): 7 de Agumon, 8 del Doom Slayer y 7 del Cacodemonio (validadas por Nico) y las del segundo lote (8 cada uno, 7 el Ojo de Cthulhu), cada uno con su nombre, su forma, su tipo, la escalera de mejoras de su forma y su evolución (Llama Bebé -> Mega Llama, Rifle de Plasma -> BFG 9000, Súper Escopeta -> Súper Escopeta Maestra...); los potenciadores, sin evolución',
-      !malLista.length && Object.keys(LISTA).length === 12 && MV.ATAQUES.length === 93, malLista);
+      !malLista.length && Object.keys(LISTA).length === 13 && MV.ATAQUES.length === 101, malLista);
     const nuevos = G.Moves.ALL.filter(x => !sin.Moves.BY_ID[x.id]).map(x => x.id);
     const enPool = Object.entries(G.Moves.POOL).filter(([, ids]) => nuevos.some(id => ids.includes(id))).map(([k]) => k);
     const otros = G.DEX.filter(p => !p.mv && G.Moves.poolFor(p).some(id => nuevos.includes(id))).map(p => p.dex);
     const ajenos = lista.flatMap(p => G.Moves.poolFor(p).filter(id => sin.Moves.BY_ID[id]).map(id => p.dex + ':' + id));
     const deDos = nuevos.filter(id => lista.filter(p => p.pool.includes(id)).length !== 1);
     t(`los ${nuevos.length} ataques del Multiverso no entran en ningún pool de tipo ni los aprende ningún Pokémon (${G.DEX.length - lista.length} mirados), ninguno de los del Multiverso aprende un ataque Pokémon y cada uno de los suyos es de un solo personaje`,
-      nuevos.length === 93 && !enPool.length && !otros.length && !ajenos.length && !deDos.length, { enPool, otros: otros.slice(0, 5), ajenos, deDos });
+      nuevos.length === 101 && !enPool.length && !otros.length && !ajenos.length && !deDos.length, { enPool, otros: otros.slice(0, 5), ajenos, deDos });
     // Control: sin el gancho de poolFor() (moves.js), Agumon aprendería los de Fuego, Dragón y Normal.
     const sinPool = montar({ cambia: { 'js/data/moves.js': s => s.replace(/^\s*if \(mon\.pool\)[^\n]*MOD nico[^\n]*\n/m, '') } }).G;
     const ctrl = sinPool.Moves.poolFor(sinPool.DEX_BY[10001]);
@@ -5925,6 +5953,16 @@ function multiversoChecks() {
       const m = G.Moves.BY_ID[id], misma = sin.Moves.ALL.filter(x => x.kind === m.kind);
       if (m.kind === 'buff') {
         if (!misma.some(x => x.stat === m.stat && x.amount === m.amount && x.stacks === m.stacks && x.dur === m.dur && x.cd === m.cd)) fuera.push(id + ': potenciador sin pareja');
+        continue;
+      }
+      if (m.kind === 'summon') {   // Ash: su golpe, contra los de su forma; y fuera siempre mientras está activo (dur ≥ cd)
+        const g = Object.assign({}, m.golpe, { kind: m.golpe.kind, dmg: m.dmg }), igual = sin.Moves.ALL.filter(x => x.kind === g.kind);
+        if (!(m.dur >= m.cd)) fuera.push(id + ': se va antes de volver a lanzarse (dur < cd)');
+        if (!m.pk || !G.DEX_BY[m.pk] || (m.pkEvo && !G.DEX_BY[m.pkEvo])) fuera.push(id + ': su Pokémon no está en la Pokédex');
+        for (const [que, fn] of [['daño', nominal], ['alcance', alcance]]) {
+          const v = fn(g), vs = igual.map(fn);
+          if (!(v >= Math.min(...vs) - 1e-9 && v <= Math.max(...vs) + 1e-9)) fuera.push(`${id}: golpe ${que} ${v.toFixed(1)} fuera de ${Math.min(...vs).toFixed(1)}-${Math.max(...vs).toFixed(1)} (${g.kind})`);
+        }
         continue;
       }
       for (const [que, f] of [['daño', nominal], ['alcance', alcance]]) {
@@ -5942,7 +5980,7 @@ function multiversoChecks() {
       return !(m.lvl === m.def.maxLvl && info && info.ready && info.name === e[0] && G.Moves.evolve(m) && m.name === e[0] && m.evolved);
     });
     t('suben de nivel con su escalera (instance() real: nivel 3 distinto del 1, sin la escalera dentro) y los 67 que evolucionan llegan al máximo y evolucionan (evoInfo() y evolve() reales)',
-      inst.lvl === 3 && !('ups' in inst) && JSON.stringify(inst) !== JSON.stringify(base) && nuevos.filter(id => G.Moves.EVO[id]).length === 81 && !evos.length, evos);
+      inst.lvl === 3 && !('ups' in inst) && JSON.stringify(inst) !== JSON.stringify(base) && nuevos.filter(id => G.Moves.EVO[id]).length === 88 && !evos.length, evos);
   } catch (e) { t('datos del Multiverso', false, String(e && e.stack || e)); }
   // ---- A2. Sus ataques en partida: las cartas de subida de nivel, la mejora «Repertorio» y cómo se ven ----
   try {
@@ -6117,7 +6155,7 @@ function multiversoChecks() {
     t('el cartel del Multiverso dice que cada tirada cuesta un ticket ×10', rates.includes('· Cada tirada cuesta un ticket ×10, el lila (la ×10, diez).<br>'), rates);
     t('pestaña del gacha: «Otros mundos» en vez de «Gen 10» desde que se abre el gacha (en Kanto)', enKanto === 'Otros mundos', enKanto);
     t('cartel del Multiverso: título, sus sagas sin repetir, sin el pity de la legendaria y los tres primeros de destacados',
-      els['banner-title'].textContent === 'Multiverso' && els['banner-desc'].textContent === 'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War.' &&
+      els['banner-title'].textContent === 'Multiverso' && els['banner-desc'].textContent === 'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War, Pokémon (anime).' &&
       els['gacha-pity'].textContent === '' && [10001, 10002, 10003].every(d => els['gacha-feat'].children.some(x => x.dex === d)), { titulo: els['banner-title'].textContent, desc: els['banner-desc'].textContent });
     const pct = +(100 / G.MULTIVERSO.lista().length).toFixed(2) + '%';
     // Con multiversoRepetidoPorCoste apagado (o sin el ticket lila), el cartel vuelve a decir 30.
@@ -6149,7 +6187,7 @@ function multiversoChecks() {
     for (const f of ['js/core/i18n.js', 'js/data/lang-en.js', 'js/data/lang-en-mod.js']) vm.runInContext(rd(f), c, { filename: f });
     const EN = c.G.I18n.t;
     const casos = { 'Multiverso': 'Multiverse', 'Otros mundos': 'Other worlds', 'Llama Bebé': 'Pepper Breath', 'Mega Llama': 'Nova Blast',
-      'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War.': 'Characters from other worlds who slip into the swarm: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War.',
+      'Personajes de otros mundos que se cuelan en el enjambre: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War, Pokémon (anime).': 'Characters from other worlds who slip into the swarm: Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War, Pokémon (anime).',
       'Ojo de Cthulhu': 'Eye of Cthulhu', 'Drácula': 'Dracula', 'Espada Maestra': 'Master Sword', 'Píldora de Poder': 'Power Pellet', 'Fuego Infernal': 'Hellfire',
       'Cacodemonio': 'Cacodemon', 'Súper Escopeta': 'Super Shotgun', 'Rayo Bola': 'Ball Lightning', 'Tormenta Infernal': 'Hellstorm',
       'Escopeta de dos cañones: una ráfaga corta de perdigones que empuja.': 'Double-barrelled shotgun: a short burst of pellets that knocks back.',
@@ -6165,8 +6203,10 @@ function multiversoChecks() {
     // Cada ataque del Multiverso: su nombre, su descripción, su evolución y la carta dorada de evolucionar («X → Y»).
     const textos = MV ? MV.ATAQUES.flatMap(a => [a.name, a.desc].concat(a.evo ? [a.evo[0], a.name + ' → ' + a.evo[0]] : [])) : [];
     // Los que se llaman igual en inglés (nombres propios de su saga): se miran sólo por si traen algo en español.
-    const IGUALES = new Set(['BFG 9000', 'Epona', 'Waka Waka', 'Super Pac-Man', 'Waka Waka → Super Pac-Man', 'Pyro', 'Pac-Mania', 'Game Over', 'Cruise Elroy', 'Warthog', 'Scorpion', 'Warthog → Scorpion']);
-    const sinIngles = textos.filter(x => (!IGUALES.has(x) && EN(x) === x) || /[áéíóúñ¿¡]/i.test(EN(x)));
+    const IGUALES = new Set(['BFG 9000', 'Epona', 'Waka Waka', 'Super Pac-Man', 'Waka Waka → Super Pac-Man', 'Pyro', 'Pac-Mania', 'Game Over', 'Cruise Elroy', 'Warthog', 'Scorpion', 'Warthog → Scorpion',
+      'Pikachu', 'Charmander', 'Charizard', 'Charmander → Charizard', 'Squirtle', 'Bulbasaur', 'Pidgeotto', 'Pidgeot', 'Pidgeotto → Pidgeot',
+      'Froakie', 'Greninja', 'Froakie → Greninja', 'Snorlax']);
+    const sinIngles = textos.filter(x => (!IGUALES.has(x) && EN(x) === x) || /[áéíóúñ¿¡]/i.test(EN(x).replace(/Poké/g, 'Poke')));   // «Poké Ball» y «Pokémon» llevan tilde también en inglés
     const cartas = { 'Rifle de Plasma → BFG 9000': 'Plasma Rifle → BFG 9000', 'Granada → Granada de Racimo': 'Frag Grenade → Cluster Grenade',
       'Súper Escopeta → Súper Escopeta Maestra': 'Super Shotgun → Super Shotgun Mastery', 'Torbellino → Gran Tornado': 'Whirlwind → Great Tornado' };
     const malCartas = Object.entries(cartas).filter(([es, en]) => EN(es) !== en).map(([es]) => [es, EN(es)]);

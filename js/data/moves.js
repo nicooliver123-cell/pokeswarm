@@ -559,5 +559,5 @@
   }
 
   G.Moves = { ALL: RAW, BY_ID, POOL, poolFor, instance, levelUp, nextUpText, startFor,
-              EVO, NEED_NAME, evoInfo, evolve };
+              EVO, NEED_NAME, evoInfo, evolve, EVO_MODS };   // MOD nico: EVO_MODS, para la forma summon de Ash (js/data/multiverso.js)
 })();

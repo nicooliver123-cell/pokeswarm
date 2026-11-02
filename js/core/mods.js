@@ -94,8 +94,8 @@ G.MODS = {
    *     Pokémonedas de esos premios no cambian.
    *   - No es ganar (no cambia): gastarlos en el gacha, traer la partida oficial (suma lo
    *     que tenía allí, una vez) ni juntar partidas de la nube.
-   * Entero. 1 = como el original. */
-  ticketsMult: 2,
+   * Entero. 1 = como el original; ×2 desde el principio y ×3 desde el 02-11-2026 (petición de Nico). */
+  ticketsMult: 3,
 
   /* Probabilidad de shiny (decisión de Nico): ×shinyMult en los sitios donde se sortea:
    * salvajes y jefes (1/4096), el legendario de la grieta (1/512) y el gacha (1/100, que
@@ -110,6 +110,15 @@ G.MODS = {
    * abajo). `id` marca en la partida (`save.regalos[id]`) que ya lo recibió; otro regalo, otro id. null = sin regalo. */
   regaloBuenHumor: { id: 'buen-humor-2026-10', t10: 10, coins: 20000, shinyMult: 3,
     texto: 'Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades' },
+
+  /* Regalos para todas las cuentas (petición de Nico, 02-11-2026: «al entrar la primera vez después del parche todos
+   * reciban 10 tickets lilas de regalo»): cada uno se da UNA vez, al entrar, a toda cuenta (también a las nuevas):
+   * `t10` tickets ×10 (los lila), `coins` Pokémonedas y el aviso `texto`, sin shiny de más (darRegalosTodos, abajo).
+   * `save.regalos[id]` lo apunta; para otro regalo, otra entrada con otro id. [] = ninguno. */
+  regalosTodos: [
+    { id: 'parche-2026-11', t10: 10, coins: 0,
+      texto: '¡Parche nuevo! Llega Ash al Multiverso y desde hoy los tickets que ganáis cuentan ×3. Tomad 10 tickets ×10 de regalo' }
+  ],
 
   /* Regalos a una cuenta concreta (petición de Nico, 23-10-2026): al entrar, una vez, si el nombre de acceso de la
    * cuenta (el de usuario y contraseña; también vale su nombre en la partida o su apodo) tiene la huella `huella`:
@@ -528,6 +537,23 @@ G.MODS = {
       if (r.t10 > 0) save.tickets.t10 += r.t10;
       if (r.coins > 0) save.coins = (save.coins || 0) + r.coins;
       if (r.t10 > 0 && r.shinyMult > 1) (save.regaloLotes = save.regaloLotes || []).push({ n: r.t10, x: r.shinyMult });
+      save.regalos[r.id] = Date.now();
+      textos.push(r.texto);
+    }
+    return textos;
+  },
+
+  /** game.js, afterLogin(): los regalosTodos que esta partida aún no tiene. Los da (tickets ×10 y Pokémonedas) y los
+   *  apunta. → [textos] (vacío si no hay ninguno nuevo). */
+  darRegalosTodos(save) {
+    const textos = [];
+    if (!save) return textos;
+    save.regalos = save.regalos || {};
+    for (const r of this.regalosTodos || []) {
+      if (!r || !r.id || save.regalos[r.id]) continue;
+      save.tickets = Object.assign({ t1: 0, t10: 0 }, save.tickets);
+      if (r.t10 > 0) save.tickets.t10 += r.t10;
+      if (r.coins > 0) save.coins = (save.coins || 0) + r.coins;
       save.regalos[r.id] = Date.now();
       textos.push(r.texto);
     }

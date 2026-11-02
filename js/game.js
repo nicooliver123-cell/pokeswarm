@@ -609,6 +609,7 @@ G.Game = (() => {
     for (const p of G.World.visibleProps(cam)) items.push({ y: p.flat ? p.y - 4000 : p.y, prop: p });
     for (const e of G.EnemyMgr.drawables(cam)) items.push({ y: e.y, ent: e });
     for (const e of extra) items.push({ y: e.y, ent: e });
+    if (G.Invocar) for (const d of G.Invocar.drawables()) items.push({ y: d.y, ent: d });   // MOD nico: los Pokémon de Ash, ordenados por Y (js/systems/invocar.js)
     const rift = G.Rift.drawable();
     if (rift) items.push({ y: rift.y, ent: rift });
     if (pl && state !== 'ui') for (const d of G.Events.drawables()) items.push({ y: d.y, ent: d });
@@ -825,6 +826,7 @@ G.Flow = {
   afterLogin() {
     G.Audio.music('village');
     if (G.MODS && G.MODS.darRegalo && G.MODS.darRegalo(G.DB.save)) { G.DB.commit(true); G.UI.toast(G.T(G.MODS.regaloBuenHumor.texto), 12000); G.UI.refreshCoins(); }   // MOD nico: regalo «buen humor», una vez por cuenta
+    if (G.MODS && G.MODS.darRegalosTodos) { const t = G.MODS.darRegalosTodos(G.DB.save); if (t.length) { G.DB.commit(true); G.UI.toast(t.map(x => G.T(x)).join(' · '), 12000); G.UI.refreshCoins(); } }   // MOD nico: regalos a todas las cuentas (regalosTodos)
     if (G.MODS && G.MODS.darRegalosCuenta) G.MODS.darRegalosCuenta(G.DB.save, G.MODS.nombresCuenta()).then(t => { if (t.length) { G.DB.commit(true); G.UI.toast(t.join(' · '), 12000); G.UI.refreshCoins(); } }).catch(() => {});   // MOD nico: regalos a una cuenta (regalosCuenta)
     if (!G.DB.save.partner && G.ElegirCompanero && G.ElegirCompanero.activo()) return G.ElegirCompanero.abrir();   // MOD nico: sin el test de personalidad (G.MODS.sinTest, js/ui/elegir-companero.js)
     if (!G.DB.save.partner) G.TestUI.start();
