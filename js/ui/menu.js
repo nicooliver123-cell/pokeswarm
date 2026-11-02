@@ -218,6 +218,7 @@ G.MenuUI = (() => {
       s.partner = dex;
       s.partnerShiny = hasSh && viewShiny;
       G.DB.commit();
+      if (G.Social && G.Social.refreshMember) G.Social.refreshMember();   // MOD nico: en una sala, los demás ven ya el compañero nuevo (antes seguían con el de cuando entraste)
       G.UI.toast(p.name + (s.partnerShiny ? ' shiny' : '') + ' es ahora tu compañero');
       renderGrid(); showDetail(dex);
     };

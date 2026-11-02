@@ -374,6 +374,37 @@ async function elegirCompanero(P, n) {
   step(`${tag}: elige compañero`, `${boton} (#${dex}), menú principal`);
 }
 
+/**
+ * Elige compañero en la colección de verdad (botón «Elegir de compañero», normal o shiny) estando en una sala, sin
+ * volver a ella: la sala tiene que enterarse ya. (Fallo de Nico, 02-11-2026: su amigo eligió Mew shiny desde el menú
+ * con la sala abierta y Nico lo vio de Arceus, el que tenía al entrar.) Lo comprueba otro cliente, `obs`.
+ */
+async function elegirEnColeccion(P, obs, uidP, dex, shiny) {
+  await P.page.evaluate(([d, sh]) => { if (sh) G.DB.grantShiny(d, 'gacha'); else G.DB.grant(d, 'gacha'); }, [dex, shiny]);
+  if (!(await P.page.locator('#scr-dex').isVisible())) {
+    if (await P.page.locator('#scr-lobby').isVisible()) await P.page.click('#lobby-menu');
+    await waitVisible(P.page, '#scr-menu');
+    await P.page.click('#scr-menu [data-go="dex"]');
+    await waitVisible(P.page, '#scr-dex');
+  }
+  const gen = await P.page.evaluate(d => G.DEX_BY[d].gen, dex);
+  await P.page.locator('#dex-gens .gen-tab').nth(gen - 1).click();
+  await sleep(300);
+  const abierto = await P.page.evaluate(d => { const c = [...document.querySelectorAll('#dex-grid .cell')].find(c => +((c.querySelector('.no') || {}).textContent) === d); if (c) c.click(); return !!c; }, dex);
+  if (!abierto) throw new Error(`${P.tag}: no encuentro el nº ${dex} en la colección`);
+  const seg = P.page.locator(`#dex-detail .seg button[data-v="${shiny ? 1 : 0}"]`);
+  if (await seg.count()) { await seg.click(); await sleep(200); }
+  await P.page.click('#dex-pick');
+  const t0 = Date.now();
+  const visto = await obs.page.waitForFunction(([u, d, sh]) => { const m = G.Social.room && G.Social.room.members.find(m => m.uid === u);
+    return m && m.dex === d && !!m.shiny === sh ? { dex: m.dex, shiny: !!m.shiny } : null; }, [uidP, dex, shiny], { timeout: 8000 })
+    .then(h => h.jsonValue()).catch(() => null);
+  const nombre = await P.page.evaluate(d => G.DEX_BY[d].name, dex);
+  const ahora = await obs.page.evaluate(u => { const m = G.Social.room.members.find(m => m.uid === u); return m && { dex: m.dex, shiny: !!m.shiny }; }, uidP);
+  check(`${obs.tag} ve en la sala el compañero nuevo de ${P.tag} (${nombre}${shiny ? ' shiny' : ''}) sin que ${P.tag} vuelva a la sala`, !!visto,
+    visto ? `en ${Date.now() - t0} ms` : `a los 8 s sigue: ${JSON.stringify(ahora)}`);
+}
+
 /** Pone de compañero un Pokémon concreto (como elegirlo en la colección). */
 async function setPartner(P, dex) {
   const r = await P.page.evaluate(d => {
@@ -1011,6 +1042,11 @@ async function vistasCoop(A, B, uidB) {
 
     // Partida
     const uidA = await A.page.evaluate(() => G.DB.fb.uid), uidB = await B.page.evaluate(() => G.DB.fb.uid);
+    // B cambia de compañero desde la colección con la sala abierta (Mew shiny) y vuelve al de la prueba; A lo ve las dos veces.
+    await elegirEnColeccion(B, A, uidB, 151, true);
+    await elegirEnColeccion(B, A, uidB, NORMAL, false);
+    await B.page.click('#scr-dex [data-back]'); await waitVisible(B.page, '#scr-menu');
+    await B.page.click('#scr-menu [data-go="play"]'); await waitVisible(B.page, '#scr-lobby', 20000);
     await A.page.click('#lobby-start');
     await Promise.all([A, B].map(P => P.page.waitForFunction(() => G.Coop.active && G.Game.state !== 'ui', null, { timeout: 25000 })));
     // Instrumentación de prueba: cartas automáticas y sin morir (la prueba no va de esquivar). La grieta
