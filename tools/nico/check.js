@@ -464,10 +464,13 @@ const HOOKS = [
   ['js/systems/rift.js', /shiny: G\.Sprites\.hasShiny\(mon\.dex\) && Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(1 \/ 512\) : 1 \/ 512\),\s*\/\/ MOD nico/, 'shiny ×1,5: legendario de la grieta'],
   ['js/systems/gacha.js', /Math\.random\(\) < \(G\.MODS && G\.MODS\.probShiny \? G\.MODS\.probShiny\(SHINY_RATE, regalo\[i\]\) : SHINY_RATE\)\);\s*\/\/ MOD nico/, 'shiny ×1,5: gacha (y el de los tickets de regalo)'],
   ['js/systems/gacha.js', /save\.tickets\.t10 -= cost\.t10;\r?\n\s*const regalo = G\.MODS && G\.MODS\.gastarRegalo \? G\.MODS\.gastarRegalo\(save, n, cost\) : \[\];\s*\/\/ MOD nico/, 'regalo «buen humor»: pull() gasta los tickets del regalo tras cobrar'],
-  ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
+  ['js/entities/player.js', /const tg = \(ranged \? boss \|\| threat : threat \|\| boss\)\r?\n\s*\|\| \(G\.MODS && G\.MODS\.cofreCercano \? G\.MODS\.cofreCercano\(this, m && G\.Combat\.reach \? G\.Combat\.reach\(m\) : 0\) : null\)\s*\/\/ MOD nico[^\n]*\r?\n\s*\|\| G\.Projectiles\.nearest\(all, this\.x, this\.y, 520\)/, 'cofres pequeños: blanco tras lo que te toca y el jefe, antes del enemigo más cercano'],
   ['js/game.js', /G\.Audio\.music\('village'\);\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalo && G\.MODS\.darRegalo\(G\.DB\.save\)\) \{ G\.DB\.commit\(true\); G\.UI\.toast\(G\.T\(G\.MODS\.regaloBuenHumor\.texto\), 12000\); G\.UI\.refreshCoins\(\); \}\s*\/\/ MOD nico/, 'regalo «buen humor»: afterLogin() lo da una vez y avisa'],
+  ['js/entities/player.js', /this\.baseAtk = mon\.atk;\r?\n\s*if \(G\.MODS && G\.MODS\.ventajaShiny\) G\.MODS\.ventajaShiny\(this\);\s*\/\/ MOD nico/, 'ventaja del shiny: el constructor la aplica tras la vida y el ataque base'],
+  ['js/entities/player.js', /if \(this\.dead\) return;\r?\n\s*if \(this\.shiny && G\.MODS && G\.MODS\.brilloShiny\) G\.MODS\.brilloShiny\(this, dt\);\s*\/\/ MOD nico/, 'ventaja del shiny: destellos en update()'],
+  ['js/ui/menu.js', /if \(G\.MODS && G\.MODS\.notaShiny\) G\.MODS\.notaShiny\(box, own && hasSh && viewShiny\);\s*\/\/ MOD nico/, 'ventaja del shiny: la nota en la ficha'],
   ['js/game.js', /\/\/ MOD nico: regalo «buen humor», una vez por cuenta\r?\n\s*if \(G\.MODS && G\.MODS\.darRegalosTodos\) \{ const t = G\.MODS\.darRegalosTodos\(G\.DB\.save\); if \(t\.length\) \{ G\.DB\.commit\(true\); G\.UI\.toast\([^\n]*\/\/ MOD nico/, 'regalos para todos: afterLogin() los da una vez y avisa, tras el «buen humor»'],
-  ['js/game.js', /if \(G\.MODS && G\.MODS\.darRegalosCuenta\) G\.MODS\.darRegalosCuenta\(G\.DB\.save, G\.MODS\.nombresCuenta\(\)\)\.then\([^\n]*\/\/ MOD nico/, 'regalos a una cuenta: afterLogin() los da y avisa'],
+  ['js/game.js', /if \(G\.MODS && G\.MODS\.darRegalosCuenta\) G\.MODS\.darRegalosCuenta\(G\.DB\.save, G\.MODS\.nombresCuenta\(\)\)\.then\([^\n]*G\.T\(x\)[^\n]*\/\/ MOD nico/, 'regalos a una cuenta: afterLogin() los da y avisa'],
   ['js/ui/gacha-ui.js', /<span>1%<\/span><\/div>[\s\S]*?<\/p>`;\r?\n\s*if \(G\.MODS && G\.MODS\.notasGacha\) \$\('gacha-rates'\)\.innerHTML = G\.MODS\.notasGacha\(\$\('gacha-rates'\)\.innerHTML\);\s*\/\/ MOD nico/,
     'shiny ×1,5: el cartel del gacha (el «1%» de upstream sigue ahí y el gancho lo cambia después de pintarlo)'],
   ['dev.html', /src="js\/data\/sprites-meta\.js"><\/script>\r?\n<script defer src="js\/data\/evolutions\.js"><\/script><!-- MOD nico/, 'repetidos: evolutions.js se carga justo después de sprites-meta.js'],
@@ -695,6 +698,7 @@ const KNOWN = [
   ['js/entities/player.js|this.hp = Math.min(this.maxHp, this.hp + amount);', 1, 'jugador: curación'],
   ['js/entities/player.js|addMaxHp(amount) { this.maxHp += amount; this.hp += amount; }', 1, 'jugador: más vida máxima'],
   ['js/entities/player.js|if (this.bellHeal > 0) { const h = Math.min(this.bellHeal, 4 * dt); this.hp = Math.min(this.maxHp, this.hp + h); this.bellHeal -= h; }', 1, 'jugador: Cascabel'],
+  ['js/core/mods.js|if (v.hp > 0 && isFinite(v.hp)) { pl.maxHp = Math.round(pl.maxHp * v.hp); pl.hp = pl.maxHp; }', 1, 'jugador: ventaja del shiny (vida ×shinyVentaja.hp al empezar)'],
   ['js/entities/player.js|if (this.regen > 0) this.hp = Math.min(this.maxHp, this.hp + this.regen * dt);', 1, 'jugador: regeneración'],
   ['js/entities/player.js|this.hp = Math.max(1, this.maxHp * frac);', 1, 'jugador: reanimado'],
   ['js/systems/evo-partida.js|if (!pl.remote) pl.hp = Math.min(pl.maxHp, Math.max(1, pl.hp + Math.max(0, d)));', 1, 'jugador: evoluciona en partida (sólo el suyo; nunca un enemigo)'],
@@ -6713,11 +6717,45 @@ function cofresChecks() {
   props[0].hp = 0;
   r.push(['roto el primero, el siguiente a tiro', M.cofreCercano(pl) === props[4]]);
   r.push(['fuera de cofreBlanco, ninguno', M.cofreCercano({ x: 1000, y: 1000 }) === null]);
+  // 02-11-2026: sólo al alcance del ataque activo y sin pared por medio (antes, un cofre a 120 px dejaba a Placaje sin atacar).
+  r.push(['con el alcance de Placaje (78 px), el cofre a 140 px no es blanco', M.cofreCercano(pl, 78) === null]);
+  r.push(['con alcance de sobra (520), sí', M.cofreCercano(pl, 520) === props[4]]);
+  c.G.World.isWall = (x, y) => y > 60 && y < 80;   // una pared entre el jugador y el cofre de (0, 140)
+  r.push(['tras una pared, no es blanco', M.cofreCercano(pl, 520) === null]);
+  delete c.G.World.isWall;
   M.cofreBlanco = 0;
   r.push(['con cofreBlanco = 0, como upstream', M.cofreCercano(pl) === null]);
   const failed = r.filter(x => !x[1]);
   if (!failed.length) ok(`cofres pequeños: ${r.length} casos bien`);
   for (const [name] of failed) bad('cofres pequeños: ' + name);
+}
+
+// ---------------- 30. ventaja del shiny (G.MODS.shinyVentaja, 02-11-2026) ----------------
+function shinyChecks() {
+  console.log('30. Ventaja del shiny: tu compañero en shiny, +10 % de vida y de ataque (G.MODS.shinyVentaja)');
+  const c = { console }; c.window = c; c.G = {}; vm.createContext(c);
+  for (const f of ['js/core/util.js', 'js/core/mods.js']) vm.runInContext(rd(f), c, { filename: f });
+  const M = c.G.MODS, r = [];
+  const pl = shiny => ({ shiny, baseAtk: 1.2, maxHp: 105, hp: 105 });
+  const a = pl(true), b = pl(false);
+  M.ventajaShiny(a); M.ventajaShiny(b);
+  r.push(['shiny: ×1,1 de ataque y de vida (redondeada), y empieza con la vida llena', M.shinyVentaja.atk === 1.1 && M.shinyVentaja.hp === 1.1 && Math.abs(a.baseAtk - 1.32) < 1e-9 && a.maxHp === 116 && a.hp === 116]);
+  r.push(['sin shiny, nada cambia', b.baseAtk === 1.2 && b.maxHp === 105 && b.hp === 105]);
+  const fx = []; c.G.FX = { burst: (...x) => fx.push(x) };
+  vm.runInContext('var __ra = Math.random; Math.random = () => 0;', c);
+  M.brilloShiny({ x: 0, y: 0, r: 10, bodyH: 20 }, 1 / 60);
+  vm.runInContext('Math.random = __ra;', c);
+  r.push(['destellos dorados alrededor del shiny', fx.length === 1 && /^#ff/.test(fx[0][2])]);
+  const hijos = [], box = { querySelector: () => ({ after: e => hijos.push(e) }), appendChild: e => hijos.push(e) };
+  c.document = { createElement: () => ({}) };
+  M.notaShiny(box, true); M.notaShiny(box, false);
+  r.push(['la ficha en shiny lo dice (sólo en shiny) y tiene su inglés', hijos.length === 1 && hijos[0].textContent === 'Shiny: +10 % de vida y +10 % de ataque' &&
+    rd('js/data/lang-en-mod.js').includes("'Shiny: +10 % de vida y +10 % de ataque': 'Shiny: +10% HP and +10% attack'")]);
+  const hp0 = pl(true); M.shinyVentaja = null; M.ventajaShiny(hp0); hijos.length = 0; M.notaShiny(box, true);
+  r.push(['con shinyVentaja = null, como upstream', hp0.baseAtk === 1.2 && hp0.maxHp === 105 && !hijos.length]);
+  const failed = r.filter(x => !x[1]);
+  if (!failed.length) ok(`ventaja del shiny: ${r.length} casos bien`);
+  for (const [name] of failed) bad('ventaja del shiny: ' + name);
 }
 
 // ---------------- 28. el PokéCasino (js/systems/casino.js) ----------------
@@ -6829,6 +6867,7 @@ function coleccionChecks() {
   try { cofresChecks(); } catch (e) { bad('no se pudo probar los cofres pequeños: ' + (e && e.stack || e)); }
   try { coleccionChecks(); } catch (e) { bad('no se pudo probar la colección: ' + (e && e.stack || e)); }
   try { casinoChecks(); } catch (e) { bad('no se pudo probar el casino: ' + (e && e.stack || e)); }
+  try { shinyChecks(); } catch (e) { bad('no se pudo probar la ventaja del shiny: ' + (e && e.stack || e)); }
   console.log(fails ? `\nRESULTADO: ${fails} fallo(s), ${warns} aviso(s)` : `\nRESULTADO: todo bien (${warns} aviso(s))`);
   process.exit(fails ? 1 : 0);
 })();

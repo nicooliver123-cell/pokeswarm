@@ -442,6 +442,9 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
   .cas-apuestas .btn { min-width: 64px; }
   #cas-cant { width: 96px !important; }
 }
+/* Ventaja del shiny en su ficha de la colección (G.MODS.notaShiny, 02-11-2026). */
+#dex-detail .shiny-ventaja { margin: 4px 0 8px; font-size: 13px; text-align: center; color: #ffe27a; }
+
 /* =====================================================================
  * 2. ESTILO DEX («Dex de Expedición»): sólo con html.estilo-dex
  * ===================================================================== */

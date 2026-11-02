@@ -103,6 +103,12 @@ G.MODS = {
    * la grieta los sortea el anfitrión; el gacha, cada uno el suyo. 1 = como el original. */
   shinyMult: 1.5,
 
+  /* Ventaja del shiny (petición de Nico, 02-11-2026: «haz que los shiny tengan alguna ventaja»; eligió la opción 1):
+   * jugar con tu compañero en shiny da ×`atk` de ataque y ×`hp` de vida (player.js, ventajaShiny), con destellos dorados
+   * a su alrededor (brilloShiny) y la nota en su ficha de la colección (notaShiny). En grupo, cada uno con el suyo.
+   * null = como upstream (el shiny, sólo el color). */
+  shinyVentaja: { atk: 1.1, hp: 1.1 },
+
   /* Regalo «buen humor» (petición de Nico, 22-10-2026): cada cuenta (también las que ya existían) recibe
    * UNA vez, al entrar, `t10` tickets ×10 (los lila), `coins` Pokémonedas y el aviso `texto`. Sólo esos tickets llevan el shiny
    * ×`shinyMult`, encima del ×shinyMult de arriba (1,5 % → 4,5 % en el gacha): `save.regaloShiny` cuenta
@@ -575,16 +581,54 @@ G.MODS = {
     return true;
   },
 
+  /** player.js, constructor: con tu compañero en shiny, ×shinyVentaja.atk de ataque y ×shinyVentaja.hp de vida. */
+  ventajaShiny(pl) {
+    const v = this.shinyVentaja;
+    if (!pl || !pl.shiny || !v) return;
+    if (v.atk > 0 && isFinite(v.atk)) pl.baseAtk *= v.atk;
+    if (v.hp > 0 && isFinite(v.hp)) { pl.maxHp = Math.round(pl.maxHp * v.hp); pl.hp = pl.maxHp; }
+  },
+
+  /** player.js, update: destellos dorados alrededor del shiny (unos 6 por segundo, de dos en dos) para que se note en partida. */
+  brilloShiny(pl, dt) {
+    if (!this.shinyVentaja || !G.FX || !G.FX.burst || Math.random() >= dt * 6) return;
+    const a = Math.random() * Math.PI * 2, d = (pl.r || 10) * (0.6 + Math.random() * 0.8);
+    G.FX.burst(pl.x + Math.cos(a) * d, pl.y - (pl.bodyH || 20) * Math.random(), Math.random() < 0.5 ? '#ffe27a' : '#fff6c8', 2, 30);
+  },
+
+  /** menu.js, showDetail: en la ficha de uno tuyo viéndolo en shiny, lo que gana jugando con él así. */
+  notaShiny(box, shiny) {
+    const v = this.shinyVentaja;
+    if (!box || !shiny || !v) return;
+    const p = document.createElement('p');
+    p.className = 'shiny-ventaja';
+    const pct = x => Math.round((x - 1) * 100);
+    const t = `Shiny: +${pct(v.hp)} % de vida y +${pct(v.atk)} % de ataque`;
+    p.textContent = G.T ? G.T(t) : t;
+    const ref = box.querySelector('.move-icons');
+    if (ref) ref.after(p); else box.appendChild(p);
+  },
+
   /** player.js, apuntado: el cofre pequeño (type 'chest', sin romper) más cercano a `pl` a menos de cofreBlanco px,
-   *  o null. Va después de lo que te toca y del jefe, y antes del enemigo más cercano. */
-  cofreCercano(pl) {
-    const r = +this.cofreBlanco;
+   *  o null. Va después de lo que te toca y del jefe, y antes del enemigo más cercano. Con `alcance` (el reach() del
+   *  ataque activo, combat.js), sólo uno al que llegue ese ataque y sin pared por medio: el 02-11-2026 se vio que con
+   *  un cofre fuera de alcance (Placaje llega a 78 px) o tras una pared, tu Pokémon no atacaba a nadie o disparaba a
+   *  la pared mientras la horda se le echaba encima. */
+  cofreCercano(pl, alcance) {
+    let r = +this.cofreBlanco;
+    if (alcance > 0) r = Math.min(r, alcance);
     if (!(r > 0) || !pl || !G.World || !G.World.propsInCircle) return null;
+    const pared = (p) => {
+      if (!G.World.isWall) return false;
+      const d = Math.hypot(p.x - pl.x, p.y - pl.y), n = Math.floor(d / 8);
+      for (let i = 1; i < n; i++) if (G.World.isWall(pl.x + (p.x - pl.x) * i / n, pl.y + (p.y - pl.y) * i / n)) return true;
+      return false;
+    };
     let best = null, bd = Infinity;
     for (const p of G.World.propsInCircle(pl.x, pl.y, r)) {
       if (p.type !== 'chest' || !(p.hp > 0)) continue;
       const d = (p.x - pl.x) ** 2 + (p.y - pl.y) ** 2;
-      if (d < bd) { bd = d; best = p; }
+      if (d < bd && !pared(p)) { bd = d; best = p; }
     }
     return best;
   },

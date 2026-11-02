@@ -32,6 +32,7 @@ G.Player = class Player {
     this.hp = this.maxHp;
     this.baseSpd = mon.spd;
     this.baseAtk = mon.atk;
+    if (G.MODS && G.MODS.ventajaShiny) G.MODS.ventajaShiny(this);   // MOD nico: tu compañero shiny, +10 % de vida y de ataque
 
     this.moves = [];           // todos los movimientos aprendidos
     this.slots = [];           // huecos: cada uno, una lista de movimientos que se lanzan a la vez
@@ -284,6 +285,7 @@ G.Player = class Player {
   update(dt) {
     this.anim.update(dt);
     if (this.dead) return;
+    if (this.shiny && G.MODS && G.MODS.brilloShiny) G.MODS.brilloShiny(this, dt);   // MOD nico: destellos dorados del shiny
     if (this.invuln > 0) this.invuln -= dt;
     if (this.flash > 0) this.flash -= dt;
     if (this.attackFace > 0) this.attackFace -= dt;
@@ -340,7 +342,7 @@ G.Player = class Player {
     const threat = G.Projectiles.nearest(all, this.x, this.y, this.r + 24);
     const boss = all.find(e => e.boss && !e.dead && G.U.dist(this.x, this.y, e.x, e.y) < 330);
     const tg = (ranged ? boss || threat : threat || boss)
-            || (G.MODS && G.MODS.cofreCercano ? G.MODS.cofreCercano(this) : null)   // MOD nico: los cofres pequeños cercanos, también con enemigos
+            || (G.MODS && G.MODS.cofreCercano ? G.MODS.cofreCercano(this, m && G.Combat.reach ? G.Combat.reach(m) : 0) : null)   // MOD nico: los cofres pequeños a tiro, también con enemigos
             || G.Projectiles.nearest(all, this.x, this.y, 520)
             || G.World.nearestBreakable(this.x, this.y, 200);
     this.target = tg;

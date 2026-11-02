@@ -2079,7 +2079,8 @@ Consultadas el 23-10-2026.
 Propuesta aceptada por Nico el 23-10-2026 («quiero hacer otro personaje de multiverso… Ash, el entrenador Pokémon. Sus
 habilidades son invocar diferentes Pokémon»). Versión: el Ash de Kanto (gorra roja y blanca con el logo verde, chaleco
 azul, guantes verdes), la que se reconoce a 32 px. Tipo Normal: es un humano y no pelea él; vida 104, velocidad 112
-(corre mucho) y ataque ×1,0, el más bajo, porque toda su fuerza está en sus Pokémon.
+(corre mucho) y ataque ×1,12 (×1,0 hasta el 02-11-2026, cuando Nico lo vio «bastante débil»: se subió a la media de los
+demás, con cada golpe en lo más alto de su forma y hasta tres Pokémon fuera).
 
 **La mecánica (forma `summon`, `js/systems/invocar.js`):** cada ataque es un Pokémon que sale de la Poké Ball, corre
 hacia el enemigo más cercano sin alejarse de Ash y usa él solo su golpe, con la forma y los números de un ataque

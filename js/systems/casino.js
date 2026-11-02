@@ -319,7 +319,7 @@ G.Casino = (() => {
   /** El bucle de la escena mientras la pantalla está abierta: la rueda gira despacio (salvo con movimiento
    *  reducido), parpadean las bombillas y Meowth se mueve. */
   function animar(t) {
-    if (!G.UI.isOpen('scr-casino')) { bucle = 0; return; }
+    if (!G.UI.isOpen('scr-casino')) { if (giro) acabarGiro(); bucle = 0; return; }   // salir a mitad de giro: la apuesta se resuelve ya
     const dt = tAnt ? Math.min(0.1, (t - tAnt) / 1000) : 0;
     tAnt = t; reloj += dt;
     if (robT > 0) robT = Math.max(0, robT - dt);
@@ -342,7 +342,8 @@ G.Casino = (() => {
     const cant = Math.floor(+inp.value || 0);
     const e = girando ? 'gira' : error(s, tipo, cant);
     $('cas-girar').disabled = !!e;
-    $('cas-saldo').textContent = (s.coins || 0).toLocaleString('es-ES');
+    // Mientras gira, lo que tenías menos la apuesta: apostar() ya ha sumado el premio y el saldo cantaba el resultado.
+    $('cas-saldo').textContent = (girando && saldoGirando != null ? saldoGirando : s.coins || 0).toLocaleString('es-ES');
   }
 
   /** `desde`: 'gacha' si se entra desde la pestaña del Gacha (entonces «Volver» vuelve allí); si no, al menú. */
@@ -370,12 +371,13 @@ G.Casino = (() => {
     if (!bucle) { tAnt = 0; bucle = requestAnimationFrame(animar); }
   }
 
-  let resultado = null;
+  let resultado = null, saldoGirando = null;
   function tirar() {
     if (girando) return;
-    const s = G.DB.save, cant = Math.floor(+$('cas-cant').value || 0);
+    const s = G.DB.save, cant = Math.floor(+$('cas-cant').value || 0), antes = s.coins || 0;
     const r = apostar(s, tipo, cant);
     if (r.error) { dice(r.error); return; }
+    saldoGirando = antes - cant;
     girando = true; resultado = r; pintarApuesta();
     G.DB.commit(true);
     G.Audio.sfx('confirm');

@@ -75,8 +75,11 @@ const PJS = [[10001, 'Agumon', 'llama-bebe', 'Llama Bebé', 'Mega Llama'], [1000
   [10004, 'Kirby', 'bala-estelar', 'Bala Estelar', 'Bala Penetrante'], [10005, 'Link', 'espada-maestra', 'Espada Maestra', 'Gran Ataque Circular'],
   [10006, 'Samus', 'rayo-de-poder', 'Rayo de Poder', 'Rayo Phazon'], [10007, 'Pac-Man', 'waka-waka', 'Waka Waka', 'Super Pac-Man'],
   [10008, 'Blinky', 'pandilla-fantasma', 'Pandilla Fantasma', 'Pac-Mania'], [10009, 'Drácula', 'fuego-infernal', 'Fuego Infernal', 'Infierno Oscuro'],
-  [10010, 'Ojo de Cthulhu', 'siervo-de-cthulhu', 'Siervo de Cthulhu', 'Ojos Fantasmales']];
-const SAGAS = 'Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria';
+  [10010, 'Ojo de Cthulhu', 'siervo-de-cthulhu', 'Siervo de Cthulhu', 'Ojos Fantasmales'],
+  // Tercer lote (23-10-2026) y Ash.
+  [10011, 'Jefe Maestro', 'rifle-de-asalto', 'Rifle de Asalto', 'Rifle de Batalla'], [10012, 'Kratos', 'espadas-del-caos', 'Espadas del Caos', 'Ciclón del Caos'],
+  [10013, 'Ash', 'pikachu', 'Pikachu', 'Gigavoltio Destructor']];
+const SAGAS = 'Digimon, DOOM, Kirby, Zelda, Metroid, Pac-Man, Castlevania, Terraria, Halo, God of War, Pokémon (anime)';
 
 async function caso(browser, v, estilo, partidas) {
   const tag = `${v.n}-${estilo}`;
@@ -231,8 +234,8 @@ async function caso(browser, v, estilo, partidas) {
   try {
     const V = [{ n: '1440x900', w: 1440, h: 900, dpr: 1 }, { n: '844x390', w: 844, h: 390, dpr: 3, tactil: true }];
     // Una partida con cada uno en escritorio con Dex; en los demás, un reparto (cada uno juega en al menos dos).
-    const PLAN = { '1440x900-dex': PJS.map(x => x[0]), '1440x900-clasico': [10002, 10005, 10009], '844x390-dex': [10003, 10006, 10007, 10010],
-      '844x390-clasico': [10001, 10004, 10008] };
+    const PLAN = { '1440x900-dex': PJS.map(x => x[0]), '1440x900-clasico': [10002, 10005, 10009, 10012], '844x390-dex': [10003, 10006, 10007, 10010, 10013],
+      '844x390-clasico': [10001, 10004, 10008, 10011] };
     for (const v of V) for (const e of ['dex', 'clasico']) {
       try { await caso(browser, v, e, PLAN[v.n + '-' + e]); } catch (err) { t(`${v.n}-${e}: el recorrido`, false, String(err && err.stack || err)); }
     }

@@ -279,7 +279,7 @@ G.I18n.add({
   'Snorlax se planta, atrae a los enemigos de su alrededor y los aplasta. Tu escudo.': 'Snorlax plants itself, pulls nearby enemies in and squashes them. Your shield.',
   'Golpe Cuerpo': 'Body Slam',
   '¡Nunca me rindo!': 'I never give up!',
-  'Cambia de ataque: ¡hasta dos Pokémon fuera a la vez!': 'Switch attacks: up to two Pokémon out at once!',
+  'Cambia de ataque: ¡hasta tres Pokémon fuera a la vez!': 'Switch attacks: up to three Pokémon out at once!',
   'No hace daño: acumula ATAQUE (también el de tus Pokémon) mientras esté activo.': 'Deals no damage: stacks ATTACK (your Pokémon\'s too) while it is active.',
   '¡Evoluciona! ×1,7 daño y +30% tiempo fuera': 'It evolves! ×1.7 damage and +30% time out',
   '+35% tiempo fuera': '+35% time out', 'Ataca un 25% más rápido': 'Attacks 25% faster', '+40% daño y +30% tiempo fuera': '+40% damage and +30% time out',
@@ -318,6 +318,8 @@ G.I18n.add({
   // Regalo «buen humor» (G.MODS.regaloBuenHumor, aviso al entrar en game.js)
   'Nico se ha despertado de buen humor. Estos tickets tienen posibilidad de shiny x3. Aquí tenéis algo de oro de regalo para mejorar Pokémons, o probar novedades':
     'Nico woke up in a good mood. These tickets have a ×3 shiny chance. Here is some gold as a gift to upgrade your Pokémon or try out what\'s new',
+  // Ventaja del shiny (G.MODS.notaShiny, ficha de la colección)
+  'Shiny: +10 % de vida y +10 % de ataque': 'Shiny: +10% HP and +10% attack',
   // Regalo del parche de noviembre (G.MODS.regalosTodos)
   '¡Parche nuevo! Llega Ash al Multiverso y desde hoy los tickets que ganáis cuentan ×3. Tomad 10 tickets ×10 de regalo':
     'New patch! Ash joins the Multiverse and from today every ticket you earn counts ×3. Here are 10 ×10 tickets as a gift',

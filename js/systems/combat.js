@@ -670,7 +670,7 @@ G.Combat = (() => {
     }
   }
 
-  return { tick, resolve, ghostCast, ghostOrbit, updateFields, drawGroundFields, drawAirFields, clearFields, castAs,   // MOD nico: castAs
+  return { tick, resolve, ghostCast, ghostOrbit, updateFields, drawGroundFields, drawAirFields, clearFields, castAs, reach,   // MOD nico: castAs y reach (G.MODS.cofreCercano)
            get fieldCount() { return fields.length; },
            get campos() { return fields; } };   // MOD nico: los campos de tus ataques, para el búfer de luz (js/world/luz.js)
 })();

@@ -212,6 +212,7 @@ G.MenuUI = (() => {
     });
     if (G.Guarderia) G.Guarderia.marcarDex(dex);   // MOD nico: uno de la guardería no puede ser tu compañero (js/systems/guarderia.js)
     if (G.MULTIVERSO) G.MULTIVERSO.ficha(dex);   // MOD nico: los del Multiverso sólo salen en su banner (js/data/multiverso.js)
+    if (G.MODS && G.MODS.notaShiny) G.MODS.notaShiny(box, own && hasSh && viewShiny);   // MOD nico: la ventaja del shiny, en su ficha
     const pick = $('dex-pick');
     if (pick) pick.onclick = () => {
       s.partner = dex;

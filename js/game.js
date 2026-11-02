@@ -460,6 +460,7 @@ G.Game = (() => {
     }
     if (state === 'ui') {
       // Esc en una subpantalla del menú vuelve al menú.
+      if (G.Input.tap('escape') && ['scr-casino', 'scr-guarderia'].some(G.UI.isOpen)) { const b = document.querySelector('#scr-casino:not(.hidden) [data-back], #scr-guarderia:not(.hidden) [data-back]'); if (b) b.click(); return; }   // MOD nico: Esc también cierra el casino y la guardería (con su «Volver»)
       if (G.Input.tap('escape') && !G.UI.isOpen('scr-profile') && ['scr-dex', 'scr-upgrades', 'scr-gacha', 'scr-friends', 'scr-rank', 'scr-goals'].some(G.UI.isOpen)
           && document.getElementById('pull-fx').classList.contains('hidden')) G.MenuUI.open();
       return;
@@ -827,7 +828,7 @@ G.Flow = {
     G.Audio.music('village');
     if (G.MODS && G.MODS.darRegalo && G.MODS.darRegalo(G.DB.save)) { G.DB.commit(true); G.UI.toast(G.T(G.MODS.regaloBuenHumor.texto), 12000); G.UI.refreshCoins(); }   // MOD nico: regalo «buen humor», una vez por cuenta
     if (G.MODS && G.MODS.darRegalosTodos) { const t = G.MODS.darRegalosTodos(G.DB.save); if (t.length) { G.DB.commit(true); G.UI.toast(t.map(x => G.T(x)).join(' · '), 12000); G.UI.refreshCoins(); } }   // MOD nico: regalos a todas las cuentas (regalosTodos)
-    if (G.MODS && G.MODS.darRegalosCuenta) G.MODS.darRegalosCuenta(G.DB.save, G.MODS.nombresCuenta()).then(t => { if (t.length) { G.DB.commit(true); G.UI.toast(t.join(' · '), 12000); G.UI.refreshCoins(); } }).catch(() => {});   // MOD nico: regalos a una cuenta (regalosCuenta)
+    if (G.MODS && G.MODS.darRegalosCuenta) G.MODS.darRegalosCuenta(G.DB.save, G.MODS.nombresCuenta()).then(t => { if (t.length) { G.DB.commit(true); G.UI.toast(t.map(x => G.T(x)).join(' · '), 12000); G.UI.refreshCoins(); } }).catch(() => {});   // MOD nico: regalos a una cuenta (regalosCuenta)
     if (!G.DB.save.partner && G.ElegirCompanero && G.ElegirCompanero.activo()) return G.ElegirCompanero.abrir();   // MOD nico: sin el test de personalidad (G.MODS.sinTest, js/ui/elegir-companero.js)
     if (!G.DB.save.partner) G.TestUI.start();
     else this.goMenu();

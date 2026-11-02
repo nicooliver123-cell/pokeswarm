@@ -18,7 +18,7 @@
  * su nombre («¡Charizard!»), espera a un lado de Ash (según su tamaño, sin amontonarse con él) y vuelve con el rayo rojo
  * de la Poké Ball. Se dibuja ordenado por Y con la escena (drawables, gancho en drawScene de game.js; así no tapa a Ash);
  * la Poké Ball y el rayo, por encima (draw, en drawAirFields). La primera vez de la partida que Ash tiene dos, el
- * rótulo «Cambia de ataque: ¡hasta dos Pokémon fuera a la vez!».
+ * rótulo «Cambia de ataque: ¡hasta tres Pokémon fuera a la vez!».
  *
  * Ganchos de una línea en combat.js (run, updateFields, drawAirFields, clearFields y castAs), game.js (drawScene),
  * moves.js (expone EVO_MODS) e icons.js (la insignia de la forma); la escalera y la evolución de la forma, en multiverso.js.
@@ -26,9 +26,10 @@
 G.Invocar = (() => {
   const CORREA = 190;       // px: lo más lejos de su entrenador que va un invocado
   const VISTA = 300;        // px: a qué distancia busca enemigos
-  const VELOCIDAD = 165;    // px/s
+  const VELOCIDAD = 200;    // px/s (165 hasta el 02-11-2026: tardaban en llegar a los enemigos)
   const ESCALA = 0.9;       // un poco más pequeños que Ash
-  const MAX_FUERA = 2;      // Pokémon distintos fuera a la vez (la Escuadra Squirtle cuenta como uno)
+  const precargados = new Set();
+  const MAX_FUERA = 3;      // Pokémon distintos fuera a la vez (2 hasta el 02-11-2026) (la Escuadra Squirtle cuenta como uno)
   const VUELO = 0.32;       // s: la Poké Ball volando de Ash a su sitio («¡Te elijo a ti!»)
   const VUELTA = 0.4;       // s: el rayo rojo que lo devuelve a la Poké Ball
   let lista = [];
@@ -39,10 +40,11 @@ G.Invocar = (() => {
 
   /** Lo que lanza combat.js (run) al usar un ataque `summon`. Sólo se lanza el ataque ACTIVO (combat.js): mientras lo
    *  está, su Pokémon se queda fuera (cada lanzamiento le renueva el tiempo, recarga < tiempo fuera); al cambiar de
-   *  ataque, sigue peleando hasta agotar su tiempo. Así Ash junta dos cambiando de ranura, y no más de MAX_FUERA. */
+   *  ataque, sigue peleando hasta agotar su tiempo. Así Ash junta tres cambiando de ranura, y no más de MAX_FUERA. */
   function lanzar(pl, m, ghost) {
     const n = Math.max(1, (m.count | 0) || 1) + (m.evolved ? (m.evoMas | 0) : 0);
     const dex = (m.evolved && m.pkEvo) || m.pk;
+    if (G.Sprites && G.Sprites.preload && !precargados.has(dex)) { precargados.add(dex); G.Sprites.preload([dex]); }   // si no, sale una bolita gris mientras baja
     const suyos = lista.filter(s => s.owner === pl && s.id === m.id && !s.vuelve);
     if (suyos.length === n && suyos.every(s => s.dex === dex)) {   // ya está fuera: más tiempo y su nivel de ahora
       for (const s of suyos) { s.t = 0; s.life = m.dur || 6; s.m = m; }
@@ -68,7 +70,7 @@ G.Invocar = (() => {
     // El consejo, la primera vez en la partida que Ash tiene dos Pokémon: cambiar de ataque para juntarlos.
     if (!ghost && !consejo && G.Game && G.Game.player === pl && (pl.moves || []).filter(x => x.kind === 'summon').length >= 2 && G.Spawner && G.Spawner.say) {
       consejo = true;
-      G.Spawner.say('Cambia de ataque: ¡hasta dos Pokémon fuera a la vez!', 3.6, true);
+      G.Spawner.say('Cambia de ataque: ¡hasta tres Pokémon fuera a la vez!', 3.6, true);
     }
   }
 
@@ -100,7 +102,8 @@ G.Invocar = (() => {
       target: { value: tg, writable: true }, r: { value: s.r, writable: true },
       invuln: { value: 0, writable: true }, lastPatch: { value: null, writable: true },
       hp: { get: () => pl.hp, set: v => { pl.hp = v; } },
-      dmgDealt: { get: () => pl.dmgDealt, set: v => { pl.dmgDealt = v; } }
+      dmgDealt: { get: () => pl.dmgDealt, set: v => { pl.dmgDealt = v; } },
+      bellHeal: { get: () => pl.bellHeal, set: v => { pl.bellHeal = v; } }   // el Cascabel Concha cura a Ash con todos sus golpes
     });
     return d;
   }
