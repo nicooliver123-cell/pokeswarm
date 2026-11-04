@@ -21,7 +21,7 @@ G.Combat = (() => {
   function tick(dt, pl, now) {
     if (pl.dead) return;
     // Vínculos: todos los movimientos del hueco activo, cada uno con su recarga.
-    for (const m of pl.activeGroup()) tickMove(dt, pl, m, now);
+    for (const m of (G.InicioDev ? G.InicioDev.lanzables(pl) : pl.activeGroup())) tickMove(dt, pl, m, now);   // MOD nico: «Todos a la vez» de Mejoras, sólo la cuenta de Nico (js/ui/inicio-dev.js)
   }
 
   function tickMove(dt, pl, m, now) {

@@ -133,6 +133,7 @@ G.Game = (() => {
     if (!coop || G.Coop.isHost) G.Ranking.runStarted(coop ? 'g' : 's');
     deathT = 0;
     G.Guard.start(!!coop);
+    if (G.InicioDev) pendingLevels += G.InicioDev.aplicar(pl, mon, !!coop);   // MOD nico: «Inicio de partida (pruebas)» de Mejoras, sólo la cuenta de Nico (js/ui/inicio-dev.js)
 
     state = 'playing';
   }
@@ -834,6 +835,7 @@ G.Flow = {
     else this.goMenu();
   },
   goMenu() {
+    if (G.InicioDev) G.InicioDev.preparar();   // MOD nico: adelanta la huella de la cuenta para el «Inicio de partida» (js/ui/inicio-dev.js)
     if (G.Game.state !== 'ui') G.Game.toUI();
     G.Audio.music('village');
     G.MenuUI.open();

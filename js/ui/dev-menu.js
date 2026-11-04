@@ -3,7 +3,8 @@
  * Pokémonedas y probar el gacha, las mejoras y la guardería sin jugar horas. Desde el 15-10-2026, también uno que
  * desbloquea toda la colección (los 966 y el Multiverso) con su shiny (desbloquearTodo). Desde el 22-10-2026, otro que
  * además sube al máximo todas las mejoras de cada uno (maximizarTodo). Desde el 23-10-2026, «Regalar a tu sala»:
- * Pokémonedas y tickets a quien esté en tu sala (ver abajo).
+ * Pokémonedas y tickets a quien esté en tu sala (ver abajo). Desde el 04-11-2026, permitidoYa(), la misma condición en
+ * síncrono para el «Inicio de partida (pruebas)» de Mejoras (js/ui/inicio-dev.js), que se mira en startRun.
  *
  * Quién lo ve: una sesión de la nube (no invitado) cuyo uid de Firebase tiene una huella de G.MODS.devHuellas. El
  * repositorio es público, así que no se guarda el uid sino su SHA-256 con la sal de abajo (como tools/nico/base.js).
@@ -17,6 +18,7 @@
 G.DevMenu = (() => {
   const SAL = 'pokeswarm/dev/1\0';
   const cache = new Map();   // uid -> Promise<bool>
+  const resuelto = new Map();   // uid -> bool, cuando la huella ya está calculada (para permitidoYa, que es síncrono)
 
   async function huella(texto) {
     const datos = new TextEncoder().encode(SAL + texto);
@@ -29,8 +31,18 @@ G.DevMenu = (() => {
     const lista = (G.MODS && G.MODS.devHuellas) || [];
     const fb = G.DB && G.DB.fb;
     if (!lista.length || !fb || !fb.uid || G.DB.guest || typeof crypto === 'undefined' || !crypto.subtle) return Promise.resolve(false);
-    if (!cache.has(fb.uid)) cache.set(fb.uid, huella(fb.uid).then(h => lista.includes(h)).catch(() => false));
-    return cache.get(fb.uid);
+    const uid = fb.uid;
+    if (!cache.has(uid)) cache.set(uid, huella(uid).then(h => { const ok = lista.includes(h); resuelto.set(uid, ok); return ok; }).catch(() => false));
+    return cache.get(uid);
+  }
+
+  /** Lo mismo, síncrono, para startRun (js/ui/inicio-dev.js): true sólo si permitido() ya se resolvió a true para esta
+   *  sesión. Se adelanta con permitido() al llegar al menú (goMenu) y al abrir Mejoras; mientras no esté, false. */
+  function permitidoYa() {
+    const lista = (G.MODS && G.MODS.devHuellas) || [];
+    const fb = G.DB && G.DB.fb;
+    if (!lista.length || !fb || !fb.uid || G.DB.guest) return false;
+    return resuelto.get(fb.uid) === true;
   }
 
   const BOTONES = [
@@ -180,5 +192,5 @@ G.DevMenu = (() => {
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', enganchar); else enganchar();
   }
 
-  return { ajustes, permitido, huella, desbloquearTodo, maximizarTodo, aplicarRegalo, textoRegalo, recibirRegalo, TOPE_REGALO };
+  return { ajustes, permitido, permitidoYa, huella, desbloquearTodo, maximizarTodo, aplicarRegalo, textoRegalo, recibirRegalo, TOPE_REGALO };
 })();

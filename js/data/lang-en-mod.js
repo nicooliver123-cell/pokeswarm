@@ -105,6 +105,20 @@ G.I18n.add({
   // El menú de pruebas de Nico (js/ui/dev-menu.js).
   'Menú de pruebas': 'Test menu', 'Sólo lo ve tu cuenta. Suma a tu partida guardada; no cuenta para el ranking.': 'Only your account sees this. It adds to your save; it doesn\'t count for the ranking.',
   '+10 tickets': '+10 tickets', '+1 ticket ×10': '+1 ticket ×10', '+1.000 Pokémonedas': '+1,000 PokéCoins', '+10.000 Pokémonedas': '+10,000 PokéCoins',
+  // «Inicio de partida (pruebas)» en Mejoras (js/ui/inicio-dev.js, sólo la cuenta de Nico). «Ataque 1»… exactos: un
+  // patrón «Ataque {x}» traduciría también ataques como «Ataque Óseo».
+  'Inicio de partida (pruebas)': 'Run start (testing)',
+  'Sólo lo ve tu cuenta. Cuenta para el ranking. En grupo sólo se aplican los ataques.':
+    'Only your account sees this. It counts for the ranking. In a group only the moves apply.',
+  'Empezar así con {x}': 'Start like this with {x}', 'Nivel inicial': 'Starting level',
+  'Las subidas salen como cartas al empezar.': 'The level-ups come as cards when the run starts.',
+  'Ataque 1': 'Move 1', 'Ataque 2': 'Move 2', 'Ataque 3': 'Move 3', 'Ataque 4': 'Move 4',
+  'Nivel del ataque 1': 'Level of move 1', 'Nivel del ataque 2': 'Level of move 2', 'Nivel del ataque 3': 'Level of move 3', 'Nivel del ataque 4': 'Level of move 4',
+  'Ninguno': 'None', 'Nv. {x} (máx.)': 'Lv. {x} (max)', 'Evolucionado ({x})': 'Evolved ({x})',
+  'Sin ataques elegidos, empieza con el de siempre.': 'With no moves chosen, it starts with the usual one.',
+  'Lanzar todos los ataques a la vez': 'Use all moves at once',
+  'Con cualquier Pokémon: todos los huecos disparan, cada ataque con su recarga.': 'With any Pokémon: every slot fires, each move on its own cooldown.',
+  'Restablecer': 'Reset', '{x}: empieza como siempre': '{x}: starts as usual',
   'Siguiente entrenamiento en {x} de juego.': 'Next training after {x} of play.', 'Esta partida no cuenta para la guardería.': 'This run doesn\'t count for the daycare.',
   // El Multiverso (js/data/multiverso.js): el banner, la colección y los ataques propios.
   'Multiverso': 'Multiverse', 'Otros mundos': 'Other worlds',

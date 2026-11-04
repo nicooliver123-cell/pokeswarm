@@ -444,6 +444,36 @@ html.pantalla-dividida.hud-dex-logro body:has(#topbar.hidden) .toast { bottom: c
 }
 /* Ventaja del shiny en su ficha de la colección (G.MODS.notaShiny, 02-11-2026). */
 #dex-detail .shiny-ventaja { margin: 4px 0 8px; font-size: 13px; text-align: center; color: #ffe27a; }
+/* «Inicio de partida (pruebas)» en Mejoras (js/ui/inicio-dev.js, sólo la cuenta de Nico, 04-11-2026): debajo de la lista de
+   mejoras, el nivel y los 4 ataques. Usa .panel, .field y .btn de los dos estilos; aquí sólo la colocación. Cada ataque es
+   una fila icono · «Ataque N» · ataque · nivel, en una rejilla común (las filas con display: contents) para que los
+   desplegables queden alineados aunque «Ataque 1» y «Ataque 3» no midan lo mismo; en una pantalla estrecha, cada fila su
+   rejilla: icono y nombre, el ataque y su nivel debajo, a todo el ancho (en el orden del DOM, que es el del teclado).
+   Controles de 44 px de alto y letra de 16 px en los campos (en iOS, menos hace zoom). */
+.ini-dev { margin-top: 12px; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.ini-dev .set-h { margin: 0; }
+.ini-dev .sub { margin: 0; font-size: 14px; }
+.ini-dev label { margin: 0; }
+.ini-usar { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; align-self: flex-start; color: inherit; font-size: 15px; }
+.ini-usar input { width: 20px; height: 20px; margin: 0; accent-color: var(--gold); }
+.ini-nivel { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+#ini-nivel { width: 96px; min-height: 44px; font-size: 16px; }
+.ini-nota { color: var(--muted); font-size: 13px; }
+.ini-todos-nota { margin: -6px 0 4px 28px; }
+.ini-ataques { display: grid; grid-template-columns: 24px max-content minmax(0, 1fr) 220px; align-items: center; gap: 8px; max-width: 760px; }
+.ini-ataque { display: contents; }
+.ini-ic { display: flex; width: 24px; height: 24px; }
+.ini-n { white-space: nowrap; }
+.ini-ataque .field { min-height: 44px; font-size: 16px; padding: 8px 10px; min-width: 0; text-overflow: ellipsis; }
+.ini-ataque .field:disabled { opacity: .5; cursor: not-allowed; }
+.ini-pie { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.ini-pie .btn { min-height: 44px; }
+@media (max-width: 520px) {
+  .ini-ataques { display: flex; flex-direction: column; }
+  .ini-ataque { display: grid; grid-template-columns: 24px minmax(0, 1fr); grid-template-areas: "ic n" "mov mov" "lvl lvl"; align-items: center; gap: 4px 8px; }
+  .ini-ataque + .ini-ataque { margin-top: 4px; }
+  .ini-ic { grid-area: ic; } .ini-n { grid-area: n; } .ini-mov { grid-area: mov; } .ini-ataque .ini-lvl { grid-area: lvl; }
+}
 
 /* =====================================================================
  * 2. ESTILO DEX («Dex de Expedición»): sólo con html.estilo-dex

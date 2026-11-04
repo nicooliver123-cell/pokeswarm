@@ -283,6 +283,7 @@ G.MenuUI = (() => {
       };
       box.appendChild(el);
     }
+    if (G.InicioDev) G.InicioDev.panel(box, upgDex);   // MOD nico: «Inicio de partida (pruebas)», sólo la cuenta de Nico (js/ui/inicio-dev.js)
   }
 
   return { init, open, GEN_NAMES };

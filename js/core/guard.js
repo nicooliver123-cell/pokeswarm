@@ -37,7 +37,7 @@ G.Guard = (() => {
     if (!isFinite(p.hp) || p.hp > p.maxHp + 1 || p.maxHp > 6000) flag('vida');
     if (p.spd > 700) flag('velocidad');
     if (p.atk > 60) flag('ataque');
-    if (p.level > 10 + time / 4) flag('nivel');
+    if (p.level > 10 + time / 4 + (G.InicioDev ? G.InicioDev.margenNivel(p) : 0)) flag('nivel');   // MOD nico: el nivel de serie del «Inicio de partida» (js/ui/inicio-dev.js) no cuenta
     // En grupo los derrotados y las monedas los reparte el anfitrión: sólo en solitario.
     if (run.prev && !run.coop) {
       const d = Math.max(1, time - run.prev.time);

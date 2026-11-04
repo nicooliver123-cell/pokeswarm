@@ -6768,6 +6768,97 @@ function shinyChecks() {
   for (const [name] of failed) bad('ventaja del shiny: ' + name);
 }
 
+// ---------------- 31. «Inicio de partida (pruebas)» y «Todos a la vez» (js/ui/inicio-dev.js) ----------------
+async function inicioDevChecks() {
+  console.log('31. «Inicio de partida (pruebas)» en Mejoras (js/ui/inicio-dev.js): nivel, ataques, «todos a la vez», ranking y sólo con la huella');
+  const r = [], t = (n, c, d) => r.push([n, !!c, d]);
+  const c = { console, TextEncoder, crypto: globalThis.crypto, performance: { now: () => 0 } }; c.window = c; c.G = {}; vm.createContext(c);
+  for (const f of ['js/core/util.js', 'js/core/mods.js', 'js/data/pokedex.js', 'js/data/sprites-meta.js', 'js/data/evolutions.js', 'js/core/sprites.js', 'js/data/moves.js',
+    'js/data/multiverso.js', 'js/entities/player.js', 'js/ui/dev-menu.js', 'js/ui/inicio-dev.js'])
+    vm.runInContext(rd(f), c, { filename: f });
+  const G = c.G, I = G.InicioDev, nop = () => {};
+  G.startMoveOf = d => G.Moves.startFor(G.DEX_BY[d]);
+  G.Projectiles = { clearOrbs: nop }; G.Audio = { sfx: nop }; G.FX = { ring: nop, dmgText: nop };
+  // A. Datos: la línea evolutiva, el repertorio y la limpieza de lo guardado.
+  t('la línea de Charmander es 4, 5 y 6', JSON.stringify(I.linea(4)) === '[4,5,6]');
+  const at = I.ataquesDe(4), ids = at.map(a => a.id);
+  t('ataques de Charmander: los suyos (poolFor) y, detrás, los que sólo trae Charizard (Volador), sin repetir',
+    G.Moves.poolFor(G.DEX_BY[4]).every(id => ids.includes(id)) && at.some(a => a.de === 6 && G.Moves.BY_ID[a.id].type === 'flying') && new Set(ids).size === ids.length);
+  const n = I.normalizar({ activo: 1, nivel: 999, ataques: [{ id: 'tackle', lvl: 99, evo: true }, { id: 'tackle', lvl: 2 }, { id: 'no-existe', lvl: 1 },
+    { id: 'ember', lvl: 0 }, { id: 'quick-attack', lvl: 3, evo: true }, { id: 'body-slam', lvl: 2 }, { id: 'flamethrower', lvl: 2 }] }, 4);
+  t('normalizar: nivel 1-50, sin repetidos ni ids ajenos, nivel de cada ataque 1-maxLvl, «evolucionado» sólo al máximo y como mucho 4',
+    n.activo === true && n.nivel === I.NIVEL_MAX && I.NIVEL_MAX === 50 && n.ataques.length === 4 &&
+    JSON.stringify(n.ataques) === JSON.stringify([{ id: 'tackle', lvl: 5, evo: true }, { id: 'ember', lvl: 1, evo: false }, { id: 'quick-attack', lvl: 3, evo: false }, { id: 'body-slam', lvl: 2, evo: false }]), n);
+  t('normalizar: un ataque que no puede aprender (Agua para Charmander) se descarta', !I.normalizar({ ataques: [{ id: 'water-gun', lvl: 1 }] }, 4).ataques.length);
+  // B. aplicar(), con el Player real.
+  const nuevoPl = () => {
+    const p = Object.create(G.Player.prototype);
+    Object.assign(p, { mon: G.DEX_BY[4], dex: 4, moves: [], slots: [], active: 0, maxMoves: 4, level: 1, xp: 0, xpNext: G.Player.xpFor(1), x: 0, y: 0, r: 10, bodyH: 20, item: null });
+    p.addMove('ember');
+    return p;
+  };
+  const flags = []; G.Guard = { flag: w => flags.push(w) };
+  G.DB = { save: { inicioDev: { 4: { activo: true, nivel: 15, ataques: [{ id: 'tackle', lvl: 5, evo: true }, { id: 'quick-attack', lvl: 3 }, { id: 'body-slam', lvl: 2 }] } }, inicioDevTodos: true },
+    fb: { uid: 'u-prueba' }, guest: false };
+  const sin = nuevoPl();
+  t('sin permiso (sin huella) no se aplica nada', I.aplicar(sin, G.DEX_BY[4], false) === 0 && sin.level === 1 && sin.moves.length === 1 && sin.moves[0].id === 'ember' && !sin.todosALaVez);
+  const permitidoYaReal = G.DevMenu.permitidoYa;
+  G.DevMenu.permitidoYa = () => true;
+  const a = nuevoPl(), pend = I.aplicar(a, G.DEX_BY[4], false);
+  const igual = (m, lvl) => Math.abs(m.dmg - G.Moves.instance(m.id, lvl).dmg) < 1e-9;
+  t('en solitario: nivel 15 con xpNext de su nivel y 14 subidas pendientes (salen como cartas)', pend === 14 && a.level === 15 && a.xp === 0 && a.xpNext === G.Player.xpFor(15) && I.margenNivel(a) === 14);
+  t('en solitario: los 3 ataques sustituyen al inicial, cada uno con su nivel de la escalera (Placaje evolucionado en Derribo) y el primero activo',
+    a.moves.map(m => m.id + '@' + m.lvl).join() === 'tackle@5,quick-attack@3,body-slam@2' && a.slots.length === 3 && a.active === 0 && a.moves[0].evolved && a.moves[0].name === 'Derribo' &&
+    igual(a.moves[1], 3) && igual(a.moves[2], 2), a.moves.map(m => [m.id, m.lvl, m.dmg]));
+  const g = nuevoPl(), pg = I.aplicar(g, G.DEX_BY[4], true);
+  t('en grupo: sólo los ataques (el nivel es del equipo)', pg === 0 && g.level === 1 && !I.margenNivel(g) && g.moves.length === 3 && g.todosALaVez === true);
+  G.DB.save.inicioDev[4].activo = false;
+  const off = nuevoPl();
+  t('con la casilla apagada, la run como siempre (y «todos a la vez», que es global, sigue)', I.aplicar(off, G.DEX_BY[4], false) === 0 && off.level === 1 && off.moves.length === 1 && off.todosALaVez === true);
+  t('ninguna marca de G.Guard: estas runs cuentan para el ranking (decisión de Nico, 04-11-2026)', !flags.length && !/Guard\.flag/.test(rd('js/ui/inicio-dev.js')));
+  G.DevMenu.permitidoYa = permitidoYaReal;
+  // C. guard.js real: el aviso «nivel» con el margen del nivel de serie y, sin él, como upstream.
+  const quieto = { warn: nop, log: nop, error: nop };
+  c.console = quieto;
+  vm.runInContext(rd('js/core/guard.js'), c, { filename: 'js/core/guard.js' });
+  const guarda = (p, time) => { G.Guard.start(false); G.Guard.tick(1, time, Object.assign({ hp: 10, maxHp: 10, spd: 100, atk: 1, kills: 0, coins: 0 }, p)); return G.Guard.flags; };
+  t('guard.js: nivel 15 en el segundo 1 no salta si viene del «Inicio de partida»; sin él, sí (como upstream); y el margen no pasa de los niveles de serie',
+    !guarda({ level: 15, nivelInicioDev: 15 }, 1).length && guarda({ level: 15 }, 1).includes('nivel') && guarda({ level: 31, nivelInicioDev: 15 }, 4).includes('nivel'));
+  c.console = console;
+  // D. «Todos a la vez»: todos los huecos (vínculos incluidos) o, apagado, el activo.
+  const v = nuevoPl(); v.addMove('quick-attack'); v.addMove('body-slam'); v.slots = [[v.moves[0], v.moves[1]], [v.moves[2]]]; v.active = 1;
+  v.todosALaVez = true; const todos = I.lanzables(v).map(m => m.id).join();
+  v.todosALaVez = false; const uno = I.lanzables(v).map(m => m.id).join();
+  t('«todos a la vez»: los ataques de todos los huecos, cada uno una vez; apagado, sólo el hueco activo', todos === 'ember,quick-attack,body-slam' && uno === 'body-slam', { todos, uno });
+  // E. Quién lo ve: la huella de dev-menu.js, en síncrono (permitidoYa) sólo cuando ya se resolvió.
+  const listaReal = G.MODS.devHuellas;
+  G.MODS.devHuellas = [await G.DevMenu.huella('u-prueba')];
+  const antes = G.DevMenu.permitidoYa(), ok1 = await G.DevMenu.permitido(), despues = G.DevMenu.permitidoYa();
+  G.DB.guest = true; const invitado = G.DevMenu.permitidoYa(); G.DB.guest = false;
+  G.DB.fb.uid = 'otro'; await G.DevMenu.permitido(); const otro = G.DevMenu.permitidoYa();
+  G.MODS.devHuellas = listaReal;
+  t('permitidoYa: false hasta que permitido() resuelve, true con la huella, false para invitados y otras cuentas', !antes && ok1 && despues && !invitado && !otro, { antes, ok1, despues, invitado, otro });
+  const src = rd('js/ui/inicio-dev.js').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
+  t('inicio-dev.js no decide el permiso por su cuenta: sólo G.DevMenu.permitido / permitidoYa (ni huellas ni uid en el fichero)',
+    !/devHuellas|fb\.uid|permitidoYa\s*=|permitido\s*=/.test(src) && /G\.DevMenu\.permitidoYa\(\)/.test(src));
+  // F. Ganchos, carga, paquete, inglés y estilos.
+  const gancho = (f, re) => rd(f).split(/\r?\n/).some(l => re.test(l) && /MOD nico/.test(l));
+  t('ganchos de una línea: startRun y goMenu de game.js, renderUpgrades de menu.js, tick de combat.js y el aviso «nivel» de guard.js',
+    gancho('js/game.js', /pendingLevels \+= G\.InicioDev\.aplicar\(pl, mon, !!coop\)/) && gancho('js/game.js', /G\.InicioDev\.preparar\(\)/) &&
+    gancho('js/ui/menu.js', /G\.InicioDev\.panel\(box, upgDex\)/) && gancho('js/systems/combat.js', /G\.InicioDev\.lanzables\(pl\) : pl\.activeGroup\(\)/) &&
+    gancho('js/core/guard.js', /p\.level > 10 \+ time \/ 4 \+ \(G\.InicioDev \? G\.InicioDev\.margenNivel\(p\) : 0\)\) flag\('nivel'\)/));
+  const game = rd('js/game.js');
+  t('el gancho de startRun va después de G.Guard.start (que reinicia la vigilancia)', game.indexOf('G.InicioDev.aplicar(') > game.indexOf('G.Guard.start(!!coop);'));
+  t('dev.html carga inicio-dev.js justo tras dev-menu.js y el paquete lo lleva',
+    /src="js\/ui\/dev-menu\.js"><\/script>[^\n]*\r?\n<script defer src="js\/ui\/inicio-dev\.js">/.test(rd('dev.html')) && /InicioDev/.test(rd('js/app.min.js')) && /permitidoYa/.test(rd('js/app.min.js')));
+  const en = rd('js/data/lang-en-mod.js');
+  t('inglés del panel en lang-en-mod.js', ["'Inicio de partida (pruebas)': 'Run start (testing)'", "'Lanzar todos los ataques a la vez': 'Use all moves at once'", "'Ataque 4': 'Move 4'"].every(x => en.includes(x)));
+  t('css/nico.css: el panel en el bloque «siempre», con controles de 44 px', /\.ini-dev \{/.test(rd('css/nico.css')) && /\.ini-ataque \.field \{ min-height: 44px;/.test(rd('css/nico.css')));
+  const failed = r.filter(x => !x[1]);
+  if (!failed.length) ok(`inicio de partida: ${r.length} casos bien`);
+  for (const [name, , detail] of failed) bad(`inicio de partida: ${name}${detail !== undefined ? ' · ' + JSON.stringify(detail) : ''}`);
+}
+
 // ---------------- 28. el PokéCasino (js/systems/casino.js) ----------------
 function casinoChecks() {
   console.log('28. PokéCasino «Danilo\'s Gamblers Club» (js/systems/casino.js): ruleta, pagos y el robo del Team Rocket');
@@ -6878,6 +6969,7 @@ function coleccionChecks() {
   try { coleccionChecks(); } catch (e) { bad('no se pudo probar la colección: ' + (e && e.stack || e)); }
   try { casinoChecks(); } catch (e) { bad('no se pudo probar el casino: ' + (e && e.stack || e)); }
   try { shinyChecks(); } catch (e) { bad('no se pudo probar la ventaja del shiny: ' + (e && e.stack || e)); }
+  try { await inicioDevChecks(); } catch (e) { bad('no se pudo probar el «Inicio de partida»: ' + (e && e.stack || e)); }
   console.log(fails ? `\nRESULTADO: ${fails} fallo(s), ${warns} aviso(s)` : `\nRESULTADO: todo bien (${warns} aviso(s))`);
   process.exit(fails ? 1 : 0);
 })();
