@@ -22,6 +22,7 @@ G.Guard = (() => {
 
   function flag(why) {
     if (!run || run.flags.has(why)) return;
+    if (why !== 'debug' && G.MODS && G.MODS.rankingSinBloqueos) { run.avisos = run.avisos || new Set(); if (!run.avisos.has(why)) { run.avisos.add(why); console.warn('[PokéSwarm] aviso (no bloquea el ranking):', why); } return; }   // MOD nico: ranking sin bloqueos (G.MODS.rankingSinBloqueos)
     run.flags.add(why);
     console.warn('[PokéSwarm] partida no válida para el ranking:', why);   // MOD nico: el nombre
   }

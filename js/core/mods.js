@@ -338,6 +338,13 @@ G.MODS = {
    * huella SHA-256 de su uid de Firebase (el repositorio es público: el uid no se escribe). [] = nadie. */
   devHuellas: ['b9f8d94bd49b7471e01e9827da437297a0dad61278c0fa80bda2a936b5e1db4c'],   // Nico (su cuenta de Google)
 
+  /* Ranking sin bloqueos (orden de Nico, 04-11-2026: «Quita los bloqueos de ranking para todos», después de que una run
+   * suya de 23 min con Rayquaza a nivel 130-140 no entrara). true = la vigilancia de guard.js ya no invalida ninguna
+   * partida por vida, velocidad, ataque, nivel, derrotados, monedas o reloj: sólo lo avisa en la consola. Las
+   * herramientas de pruebas o de vídeo del juego (flag 'debug') siguen invalidándola. Va con firestore.rules, que desde
+   * el mismo día ya no pone topes de nivel, derrotados ni tiempo a las marcas. false = la vigilancia de upstream. */
+  rankingSinBloqueos: true,
+
   /** Crédito al juego original en Ajustes > Acerca de (decisión de Nico, 14-10-2026): su nombre y su autor, sin
    *  enlaces a su web ni a su repositorio (tools/nico/base.js sólo los deja aquí, en lang-en-mod.js y en los
    *  créditos del repositorio). */

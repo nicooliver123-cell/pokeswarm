@@ -93,18 +93,17 @@ service cloud.firestore {
         && request.resource.data.startedAt == request.time;
     }
 
-    // Una entrada no puede durar más que el tiempo real desde que empezó tu
-    // partida (runs/{uid}), y sólo se puede mejorar, nunca empeorar.
-    // Anti-trampas: el nivel y los derrotados tienen que cuadrar con el tiempo
-    // (con margen de sobra para un jugador muy bueno o un grupo de 4).
+    // Sólo se puede mejorar, nunca empeorar. Sin topes de tiempo, nivel ni
+    // derrotados desde el 04-11-2026 (orden de Nico: «Quita los bloqueos de
+    // ranking para todos»). Antes: t <= 21600, t <= tiempo real desde runs/{uid}
+    // + 15 s, lv <= 10 + t/4 y kills <= 100 + 12 t. Va con rankingSinBloqueos
+    // de js/core/mods.js. Se siguen exigiendo los tipos y que la marca sea tuya.
     function validEntry(board, id) {
       let d = request.resource.data;
-      let run = get(/databases/$(database)/documents/runs/$(me())).data;
       return d.keys().hasOnly(['t', 'uids', 'names', 'dex', 'shiny', 'lv', 'kills', 'at'])
-        && d.t is int && d.t > 0 && d.t <= 21600
-        && d.t <= (request.time - run.startedAt).seconds() + 15
-        && d.lv is int && d.lv >= 1 && d.lv <= 10 + d.t / 4
-        && d.kills is int && d.kills >= 0 && d.kills <= 100 + d.t * 12
+        && d.t is int && d.t > 0
+        && d.lv is int && d.lv >= 1
+        && d.kills is int && d.kills >= 0
         && d.uids is list && me() in d.uids
         && d.names is list && d.names.size() == d.uids.size()
         && d.dex is list && d.dex.size() == d.uids.size()

@@ -6866,8 +6866,20 @@ async function inicioDevChecks() {
   c.console = quieto;
   vm.runInContext(rd('js/core/guard.js'), c, { filename: 'js/core/guard.js' });
   const guarda = (p, time) => { G.Guard.start(false); G.Guard.tick(1, time, Object.assign({ hp: 10, maxHp: 10, spd: 100, atk: 1, kills: 0, coins: 0 }, p)); return G.Guard.flags; };
+  const sinBloqueosReal = G.MODS.rankingSinBloqueos;
+  G.MODS.rankingSinBloqueos = false;   // la vigilancia de upstream, para medir el margen
   t('guard.js: nivel 15 en el segundo 1 no salta si viene del «Inicio de partida»; sin él, sí (como upstream); y el margen no pasa de los niveles de serie',
     !guarda({ level: 15, nivelInicioDev: 15 }, 1).length && guarda({ level: 15 }, 1).includes('nivel') && guarda({ level: 31, nivelInicioDev: 15 }, 4).includes('nivel'));
+  // Ranking sin bloqueos (Nico, 04-11-2026: «Quita los bloqueos de ranking para todos»).
+  G.MODS.rankingSinBloqueos = true;
+  const sb = guarda({ level: 140, hp: 9000, maxHp: 7000, spd: 900, atk: 99 }, 1);
+  G.Guard.start(false); G.Guard.flag('debug'); const sbDebug = G.Guard.flags;
+  t('rankingSinBloqueos: nivel, vida, velocidad y ataque imposibles ya no invalidan la run; las herramientas de pruebas (debug), sí',
+    sinBloqueosReal === true && !sb.length && sbDebug.includes('debug'), { sinBloqueosReal, sb, sbDebug });
+  G.MODS.rankingSinBloqueos = sinBloqueosReal;
+  const reglas = rd('firestore.rules'), ve = reglas.slice(reglas.indexOf('function validEntry'), reglas.indexOf('match /lb/'));
+  t('firestore.rules: validEntry sin topes de tiempo, nivel ni derrotados, y con los tipos y la marca tuya',
+    !/21600|startedAt|d\.t \/ 4|d\.t \* 12/.test(ve) && /d\.t is int && d\.t > 0/.test(ve) && /me\(\) in d\.uids/.test(ve) && /d\.t > resource\.data\.t/.test(ve));
   c.console = console;
   // D. «Todos a la vez»: todos los huecos (vínculos incluidos) o, apagado, el activo.
   const v = nuevoPl(); v.addMove('quick-attack'); v.addMove('body-slam'); v.slots = [[v.moves[0], v.moves[1]], [v.moves[2]]]; v.active = 1;
