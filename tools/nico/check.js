@@ -5921,11 +5921,21 @@ function multiversoChecks() {
       10013: [['pikachu', 'Pikachu', 'summon', 'electric', 'Gigavoltio Destructor', 'atk'], ['charmander', 'Charmander', 'summon', 'fire', 'Charizard', 'atk'],
         ['squirtle', 'Squirtle', 'summon', 'water', 'Escuadra Squirtle', 'def'], ['bulbasaur', 'Bulbasaur', 'summon', 'grass', 'Rayo Solar', 'hp'],
         ['pidgeotto', 'Pidgeotto', 'summon', 'flying', 'Pidgeot', 'spd'], ['froakie', 'Froakie', 'summon', 'water', 'Greninja', 'cd'],
-        ['snorlax', 'Snorlax', 'summon', 'normal', 'Golpe Cuerpo', 'def'], ['nunca-me-rindo', '¡Nunca me rindo!', 'buff', 'normal']]
+        ['snorlax', 'Snorlax', 'summon', 'normal', 'Golpe Cuerpo', 'def'], ['nunca-me-rindo', '¡Nunca me rindo!', 'buff', 'normal']],
+      // Ash de Johto y de Hoenn (04-11-2026): los Pokémon que capturó en cada región. Sin hojas aún no se cargan (META):
+      // se miran en MULTIVERSO.PERSONAJES.
+      10014: [['pikachu-johto', 'Pikachu', 'summon', 'electric', 'Trueno', 'atk'], ['cyndaquil', 'Cyndaquil', 'summon', 'fire', 'Quilava', 'spd'],
+        ['totodile', 'Totodile', 'summon', 'water', 'Hidrobomba', 'atk'], ['chikorita', 'Chikorita', 'summon', 'grass', 'Bayleef', 'hp'],
+        ['noctowl', 'Noctowl', 'summon', 'psychic', 'Psíquico', 'cd'], ['phanpy', 'Phanpy', 'summon', 'ground', 'Donphan', 'def'],
+        ['heracross', 'Heracross', 'summon', 'bug', 'Megacuerno', 'atk'], ['hazte-con-todos', '¡Hazte con todos!', 'buff', 'normal']],
+      10015: [['pikachu-hoenn', 'Pikachu', 'summon', 'electric', 'Placaje Eléctrico', 'atk'], ['treecko', 'Treecko', 'summon', 'grass', 'Sceptile', 'atk'],
+        ['taillow', 'Taillow', 'summon', 'flying', 'Swellow', 'spd'], ['corphish', 'Corphish', 'summon', 'water', 'Guillotina', 'atk'],
+        ['torkoal', 'Torkoal', 'summon', 'fire', 'Sofoco', 'def'], ['snorunt', 'Snorunt', 'summon', 'ice', 'Glalie', 'atk'],
+        ['a-toda-velocidad', '¡A toda velocidad!', 'buff', 'normal']]
     };
     const malLista = [];
     for (const [dex, at] of Object.entries(LISTA)) {
-      const p = G.DEX_BY[dex], pool = G.Moves.poolFor(p);
+      const p = G.DEX_BY[dex] || MV.PERSONAJES.find(x => x.dex === +dex), pool = G.Moves.poolFor(p);
       if (JSON.stringify(pool) !== JSON.stringify(at.map(a => a[0])) || pool[0] !== G.Moves.startFor(p)) malLista.push(`${dex}: aprende ${pool.join()}`);
       for (const [id, nombre, kind, ty, evo, need] of at) {
         const m = G.Moves.BY_ID[id], igual = sin.Moves.ALL.find(x => x.kind === kind && x.ups);
@@ -5937,14 +5947,14 @@ function multiversoChecks() {
       }
     }
     t('cada personaje aprende sólo su lista (poolFor() real, el inicial el primero): 7 de Agumon, 8 del Doom Slayer y 7 del Cacodemonio (validadas por Nico) y las del segundo lote (8 cada uno, 7 el Ojo de Cthulhu), cada uno con su nombre, su forma, su tipo, la escalera de mejoras de su forma y su evolución (Llama Bebé -> Mega Llama, Rifle de Plasma -> BFG 9000, Súper Escopeta -> Súper Escopeta Maestra...); los potenciadores, sin evolución',
-      !malLista.length && Object.keys(LISTA).length === 13 && MV.ATAQUES.length === 101, malLista);
+      !malLista.length && Object.keys(LISTA).length === 15 && MV.ATAQUES.length === 116, malLista);
     const nuevos = G.Moves.ALL.filter(x => !sin.Moves.BY_ID[x.id]).map(x => x.id);
     const enPool = Object.entries(G.Moves.POOL).filter(([, ids]) => nuevos.some(id => ids.includes(id))).map(([k]) => k);
     const otros = G.DEX.filter(p => !p.mv && G.Moves.poolFor(p).some(id => nuevos.includes(id))).map(p => p.dex);
     const ajenos = lista.flatMap(p => G.Moves.poolFor(p).filter(id => sin.Moves.BY_ID[id]).map(id => p.dex + ':' + id));
-    const deDos = nuevos.filter(id => lista.filter(p => p.pool.includes(id)).length !== 1);
+    const deDos = nuevos.filter(id => MV.PERSONAJES.filter(p => p.pool.includes(id)).length !== 1);
     t(`los ${nuevos.length} ataques del Multiverso no entran en ningún pool de tipo ni los aprende ningún Pokémon (${G.DEX.length - lista.length} mirados), ninguno de los del Multiverso aprende un ataque Pokémon y cada uno de los suyos es de un solo personaje`,
-      nuevos.length === 101 && !enPool.length && !otros.length && !ajenos.length && !deDos.length, { enPool, otros: otros.slice(0, 5), ajenos, deDos });
+      nuevos.length === 116 && !enPool.length && !otros.length && !ajenos.length && !deDos.length, { enPool, otros: otros.slice(0, 5), ajenos, deDos });
     // Control: sin el gancho de poolFor() (moves.js), Agumon aprendería los de Fuego, Dragón y Normal.
     const sinPool = montar({ cambia: { 'js/data/moves.js': s => s.replace(/^\s*if \(mon\.pool\)[^\n]*MOD nico[^\n]*\n/m, '') } }).G;
     const ctrl = sinPool.Moves.poolFor(sinPool.DEX_BY[10001]);
@@ -5986,7 +5996,7 @@ function multiversoChecks() {
       return !(m.lvl === m.def.maxLvl && info && info.ready && info.name === e[0] && G.Moves.evolve(m) && m.name === e[0] && m.evolved);
     });
     t('suben de nivel con su escalera (instance() real: nivel 3 distinto del 1, sin la escalera dentro) y los 67 que evolucionan llegan al máximo y evolucionan (evoInfo() y evolve() reales)',
-      inst.lvl === 3 && !('ups' in inst) && JSON.stringify(inst) !== JSON.stringify(base) && nuevos.filter(id => G.Moves.EVO[id]).length === 88 && !evos.length, evos);
+      inst.lvl === 3 && !('ups' in inst) && JSON.stringify(inst) !== JSON.stringify(base) && nuevos.filter(id => G.Moves.EVO[id]).length === 101 && !evos.length, evos);
   } catch (e) { t('datos del Multiverso', false, String(e && e.stack || e)); }
   // ---- A2. Sus ataques en partida: las cartas de subida de nivel, la mejora «Repertorio» y cómo se ven ----
   try {
@@ -6211,7 +6221,9 @@ function multiversoChecks() {
     // Los que se llaman igual en inglés (nombres propios de su saga): se miran sólo por si traen algo en español.
     const IGUALES = new Set(['BFG 9000', 'Epona', 'Waka Waka', 'Super Pac-Man', 'Waka Waka → Super Pac-Man', 'Pyro', 'Pac-Mania', 'Game Over', 'Cruise Elroy', 'Warthog', 'Scorpion', 'Warthog → Scorpion',
       'Pikachu', 'Charmander', 'Charizard', 'Charmander → Charizard', 'Squirtle', 'Bulbasaur', 'Pidgeotto', 'Pidgeot', 'Pidgeotto → Pidgeot',
-      'Froakie', 'Greninja', 'Froakie → Greninja', 'Snorlax']);
+      'Froakie', 'Greninja', 'Froakie → Greninja', 'Snorlax',
+      'Cyndaquil', 'Quilava', 'Cyndaquil → Quilava', 'Totodile', 'Chikorita', 'Bayleef', 'Chikorita → Bayleef', 'Noctowl', 'Phanpy', 'Donphan', 'Phanpy → Donphan',
+      'Heracross', 'Treecko', 'Sceptile', 'Treecko → Sceptile', 'Taillow', 'Swellow', 'Taillow → Swellow', 'Corphish', 'Torkoal', 'Snorunt', 'Glalie', 'Snorunt → Glalie']);
     const sinIngles = textos.filter(x => (!IGUALES.has(x) && EN(x) === x) || /[áéíóúñ¿¡]/i.test(EN(x).replace(/Poké/g, 'Poke')));   // «Poké Ball» y «Pokémon» llevan tilde también en inglés
     const cartas = { 'Rifle de Plasma → BFG 9000': 'Plasma Rifle → BFG 9000', 'Granada → Granada de Racimo': 'Frag Grenade → Cluster Grenade',
       'Súper Escopeta → Súper Escopeta Maestra': 'Super Shotgun → Super Shotgun Mastery', 'Torbellino → Gran Tornado': 'Whirlwind → Great Tornado' };
@@ -6245,6 +6257,38 @@ function multiversoChecks() {
     t('lo que dibujó PixelLab está en tools/nico/multiverso/fuentes/ (las 8 rotaciones de cada uno) junto a montar.py, que rehace las hojas; multiverso.js y montar.py, nuevos, en LF',
       !faltan.length && ex('tools/nico/multiverso/montar.py') && !/\r/.test(rd('js/data/multiverso.js')) && !/\r/.test(rd('tools/nico/multiverso/montar.py')), faltan);
   } catch (e) { t('ganchos y paquete', false, String(e && e.stack || e)); }
+  // ---- Los Pokémon de Ash (js/systems/invocar.js): su blanco, también los cofres (04-11-2026), y sin tope fuera ----
+  try {
+    const c = montar({ extra: ['js/systems/invocar.js'] }), G = c.G, I = G.Invocar;
+    const props = [], enemigos = [];
+    G.World = { isWall: () => false, propsInCircle: (x, y, r) => props.filter(p => p.hp > 0 && (p.x - x) ** 2 + (p.y - y) ** 2 <= (r + p.r) ** 2) };
+    G.World.nearestBreakable = (x, y, r) => { let b = null, bd = r * r; for (const p of G.World.propsInCircle(x, y, r)) { const d = (p.x - x) ** 2 + (p.y - y) ** 2; if (p.solid && d < bd) { bd = d; b = p; } } return b; };
+    const ash = { x: 0, y: 0 }, golpe = kind => ({ m: { golpe: { kind } } });
+    const s = (x, y, kind = 'melee') => Object.assign({ x, y }, golpe(kind));
+    const cofre = { type: 'chest', x: 90, y: 0, r: 12, hp: 22, solid: true }, roca = { type: 'rock', x: -120, y: 0, r: 12, hp: 34, solid: true };
+    const lejos = { x: 160, y: 40, dead: false }, cerca = { x: 30, y: 0, dead: false };
+    props.push(cofre, roca);
+    t('invocados: un cofre pequeño cerca de él va por delante del enemigo más cercano (G.MODS.cofreCercano desde su sitio, como el jugador)', I.blanco(s(20, 0), ash, [cerca, lejos]) === cofre);
+    t('invocados: sin enemigos, el cofre o la roca más cercano a él (G.World.nearestBreakable)', I.blanco(s(-80, 0), ash, []) === roca && I.blanco(s(60, 0), ash, []) === cofre);
+    const lejano = { type: 'chest', x: 600, y: 0, r: 12, hp: 22, solid: true };
+    props.length = 0; props.push(lejano);
+    t('invocados: nunca un cofre fuera de la correa de Ash', I.blanco(s(560, 0), ash, []) === null);
+    props.length = 0; props.push(cofre);
+    t('invocados: Pikachu de Johto (Rayo, la cadena, que no daña objetos) no va a por los cofres', I.blanco(s(60, 0, 'chain'), ash, [lejos]) === lejos && I.blanco(s(60, 0, 'chain'), ash, []) === null);
+    const cb = G.MODS.cofreBlanco; G.MODS.cofreBlanco = 0;
+    t('invocados: con cofreBlanco = 0, el enemigo antes que el cofre (como upstream para el jugador)', I.blanco(s(60, 0), ash, [lejos]) === lejos);
+    G.MODS.cofreBlanco = cb;
+    // Sin tope (Nico, 04-11-2026): con cuatro ataques distintos, los cuatro siguen fuera.
+    G.Sprites = { preload() {}, hasShiny: () => false, bodyRadius: () => 9, Animator: function () {} };
+    const pl = { x: 0, y: 0, aim: 0, r: 10, moves: [] }, ids = ['pikachu', 'charmander', 'bulbasaur', 'snorlax'];
+    for (const id of ids) I.lanzar(pl, G.Moves.instance(id, 1), false);
+    const fuera = new Set(I.todos().filter(x => !x.vuelve).map(x => x.id));
+    t('Ash sin tope de Pokémon fuera: con cuatro lanzados, los cuatro siguen fuera (MAX_FUERA quitado)', fuera.size === 4 && !('MAX_FUERA' in I) && !/MAX_FUERA\s*=/.test(rd('js/systems/invocar.js')), [...fuera]);
+    t('el rótulo ya no habla de un tope y tiene su inglés', /¡puedes tener a todos tus Pokémon fuera a la vez!/.test(rd('js/systems/invocar.js')) &&
+      rd('js/data/lang-en-mod.js').includes("'Cambia de ataque: ¡puedes tener a todos tus Pokémon fuera a la vez!': 'Switch attacks: you can have all your Pokémon out at once!'"));
+  } catch (e) { t('los Pokémon de Ash', false, String(e && e.stack || e)); }
+  // Los que aún no tienen hojas (META) no se cargan: se avisa, sin fallar, hasta que montar.py las haga.
+  if (MV) { const sinHojas = MV.PERSONAJES.filter(p => !MV.lista().some(x => x.dex === p.dex)).map(p => p.dex + ' ' + p.name); if (sinHojas.length) warn('multiverso: sin hojas todavía (no se cargan ni salen en el juego): ' + sinHojas.join(', ')); }
   const failed = r.filter(x => !x[1]);
   if (!failed.length) ok(`multiverso: ${r.length} casos bien`);
   for (const [name, , detail] of failed) bad(`multiverso: ${name}${detail !== undefined ? ' · ' + (typeof detail === 'string' ? detail : JSON.stringify(detail)) : ''}`);

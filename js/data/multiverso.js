@@ -94,7 +94,17 @@ G.MULTIVERSO = (() => {
     // media de los demás, desde el 02-11-2026 (Nico: «me ha parecido bastante débil»; antes ×1,0).
     { dex: 10013, name: 'Ash', types: ['normal'], hp: 104, spd: 112, atk: 1.12, rarity: 2, bst: 400,
       starter: false, gen: GEN, mv: true, start: 'pikachu', serie: 'Pokémon (anime)',
-      pool: ['pikachu', 'charmander', 'squirtle', 'bulbasaur', 'pidgeotto', 'froakie', 'snorlax', 'nunca-me-rindo'] }
+      pool: ['pikachu', 'charmander', 'squirtle', 'bulbasaur', 'pidgeotto', 'froakie', 'snorlax', 'nunca-me-rindo'] },
+    // Ash de Johto y de Hoenn (petición de Nico, 04-11-2026: «me gustaría versión gen2 y gen3»): los Pokémon que capturó en
+    // cada región en el anime (Serebii y WikiDex; ver CLAUDE.md), con su atuendo de cada saga. Ataque ×1,12 como el de
+    // Kanto; Johto aguanta más y anda menos (no tiene a Snorlax: nadie le atrae a los enemigos), Hoenn corre más y aguanta
+    // menos (no tiene a Bulbasaur: nadie le cura).
+    { dex: 10014, name: 'Ash (Johto)', types: ['normal'], hp: 108, spd: 108, atk: 1.12, rarity: 2, bst: 400,
+      starter: false, gen: GEN, mv: true, start: 'pikachu-johto', serie: 'Pokémon (anime)',
+      pool: ['pikachu-johto', 'cyndaquil', 'totodile', 'chikorita', 'noctowl', 'phanpy', 'heracross', 'hazte-con-todos'] },
+    { dex: 10015, name: 'Ash (Hoenn)', types: ['normal'], hp: 100, spd: 116, atk: 1.12, rarity: 2, bst: 400,
+      starter: false, gen: GEN, mv: true, start: 'pikachu-hoenn', serie: 'Pokémon (anime)',
+      pool: ['pikachu-hoenn', 'treecko', 'taillow', 'corphish', 'torkoal', 'snorunt', 'a-toda-velocidad'] }
   ];
 
   // En el comentario de cada uno, su daño nominal y el de ataques Pokémon de su forma.
@@ -482,7 +492,7 @@ G.MULTIVERSO = (() => {
       cd: 0.85, stat: 'atk', amount: 0.13, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'fire' } },
     // ---- Ash (Pokémon, el anime) ----
     // Forma summon: mientras es el ataque activo, su Pokémon está fuera (recarga 5 < tiempo fuera 6) y usa solo su
-    // `golpe`; al cambiar de ataque sigue `dur` segundos (como mucho tres fuera a la vez, js/systems/invocar.js).
+    // `golpe`; al cambiar de ataque sigue `dur` segundos (sin tope de Pokémon fuera desde el 04-11-2026, js/systems/invocar.js).
     // check.js §24 mide el golpe contra los ataques Pokémon de su forma. Desde el 02-11-2026 cada golpe está en lo más alto
     // de su forma (Nico: «bastante débil»; entre paréntesis, el daño de antes).
     { id: 'pikachu', name: 'Pikachu', type: 'electric', kind: 'summon', pk: 25,             // golpe 34,5 (Impactrueno 32,5)
@@ -522,7 +532,85 @@ G.MULTIVERSO = (() => {
       evo: ['Golpe Cuerpo', 'def'] },
     { id: 'nunca-me-rindo', name: '¡Nunca me rindo!', type: 'normal', kind: 'buff',         // los números de Danza Dragón
       desc: 'No hace daño: acumula ATAQUE (también el de tus Pokémon) mientras esté activo.',
-      cd: 0.7, stat: 'atk', amount: 0.11, dur: 7, stacks: 5, vis: { buff: 'arrow' } }
+      cd: 0.7, stat: 'atk', amount: 0.11, dur: 7, stacks: 5, vis: { buff: 'arrow' } },
+    // ---- Ash de Johto: Pikachu y los que capturó en Johto ----
+    // Pikachu no repite el Impactrueno del de Kanto: aquí lanza Rayo, que salta de un enemigo a otro (la cadena de
+    // Rayo, el de upstream; no daña objetos, como el de upstream, así que este Pikachu no abre cofres). Cada Pokémon,
+    // una forma distinta. Los que no evolucionaron en el anime (Totodile, Noctowl, Heracross) no cambian de Pokémon al
+    // evolucionar el ataque: les crece un ataque. El Noctowl de Ash era variocolor (`pkShiny`).
+    { id: 'pikachu-johto', name: 'Pikachu', type: 'electric', kind: 'summon', pk: 25,       // golpe 86,3 (Rayo 88,4)
+      desc: '¡Te elijo a ti! Pikachu sale y lanza Rayo, que salta de un enemigo a otro.',
+      cd: 5, dur: 6, dmg: 20.5, count: 1,
+      golpe: { kind: 'chain', cd: 0.95, count: 4, radius: 145 },
+      evo: ['Trueno', 'atk'] },
+    { id: 'cyndaquil', name: 'Cyndaquil', type: 'fire', kind: 'summon', pk: 155, pkEvo: 156, // golpe 24,4 (Golpe Aéreo 24); quema
+      desc: 'Cyndaquil sale y cruza a los enemigos con Rueda Fuego. Quema. Evoluciona a Quilava.',
+      cd: 5, dur: 6, dmg: 19.5, count: 1, vis: { proj: 'streak', melee: 'claw', pal: 'fire' },
+      golpe: { kind: 'dash', cd: 0.8, radius: 112, width: 34, knock: 20, burn: 1 },
+      evo: ['Quilava', 'spd'] },
+    { id: 'totodile', name: 'Totodile', type: 'water', kind: 'summon', pk: 158,             // golpe 66 (Rayo Burbuja 64,6)
+      desc: 'Totodile sale y rocía Pistola Agua en abanico, que empuja.',
+      cd: 5, dur: 6, dmg: 6.6, count: 1,
+      golpe: { kind: 'cone', cd: 0.7, count: 7, arc: 1.0, speed: 350, life: 0.45, size: 6, knock: 25 },
+      evo: ['Hidrobomba', 'atk'] },
+    { id: 'chikorita', name: 'Chikorita', type: 'grass', kind: 'summon', pk: 152, pkEvo: 153, // golpe 20 (Hoja Afilada 22,2); cura
+      desc: 'Chikorita sale, lanza Hoja Afilada, que va y vuelve, y te cura un poco mientras está fuera. Evoluciona a Bayleef.',
+      cd: 5, dur: 6, dmg: 8.5, count: 1, cura: 2,
+      golpe: { kind: 'boomerang', cd: 0.85, count: 2, speed: 320, radius: 210, size: 6, spread: 0.5 },
+      evo: ['Bayleef', 'hp'] },
+    { id: 'noctowl', name: 'Noctowl', type: 'psychic', kind: 'summon', pk: 164, pkShiny: true, // golpe 30,9 (Confusión 22,4, Ascuas 34,6)
+      desc: 'Noctowl, el variocolor, sale y lanza Confusión, que persigue sola a su blanco.',
+      cd: 5, dur: 6, dmg: 17, count: 1,
+      golpe: { kind: 'projectile', cd: 0.55, speed: 290, life: 2.0, spread: 0.1, pierce: 0, size: 8, homing: 2 },
+      evo: ['Psíquico', 'cd'] },
+    { id: 'phanpy', name: 'Phanpy', type: 'ground', kind: 'summon', pk: 231, pkEvo: 232,     // golpe 16,4 (Terratemblor 15,7); frena
+      desc: 'Phanpy sale y sacude el suelo a su alrededor, que daña y frena. Evoluciona a Donphan.',
+      cd: 5, dur: 6, dmg: 11.5, count: 1,
+      golpe: { kind: 'aura', cd: 0.7, radius: 78, slow: 0.3 },
+      evo: ['Donphan', 'def'] },
+    { id: 'heracross', name: 'Heracross', type: 'bug', kind: 'summon', pk: 214,             // golpe 42 (Golpe Kárate 44)
+      desc: 'Heracross sale y embiste con el cuerno, que lanza lejos a los enemigos.',
+      cd: 5, dur: 6, dmg: 21, count: 1, vis: { melee: 'claw', pal: 'bug' },
+      golpe: { kind: 'melee', cd: 0.5, radius: 70, arc: 1.6, knock: 110 },
+      evo: ['Megacuerno', 'atk'] },
+    { id: 'hazte-con-todos', name: '¡Hazte con todos!', type: 'normal', kind: 'buff',       // los números de Fortaleza
+      desc: 'No hace daño: acumula DEFENSA mientras esté activo.',
+      cd: 0.85, stat: 'def', amount: 0.07, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'aura' } },
+    // ---- Ash de Hoenn: Pikachu y los que capturó en Hoenn ----
+    // Aquí Pikachu embiste con Ataque Rápido, que evoluciona en Placaje Eléctrico (los dos, de su repertorio en el anime).
+    { id: 'pikachu-hoenn', name: 'Pikachu', type: 'electric', kind: 'summon', pk: 25,        // golpe 26,7 (Ataque Rápido 26,7)
+      desc: '¡Te elijo a ti! Pikachu sale y cruza a los enemigos con Ataque Rápido.',
+      cd: 5, dur: 6, dmg: 20, count: 1, vis: { proj: 'streak', melee: 'claw', pal: 'electric' },
+      golpe: { kind: 'dash', cd: 0.75, radius: 118, width: 34, knock: 40 },
+      evo: ['Placaje Eléctrico', 'atk'] },
+    { id: 'treecko', name: 'Treecko', type: 'grass', kind: 'summon', pk: 252, pkEvo: 254,    // golpe 34 (Ascuas 34,6)
+      desc: 'Treecko sale y dispara semillas de dos en dos. Evoluciona a Sceptile.',
+      cd: 5, dur: 6, dmg: 8.5, count: 1, vis: { proj: 'ball', pal: 'grass' },
+      golpe: { kind: 'projectile', cd: 0.5, count: 2, speed: 380, life: 1.1, spread: 0.15, pierce: 0, size: 5 },
+      evo: ['Sceptile', 'atk'] },
+    { id: 'taillow', name: 'Taillow', type: 'flying', kind: 'summon', pk: 276, pkEvo: 277,   // golpe 22,4 (Hoja Afilada 22,2)
+      desc: 'Taillow sale y lanza dos ráfagas de viento que van y vuelven. Evoluciona a Swellow.',
+      cd: 5, dur: 6, dmg: 9.5, count: 1,
+      golpe: { kind: 'boomerang', cd: 0.85, count: 2, speed: 340, radius: 220, size: 7, spread: 0.6 },
+      evo: ['Swellow', 'spd'] },
+    { id: 'corphish', name: 'Corphish', type: 'water', kind: 'summon', pk: 341,             // golpe 44 (Golpe Kárate 44)
+      desc: 'Corphish sale y aplasta con Martillazo, que empuja.',
+      cd: 5, dur: 6, dmg: 22, count: 1, vis: { melee: 'claw', pal: 'water' },
+      golpe: { kind: 'melee', cd: 0.5, radius: 72, arc: 1.5, knock: 90 },
+      evo: ['Guillotina', 'atk'] },
+    { id: 'torkoal', name: 'Torkoal', type: 'fire', kind: 'summon', pk: 324,                // golpe 17,5 (Chispazo 17,8); quema
+      desc: 'Torkoal se planta, atrae a los enemigos de su alrededor y los quema. Tu escudo.',
+      cd: 5, dur: 6, dmg: 10.5, count: 1, atrae: 45, radioAtrae: 150,
+      golpe: { kind: 'aura', cd: 0.6, radius: 76, burn: 1 },
+      evo: ['Sofoco', 'def'] },
+    { id: 'snorunt', name: 'Snorunt', type: 'ice', kind: 'summon', pk: 361, pkEvo: 362,      // golpe 65 (Rayo Burbuja 64,6); frena
+      desc: 'Snorunt sale y lanza ráfagas de hielo en abanico, que frenan. Evoluciona a Glalie.',
+      cd: 5, dur: 6, dmg: 6.5, count: 1,
+      golpe: { kind: 'cone', cd: 0.7, count: 7, arc: 1.0, speed: 340, life: 0.45, size: 6, slow: 0.3 },
+      evo: ['Glalie', 'atk'] },
+    { id: 'a-toda-velocidad', name: '¡A toda velocidad!', type: 'normal', kind: 'buff',      // los números de Agilidad
+      desc: 'No hace daño: acumula VELOCIDAD mientras esté activo.',
+      cd: 0.85, stat: 'spd', amount: 0.1, dur: 7, stacks: 5, vis: { buff: 'arrow', pal: 'electric' } }
   ];
 
   // Geometría de las hojas (G.SPRITE_META): la escribe tools/nico/multiverso/montar.py.

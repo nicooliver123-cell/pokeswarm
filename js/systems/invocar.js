@@ -18,7 +18,12 @@
  * su nombre («¡Charizard!»), espera a un lado de Ash (según su tamaño, sin amontonarse con él) y vuelve con el rayo rojo
  * de la Poké Ball. Se dibuja ordenado por Y con la escena (drawables, gancho en drawScene de game.js; así no tapa a Ash);
  * la Poké Ball y el rayo, por encima (draw, en drawAirFields). La primera vez de la partida que Ash tiene dos, el
- * rótulo «Cambia de ataque: ¡hasta tres Pokémon fuera a la vez!».
+ * rótulo «Cambia de ataque: ¡puedes tener a todos tus Pokémon fuera a la vez!».
+ *
+ * Sin tope de Pokémon fuera (Nico, 04-11-2026: «quita el límite de Pokémons a la vez de ash»; MAX_FUERA era 3, y 2
+ * hasta el 02-11-2026): sigue fuera cada uno que se lanzó mientras le dure su tiempo (`dur`). El tope natural son los
+ * huecos (4) más los `evoMas` (la Escuadra Squirtle); con «Lanzar todos los ataques a la vez» (js/ui/inicio-dev.js)
+ * salen los cuatro juntos.
  *
  * Ganchos de una línea en combat.js (run, updateFields, drawAirFields, clearFields y castAs), game.js (drawScene),
  * moves.js (expone EVO_MODS) e icons.js (la insignia de la forma); la escalera y la evolución de la forma, en multiverso.js.
@@ -29,7 +34,6 @@ G.Invocar = (() => {
   const VELOCIDAD = 200;    // px/s (165 hasta el 02-11-2026: tardaban en llegar a los enemigos)
   const ESCALA = 0.9;       // un poco más pequeños que Ash
   const precargados = new Set();
-  const MAX_FUERA = 3;      // Pokémon distintos fuera a la vez (2 hasta el 02-11-2026) (la Escuadra Squirtle cuenta como uno)
   const VUELO = 0.32;       // s: la Poké Ball volando de Ash a su sitio («¡Te elijo a ti!»)
   const VUELTA = 0.4;       // s: el rayo rojo que lo devuelve a la Poké Ball
   let lista = [];
@@ -40,37 +44,32 @@ G.Invocar = (() => {
 
   /** Lo que lanza combat.js (run) al usar un ataque `summon`. Sólo se lanza el ataque ACTIVO (combat.js): mientras lo
    *  está, su Pokémon se queda fuera (cada lanzamiento le renueva el tiempo, recarga < tiempo fuera); al cambiar de
-   *  ataque, sigue peleando hasta agotar su tiempo. Así Ash junta tres cambiando de ranura, y no más de MAX_FUERA. */
+   *  ataque, sigue peleando hasta agotar su tiempo. Así Ash junta a todos cambiando de ranura (sin tope desde el
+   *  04-11-2026). */
   function lanzar(pl, m, ghost) {
     const n = Math.max(1, (m.count | 0) || 1) + (m.evolved ? (m.evoMas | 0) : 0);
     const dex = (m.evolved && m.pkEvo) || m.pk;
-    if (G.Sprites && G.Sprites.preload && !precargados.has(dex)) { precargados.add(dex); G.Sprites.preload([dex]); }   // si no, sale una bolita gris mientras baja
+    const shiny = !!m.pkShiny && !!(G.Sprites && G.Sprites.hasShiny && G.Sprites.hasShiny(dex));   // el Noctowl de Ash de Johto era variocolor
+    if (G.Sprites && G.Sprites.preload && !precargados.has(dex + (shiny ? 's' : ''))) { precargados.add(dex + (shiny ? 's' : '')); G.Sprites.preload([dex], undefined, shiny); }   // si no, sale una bolita gris mientras baja
     const suyos = lista.filter(s => s.owner === pl && s.id === m.id && !s.vuelve);
     if (suyos.length === n && suyos.every(s => s.dex === dex)) {   // ya está fuera: más tiempo y su nivel de ahora
       for (const s of suyos) { s.t = 0; s.life = m.dur || 6; s.m = m; }
       return;
     }
     for (const s of suyos) s.vuelve = VUELTA;   // otro número u otra forma (ha evolucionado): vuelven y salen los nuevos
-    // Como mucho MAX_FUERA Pokémon distintos: el que lleva más tiempo fuera vuelve a su Poké Ball.
-    const otros = [...new Set(lista.filter(s => s.owner === pl && s.id !== m.id && !s.vuelve).map(s => s.id))];
-    while (otros.length >= MAX_FUERA) {
-      const viejo = otros.map(id => [id, Math.max(...lista.filter(s => s.owner === pl && s.id === id && !s.vuelve).map(s => s.t))]).sort((a, b) => b[1] - a[1])[0][0];
-      for (const s of lista) if (s.owner === pl && s.id === viejo) s.vuelve = s.vuelve || VUELTA;
-      otros.splice(otros.indexOf(viejo), 1);
-    }
     // «¡Te elijo a ti!»: Ash lanza la Poké Ball hacia delante y el Pokémon sale donde cae (VUELO s después).
     const r = radio(dex), lejos = (pl.r || 10) + r + 22;
     for (let i = 0; i < n; i++) {
       const a = (pl.aim || 0) + (i - (n - 1) / 2) * 0.7;
       const s = { owner: pl, ghost, id: m.id, m, dex, i, x: pl.x + Math.cos(a) * lejos, y: pl.y + Math.sin(a) * lejos * 0.75,
                   desdeX: pl.x, desdeY: pl.y, t: -VUELO, life: m.dur || 6, golpeT: 0.35 + i * 0.12, vuelve: 0, r,
-                  anim: G.Sprites ? new G.Sprites.Animator(dex, ESCALA) : null };
+                  anim: G.Sprites ? new G.Sprites.Animator(dex, ESCALA, shiny) : null };
       lista.push(s);
     }
     // El consejo, la primera vez en la partida que Ash tiene dos Pokémon: cambiar de ataque para juntarlos.
     if (!ghost && !consejo && G.Game && G.Game.player === pl && (pl.moves || []).filter(x => x.kind === 'summon').length >= 2 && G.Spawner && G.Spawner.say) {
       consejo = true;
-      G.Spawner.say('Cambia de ataque: ¡hasta tres Pokémon fuera a la vez!', 3.6, true);
+      G.Spawner.say('Cambia de ataque: ¡puedes tener a todos tus Pokémon fuera a la vez!', 3.6, true);
     }
   }
 
@@ -109,7 +108,29 @@ G.Invocar = (() => {
   }
 
   const alcanceDe = g => g.kind === 'melee' ? g.radius + 20 : g.kind === 'aura' ? g.radius : g.kind === 'dash' ? g.radius + 40
-    : g.kind === 'boomerang' ? g.radius : g.kind === 'cone' ? (g.speed || 300) * (g.life || 0.4) + 20 : (g.speed || 300) * (g.life || 1);
+    : g.kind === 'boomerang' ? g.radius : g.kind === 'chain' ? 240 : g.kind === 'cone' ? (g.speed || 300) * (g.life || 0.4) + 20 : (g.speed || 300) * (g.life || 1);
+
+  /** Blanco del invocado, con el criterio del jugador (player.js) desde su sitio y sin salirse de la correa: un cofre
+   *  pequeño cerca de él (G.MODS.cofreCercano: a menos de cofreBlanco px y sin pared por medio) por delante del enemigo
+   *  vivo más cercano; sin enemigos a la vista, la roca o el cofre más cercano (G.World.nearestBreakable). Arreglo del
+   *  04-11-2026 (Nico: «Los Pokémon de Ash no atacan a los cofres»): antes sólo buscaban enemigos y, como Ash no ataca
+   *  él mismo, los cofres pequeños no recibían nunca un golpe. El blanco puede ser un objeto ({ x, y, r, hp }): sus
+   *  golpes (castAs) dañan objetos como los del jugador, con propsInCircle; los de un fantasma, no. */
+  function blanco(s, pl, enemigos) {
+    const enCorrea = o => (o.x - pl.x) ** 2 + (o.y - pl.y) ** 2 < (CORREA + 60) ** 2;
+    const objetos = !(s.m && s.m.golpe && s.m.golpe.kind === 'chain');   // la cadena (Rayo) no daña objetos, como la de upstream
+    const cofre = objetos && G.MODS && G.MODS.cofreCercano ? G.MODS.cofreCercano(s, 0, null) : null;
+    if (cofre && enCorrea(cofre)) return cofre;
+    let tg = null, mejor = VISTA * VISTA;
+    for (const e of enemigos) {
+      if (e.dead) continue;
+      const d2 = (e.x - s.x) ** 2 + (e.y - s.y) ** 2;
+      if (d2 < mejor && enCorrea(e)) { mejor = d2; tg = e; }
+    }
+    if (tg) return tg;
+    const roca = objetos && G.World && G.World.nearestBreakable ? G.World.nearestBreakable(s.x, s.y, 200) : null;
+    return roca && enCorrea(roca) ? roca : null;
+  }
 
   function update(dt) {
     const enemigos = G.EnemyMgr ? G.EnemyMgr.all() : [];
@@ -127,17 +148,11 @@ G.Invocar = (() => {
         if (s.anim) s.anim.update(dt);
         continue;
       }
-      // Blanco: el enemigo vivo más cercano a él que no lo saque de la correa.
-      let tg = null, mejor = VISTA * VISTA;
-      for (const e of enemigos) {
-        if (e.dead) continue;
-        const d2 = (e.x - s.x) ** 2 + (e.y - s.y) ** 2;
-        if (d2 < mejor && (e.x - pl.x) ** 2 + (e.y - pl.y) ** 2 < (CORREA + 60) ** 2) { mejor = d2; tg = e; }
-      }
+      const tg = blanco(s, pl, enemigos);
       const g = m.golpe || {}, alc = alcanceDe(g);
       let ax, ay;
       if (tg) {
-        const d = Math.sqrt(mejor);
+        const d = Math.hypot(tg.x - s.x, tg.y - s.y);
         // Se acerca hasta su alcance (los de cuerpo a cuerpo, pegados); los de lejos se quedan a distancia.
         const quiere = Math.max(10, alc * (g.kind === 'melee' || g.kind === 'aura' ? 0.55 : 0.7));
         if (d > quiere) { ax = (tg.x - s.x) / d; ay = (tg.y - s.y) / d; }
@@ -251,5 +266,5 @@ G.Invocar = (() => {
   /** Tiempo fuera de la Poké Ball (0..1) mientras su ataque está activo: dur / recarga, como mucho 1. */
   const tiempoFuera = m => Math.min(1, (m.dur || 0) / (m.cd || 1));
 
-  return { lanzar, update, draw, drawables, clear, todos, golpe, tiempoFuera, CORREA, MAX_FUERA };
+  return { lanzar, update, draw, drawables, clear, todos, golpe, blanco, tiempoFuera, CORREA, VISTA };
 })();
