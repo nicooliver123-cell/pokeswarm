@@ -105,8 +105,8 @@ const REUSE = process.argv.includes('--reutilizar-emulador');
 const LAT = +arg('--latencia', 150);          // ms por sentido en el canal del invitado durante su prueba
 const VISIBLE_MS = 150;                       // una subida que dura más que esto se ve (un fotograma de red)
 const EMU_PORTS = [9099, 8080, 9000];
-const FORK_ISSUES = 'https://github.com/nicooliver123-cell/pokeswarm/issues';
-const FORK_REPO = 'https://github.com/nicooliver123-cell/pokeswarm';
+const FORK_ISSUES = 'https://github.com/VoltorDev/pokeswarm/issues';
+const FORK_REPO = 'https://github.com/VoltorDev/pokeswarm';
 
 fs.rmSync(SHOTS, { recursive: true, force: true });
 fs.mkdirSync(SHOTS, { recursive: true });

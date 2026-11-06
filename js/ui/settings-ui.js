@@ -7,7 +7,7 @@ G.SettingsUI = (() => {
   const $ = G.UI.$;
   const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const VERSION = '1.0';   // MOD nico: numeración propia de PokéSwarm
-  const REPO = 'https://github.com/nicooliver123-cell/pokeswarm';   // MOD nico: repo de PokéSwarm
+  const REPO = 'https://github.com/VoltorDev/pokeswarm';   // MOD nico: repo de PokéSwarm
   let tab = 'sound';
 
   function init() {

@@ -1,8 +1,8 @@
 # PokéSwarm — el juego de Nico
 
-PokéSwarm es la versión propia de Nico de un fan game en HTML + JS vanilla sobre Canvas (código MIT, sprites CC BY-NC 4.0), para que Nico y un amigo jueguen en cooperativo con sus cambios. Parte de un **proyecto base**, que llega por el remoto `upstream`, y se publica desde el repositorio de Nico (remoto `origin`, https://github.com/nicooliver123-cell/pokeswarm) en https://nicooliver123-cell.github.io/pokeswarm/. Pendientes: [PLAN.md](PLAN.md), la única lista.
+PokéSwarm es la versión propia de Nico de un fan game en HTML + JS vanilla sobre Canvas (código MIT, sprites CC BY-NC 4.0), para que Nico y un amigo jueguen en cooperativo con sus cambios. Parte de un **proyecto base**, que llega por el remoto `upstream`, y se publica desde el repositorio de Nico (remoto `origin`, https://github.com/VoltorDev/pokeswarm) en https://voltordev.github.io/pokeswarm/. Pendientes: [PLAN.md](PLAN.md), la única lista.
 
-El repositorio y la carpeta local se llaman `pokeswarm` desde el 13-10-2026 (lo renombró Nico; la web está en https://nicooliver123-cell.github.io/pokeswarm/). Las claves internas (`ps.*` en localStorage y las cachés `ps-*` del service worker) no cambian: así no se pierde ninguna partida.
+El repositorio y la carpeta local se llaman `pokeswarm` desde el 13-10-2026 (lo renombró Nico; la web está en https://voltordev.github.io/pokeswarm/). Las claves internas (`ps.*` en localStorage y las cachés `ps-*` del service worker) no cambian: así no se pierde ninguna partida.
 
 Es otra web y otro Firebase, así que las cuentas son nuevas. La opción de traer una partida guardada de la web del proyecto base (Ajustes > Cuenta) se quitó el 22-10-2026 por orden de Nico: `js/core/importar.js`, `js/ui/importar-ui.js`, `tools/nico/exportar-oficial.js`, sus ganchos, textos y pruebas. Las partidas que ya la usaron conservan el campo `importOficial`, que ya nada lee.
 
@@ -18,7 +18,7 @@ Es otra web y otro Firebase, así que las cuentas son nuevas. La opción de trae
 ## Remotos y ramas
 
 - `upstream` = el repositorio del proyecto base, sólo para traer cambios (su URL está en `.git/config`, no aquí).
-- `origin` = https://github.com/nicooliver123-cell/pokeswarm. Se trabaja en `main`.
+- `origin` = https://github.com/VoltorDev/pokeswarm. Se trabaja en `main`.
 
 ## Cómo editar y construir
 

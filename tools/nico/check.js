@@ -194,7 +194,7 @@ function loadFirebaseConfig(host, search) {
   return ctx.G;
 }
 let FB = null, ALLOWED = [];
-try { FB = loadFirebaseConfig('nicooliver123-cell.github.io', ''); ALLOWED = Array.isArray(FB.FIREBASE_PROYECTOS) ? [...FB.FIREBASE_PROYECTOS] : []; }
+try { FB = loadFirebaseConfig('voltordev.github.io', ''); ALLOWED = Array.isArray(FB.FIREBASE_PROYECTOS) ? [...FB.FIREBASE_PROYECTOS] : []; }
 catch (e) { bad('no se pudo evaluar js/core/firebase-config.js: ' + e.message); }
 // Toda URL de Firebase en la nube (Realtime Database, Auth/Hosting) debe ser de un proyecto de la lista.
 const FB_HOST = /(?<![\w<>.-])([a-z0-9][a-z0-9-]*)((?:\.[a-z0-9-]+)*)\.(firebasedatabase\.app|firebaseio\.com|firebaseapp\.com|web\.app)\b/g;
@@ -337,7 +337,7 @@ if (FB) {
     else ok(`config publicada del proyecto propio ${cfg.projectId} (en la lista blanca)`);
     const emu = loadFirebaseConfig('127.0.0.1', '?emu').FIREBASE_CONFIG;
     if (emu && emu.emulator && emu.projectId === 'demo-ps' && P(emu)) ok('?emu en 127.0.0.1 usa el emulador (demo-ps)'); else bad('?emu en local no da la config del emulador demo-ps');
-    const emuFuera = loadFirebaseConfig('nicooliver123-cell.github.io', '?emu').FIREBASE_CONFIG;
+    const emuFuera = loadFirebaseConfig('voltordev.github.io', '?emu').FIREBASE_CONFIG;
     if (emuFuera && emuFuera.emulator) bad('?emu activa el emulador fuera de este PC'); else ok('?emu no hace nada fuera de localhost');
   }
 }
@@ -416,8 +416,8 @@ const HOOKS = [
   ['js/core/db.js', /\/\\x6a\\x70\\x74\\x65\\x72\/i\.test\(/, 'db.js rechaza el proyecto base (su autor, en hexadecimal)'],
   ['js/core/db.js', /if \(!\(G\.FIREBASE_PERMITIDA && G\.FIREBASE_PERMITIDA\(cfg\)\) \|\|/, 'db.js sólo conecta con la lista blanca (si falta, con nada)'],
   ['js/core/db.js', /\(cfg\.emulator && !\/\^\(localhost\|127/, 'db.js rechaza configs de emulador fuera de este PC'],
-  ['js/ui/ui.js', /const CONTACT = 'https:\/\/github\.com\/nicooliver123-cell\/pokeswarm\/issues';/, 'contacto del aviso legal: avisos del repositorio'],
-  ['js/ui/settings-ui.js', /const REPO = 'https:\/\/github\.com\/nicooliver123-cell\/pokeswarm';/, 'Ajustes > Acerca de: repositorio de PokéSwarm'],
+  ['js/ui/ui.js', /const CONTACT = 'https:\/\/github\.com\/VoltorDev\/pokeswarm\/issues';/, 'contacto del aviso legal: avisos del repositorio'],
+  ['js/ui/settings-ui.js', /const REPO = 'https:\/\/github\.com\/VoltorDev\/pokeswarm';/, 'Ajustes > Acerca de: repositorio de PokéSwarm'],
   ['js/entities/enemy.js', /if \(!G\.MODS \|\| G\.MODS\.predecirGolpe\(this\)\) this\.hp = /, 'invitado: sin predecir golpes con escudo'],
   ['js/net/coop.js', /e\.hp = G\.MODS \? G\.MODS\.vidaDelAnfitrion\(e, a\[3\]\) :/, 'invitado: ventana sin subidas tras un golpe predicho'],
   ['js/net/coop.js', /e\.behavior, Math\.ceil\(e\.hp\)\]\);/, "'ne' lleva la vida real (vuelta de la grieta)"],

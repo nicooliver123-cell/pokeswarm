@@ -7,8 +7,8 @@ y en el móvil, solo o con amigos.
 
 <p align="center"><img src=".github/capturas/partida.webp" width="100%" alt="Una partida a los 4 minutos: tu Pokémon en medio de la horda, con un jefe y disparos enemigos marcados en rojo"></p>
 
-> **Jugar:** https://nicooliver123-cell.github.io/pokeswarm/
-> Fallos, sugerencias y retiradas de contenido: [avisos del repositorio](https://github.com/nicooliver123-cell/pokeswarm/issues).
+> **Jugar:** https://voltordev.github.io/pokeswarm/
+> Fallos, sugerencias y retiradas de contenido: [avisos del repositorio](https://github.com/VoltorDev/pokeswarm/issues).
 
 **Estado (13-10-2026):** se juega entero, solo o en grupo. Las cuentas, los
 amigos, el ranking y el cooperativo acaban de estrenar servidor propio y el
